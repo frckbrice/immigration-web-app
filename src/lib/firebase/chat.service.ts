@@ -83,6 +83,10 @@ export async function initializeFirebaseChat(
   agentName: string
 ): Promise<void> {
   try {
+    if (!database) {
+      logger.error('Firebase Database is not initialized');
+      throw new Error('Database service unavailable');
+    }
     // Use client-agent pair for room ID instead of caseId
     const chatRoomId = getChatRoomId(clientId, agentId);
     const conversationRef = ref(database, `chats/${chatRoomId}/metadata`);
@@ -175,7 +179,7 @@ export async function initializeFirebaseChat(
 
       // 🆕 Create userChats index entries
       // Note: clientId and agentId are already Firebase UIDs here
-      if (agentId && clientId) {
+      if (agentId && clientId && database) {
         await Promise.all([
           set(ref(database, `userChats/${agentId}/${chatRoomId}`), {
             chatId: chatRoomId,
@@ -233,6 +237,10 @@ export async function sendWelcomeMessage(
   clientId: string // Should be Firebase UID - NEW PARAMETER
 ): Promise<void> {
   try {
+    if (!database) {
+      logger.error('Firebase Database is not initialized');
+      throw new Error('Database service unavailable');
+    }
     // Use client-agent pair for room ID instead of caseId
     const chatRoomId = getChatRoomId(clientId, agentId);
 
@@ -251,6 +259,10 @@ export async function sendWelcomeMessage(
     await set(welcomeMessageRef, welcomeMessage);
 
     // Update conversation metadata
+    if (!database) {
+      logger.error('Firebase Database is not initialized');
+      throw new Error('Database service unavailable');
+    }
     const metadataRef = ref(database, `chats/${chatRoomId}/metadata`);
     await update(metadataRef, {
       lastMessage: welcomeMessage.content.substring(0, 100),
@@ -285,6 +297,10 @@ export async function updateChatAgent(
   caseReference: string
 ): Promise<void> {
   try {
+    if (!database) {
+      logger.error('Firebase Database is not initialized');
+      throw new Error('Database service unavailable');
+    }
     // Create new chat room for new agent-client pair
     const oldChatRoomId = getChatRoomId(clientId, 'old-agent-will-be-updated'); // Not accurate, but we need to find the old room first
     const newChatRoomId = getChatRoomId(clientId, newAgentId);
@@ -310,7 +326,7 @@ export async function updateChatAgent(
         const caseRefs = metadata.caseReferences || [];
         const hasCase = caseRefs.some((ref: CaseReference) => ref.caseId === caseId);
 
-        if (hasCase) {
+        if (hasCase && database) {
           // Update participants
           const participantsRef = ref(database, `chats/${chatRoomId}/metadata/participants`);
 
@@ -346,6 +362,10 @@ export async function updateChatAgent(
  */
 export async function deleteFirebaseChat(caseId: string): Promise<void> {
   try {
+    if (!database) {
+      logger.error('Firebase Database is not initialized');
+      throw new Error('Database service unavailable');
+    }
     const chatRef = ref(database, `chats/${caseId}`);
     const metadataRef = ref(database, `chats/${caseId}/metadata`);
 
@@ -434,6 +454,10 @@ export interface SendMessageParams {
 
 export async function sendMessage(params: SendMessageParams): Promise<string> {
   try {
+    if (!database) {
+      logger.error('Firebase Database is not initialized');
+      throw new Error('Database service unavailable');
+    }
     logger.info('sendMessage called with params', {
       hasCaseId: !!params.caseId,
       senderId: params.senderId.substring(0, 8) + '...',
@@ -444,8 +468,8 @@ export async function sendMessage(params: SendMessageParams): Promise<string> {
     // Debug Firebase auth state
     const { auth } = await import('./firebase-client');
     logger.info('Firebase auth state', {
-      currentUser: auth.currentUser?.uid ? auth.currentUser.uid.substring(0, 8) + '...' : 'null',
-      email: auth.currentUser?.email || 'null',
+      currentUser: auth?.currentUser?.uid ? auth.currentUser.uid.substring(0, 8) + '...' : 'null',
+      email: auth?.currentUser?.email || 'null',
     });
 
     setLogLevel('debug');
@@ -812,6 +836,10 @@ export async function consolidateChatConversations(
   targetRoomId?: string
 ): Promise<{ success: boolean; targetRoomId: string; messagesMerged: number; casesAdded: number }> {
   try {
+    if (!database) {
+      logger.error('Firebase Database is not initialized');
+      throw new Error('Database service unavailable');
+    }
     logger.info('Starting chat conversation consolidation', { caseId1, caseId2, targetRoomId });
 
     const chatsRef = ref(database, 'chats');
@@ -1090,6 +1118,10 @@ export async function consolidateChatConversations(
  */
 export async function markMessagesAsRead(chatId: string, userId: string): Promise<void> {
   try {
+    if (!database) {
+      logger.error('Firebase Database is not initialized');
+      throw new Error('Database service unavailable');
+    }
     const messagesRef = ref(database, `chats/${chatId}/messages`);
     const snapshot = await get(messagesRef);
 
@@ -1103,7 +1135,7 @@ export async function markMessagesAsRead(chatId: string, userId: string): Promis
     snapshot.forEach((msgSnap) => {
       const msg = msgSnap.val();
       // Only mark messages as read if they weren't sent by the current user and aren't already read
-      if (msg.senderId !== userId && !msg.isRead) {
+      if (msg.senderId !== userId && !msg.isRead && database) {
         const messageRef = ref(database, `chats/${chatId}/messages/${msgSnap.key}`);
         updatePromises.push(
           update(messageRef, { isRead: true }).catch((err) => {

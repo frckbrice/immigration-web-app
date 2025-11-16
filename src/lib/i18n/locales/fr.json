@@ -801,7 +801,12 @@
       "support247": "Support 24/7",
       "alwaysHere": "Toujours là pour vous",
       "fastProcessing": "Traitement Rapide",
-      "quickTurnaround": "Délais de traitement rapides"
+      "quickTurnaround": "Délais de traitement rapides",
+      "trustedPartners": "Approuvé par les principaux partenaires d'immigration :",
+      "partner1": "IRCC",
+      "partner2": "CIC",
+      "partner3": "USCIS",
+      "partner4": "Home Office UK"
     },
     "whyChooseUs": {
       "title": "Pourquoi Nous Choisir",
@@ -958,7 +963,9 @@
         "feature2": "Traitement express",
         "feature3": "Consultations vidéo",
         "feature4": "Support et mises à jour prioritaires"
-      }
+      },
+      "oneTime": "unique",
+      "getStarted": "Commencer"
     },
     "featureGrid": {
       "expertTeam": {
@@ -1023,23 +1030,25 @@
     "trust": {
       "title": "Approuvé par les autorités d'immigration du monde entier",
       "subtitle": "Partenaires reconnus avec les agences d'immigration officielles",
+      "verifiedPartner": "Partenaire Vérifié",
       "logo1": "IRCC",
       "logo2": "CIC",
       "logo3": "USCIS",
       "logo4": "Home Office UK",
       "logo5": "Immigration NZ",
-      "logo6": "Immigration Australie"
-    },
-    "hero": {
-      "title": "Votre voyage vers un nouvel avenir commence ici",
-      "subtitle": "Services d'immigration experts pour vous aider à réaliser vos rêves d'étudier, travailler ou vivre à l'étranger.",
-      "cta": "Commencer",
-      "login": "Se connecter",
-      "trustedPartners": "Approuvé par les principaux partenaires d'immigration :",
-      "partner1": "IRCC",
-      "partner2": "CIC",
-      "partner3": "USCIS",
-      "partner4": "Home Office UK"
+      "logo6": "Immigration Australie",
+      "fullName1": "Immigration, Réfugiés et Citoyenneté Canada",
+      "fullName2": "Citoyenneté et Immigration Canada",
+      "fullName3": "Services de citoyenneté et d'immigration des États-Unis",
+      "fullName4": "Bureau intérieur du Royaume-Uni",
+      "fullName5": "Immigration Nouvelle-Zélande",
+      "fullName6": "Département des affaires intérieures Australie",
+      "country1": "Canada",
+      "country2": "Canada",
+      "country3": "États-Unis",
+      "country4": "Royaume-Uni",
+      "country5": "Nouvelle-Zélande",
+      "country6": "Australie"
     },
     "footer": {
       "description": "Services d'immigration professionnels aidant les individus et les familles à réaliser leurs rêves mondiaux.",
@@ -1055,74 +1064,102 @@
       "cookies": "Politique des Cookies",
       "rights": "Tous droits réservés."
     },
-    "about": {
-      "badge": "À Propos de Patrick Travel Services",
-      "title": "Votre Partenaire d'Immigration de Confiance",
-      "subtitle": "Aider les individus et les familles à réaliser leurs rêves de vivre, travailler ou étudier à l'étranger depuis 2014.",
-      "statsYears": "Années d'Expérience",
-      "statsClients": "Clients Satisfaits",
-      "statsSuccess": "Taux de Réussite",
-      "imageAlt": "À Propos de Patrick Travel Services",
-      "licensedBadge": "Agréé",
-      "licensedSince": "Depuis 2014",
-      "mission": {
-        "title": "Notre Mission",
-        "paragraph1": "Chez Patrick Travel Services, nous croyons que chacun mérite l'opportunité de poursuivre ses rêves à l'échelle mondiale. Notre mission est de rendre l'immigration accessible, transparente et réussie pour tous nos clients.",
-        "paragraph2": "Avec plus d'une décennie d'expérience, nous avons aidé des centaines de familles à naviguer dans des processus d'immigration complexes avec confiance et tranquillité d'esprit.",
-        "licensedTitle": "Agréé et Assuré",
-        "licensedDesc": "Professionnels entièrement certifiés",
-        "fastTitle": "Traitement Rapide",
-        "fastDesc": "Délais de traitement rapides",
-        "statsCases": "Dossiers Traités",
-        "statsSuccessRate": "Taux de Réussite",
-        "statsExperience": "Années d'Expérience",
-        "statsSupport": "Support"
+    "checkout": {
+      "success": {
+        "title": "Paiement Réussi!",
+        "message": "Votre abonnement a été activé. Redirection vers le tableau de bord...",
+        "redirecting": "Redirection...",
+        "goToDashboard": "Aller au Tableau de Bord"
       },
-      "values": {
-        "title": "Nos Valeurs Fondamentales",
-        "subtitle": "Les principes qui guident tout ce que nous faisons",
-        "excellence": {
-          "title": "Excellence",
-          "description": "Nous maintenons les normes les plus élevées en matière de conseil en immigration"
-        },
-        "compassion": {
-          "title": "Compassion",
-          "description": "Nous comprenons la nature personnelle de votre parcours"
-        },
-        "results": {
-          "title": "Résultats",
-          "description": "Concentré sur l'obtention de résultats réussis pour chaque client"
-        },
-        "partnership": {
-          "title": "Partenariat",
-          "description": "Établir des relations durables avec nos clients"
-        }
-      },
-      "team": {
-        "title": "Rencontrez Notre Équipe",
-        "subtitle": "Des professionnels expérimentés dédiés à votre succès",
-        "member1": {
-          "name": "Patrick E.",
-          "role": "Fondateur et PDG",
-          "description": "Consultant en immigration agréé avec plus de 15 ans d'expérience"
-        },
-        "member2": {
-          "name": "Sarah Thompson",
-          "role": "Consultante Senior en Immigration",
-          "description": "Spécialiste des visas étudiants et de travail"
-        },
-        "member3": {
-          "name": "David Chen",
-          "role": "Gestionnaire de Cas",
-          "description": "Expert en cas de réunification familiale"
-        }
-      },
-      "cta": {
-        "title": "Prêt à Commencer Votre Voyage?",
-        "description": "Laissez-nous vous aider à atteindre vos objectifs d'immigration avec des conseils d'experts et un soutien personnalisé.",
-        "getStarted": "Commencer Aujourd'hui",
-        "contact": "Nous Contacter"
+      "page": {
+        "loading": "Chargement de la caisse...",
+        "initializing": "Initialisation du paiement...",
+        "backToHome": "Retour à l'Accueil",
+        "orderSummary": "Résumé de la Commande",
+        "plan": "Plan:",
+        "amount": "Montant:",
+        "total": "Total:",
+        "paymentDetails": "Détails du Paiement",
+        "securePayment": "Paiement sécurisé par Stripe",
+        "oneTimePayment": "Il s'agit d'un paiement unique. Vous aurez un accès complet au tableau de bord après le paiement.",
+        "processing": "Traitement...",
+        "pay": "Payer",
+        "invalidTier": "Niveau d'abonnement invalide. Veuillez sélectionner un plan valide.",
+        "returnToHome": "Retour à l'Accueil",
+        "errorOccurred": "Une erreur s'est produite",
+        "paymentFailed": "Le paiement a échoué",
+        "unexpectedError": "Une erreur inattendue s'est produite. Veuillez réessayer.",
+        "paymentSuccessful": "Paiement réussi! Redirection vers le tableau de bord..."
       }
+    }
+  },
+  "about": {
+    "badge": "À Propos de Patrick Travel Services",
+    "title": "Votre Partenaire d'Immigration de Confiance",
+    "subtitle": "Aider les individus et les familles à réaliser leurs rêves de vivre, travailler ou étudier à l'étranger depuis 2014.",
+    "statsYears": "Années d'Expérience",
+    "statsClients": "Clients Satisfaits",
+    "statsSuccess": "Taux de Réussite",
+    "imageAlt": "À Propos de Patrick Travel Services",
+    "licensedBadge": "Agréé",
+    "licensedSince": "Depuis 2014",
+    "mission": {
+      "title": "Notre Mission",
+      "paragraph1": "Chez Patrick Travel Services, nous croyons que chacun mérite l'opportunité de poursuivre ses rêves à l'échelle mondiale. Notre mission est de rendre l'immigration accessible, transparente et réussie pour tous nos clients.",
+      "paragraph2": "Avec plus d'une décennie d'expérience, nous avons aidé des centaines de familles à naviguer dans des processus d'immigration complexes avec confiance et tranquillité d'esprit.",
+      "licensedTitle": "Agréé et Assuré",
+      "licensedDesc": "Professionnels entièrement certifiés",
+      "fastTitle": "Traitement Rapide",
+      "fastDesc": "Délais de traitement rapides",
+      "statsCases": "Dossiers Traités",
+      "statsSuccessRate": "Taux de Réussite",
+      "statsExperience": "Années d'Expérience",
+      "statsSupport": "Support"
+    },
+    "values": {
+      "title": "Nos Valeurs Fondamentales",
+      "subtitle": "Les principes qui guident tout ce que nous faisons",
+      "excellence": {
+        "title": "Excellence",
+        "description": "Nous maintenons les normes les plus élevées en matière de conseil en immigration"
+      },
+      "compassion": {
+        "title": "Compassion",
+        "description": "Nous comprenons la nature personnelle de votre parcours"
+      },
+      "results": {
+        "title": "Résultats",
+        "description": "Concentré sur l'obtention de résultats réussis pour chaque client"
+      },
+      "partnership": {
+        "title": "Partenariat",
+        "description": "Établir des relations durables avec nos clients"
+      }
+    },
+    "team": {
+      "title": "Rencontrez Notre Équipe",
+      "subtitle": "Des professionnels expérimentés dédiés à votre succès",
+      "member1": {
+        "name": "Patrick E.",
+        "role": "Fondateur et PDG",
+        "description": "Consultant en immigration agréé avec plus de 15 ans d'expérience"
+      },
+      "member2": {
+        "name": "Sarah Thompson",
+        "role": "Consultante Senior en Immigration",
+        "description": "Spécialiste des visas étudiants et de travail"
+      },
+      "member3": {
+        "name": "David Chen",
+        "role": "Gestionnaire de Cas",
+        "description": "Expert en cas de réunification familiale"
+      }
+    },
+    "cta": {
+      "title": "Prêt à Commencer Votre Voyage?",
+      "description": "Laissez-nous vous aider à atteindre vos objectifs d'immigration avec des conseils d'experts et un soutien personnalisé.",
+      "getStarted": "Commencer Aujourd'hui",
+      "contact": "Nous Contacter"
     }
   },
   "errors": {

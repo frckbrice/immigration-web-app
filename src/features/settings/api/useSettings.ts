@@ -78,6 +78,9 @@ export const useUpdateUserSettings = () => {
 export const useChangePassword = () => {
   return useMutation({
     mutationFn: async ({ currentPassword, newPassword }: PasswordChangeInput) => {
+      if (!auth) {
+        throw new Error('Firebase Auth is not initialized');
+      }
       const user = auth.currentUser;
 
       if (!user || !user.email) {

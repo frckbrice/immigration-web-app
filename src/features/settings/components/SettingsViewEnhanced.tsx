@@ -68,6 +68,7 @@ export function SettingsView() {
 
   useEffect(() => {
     const checkAuthProvider = () => {
+      if (!auth) return;
       const currentUser = auth.currentUser;
       if (!currentUser) return;
 

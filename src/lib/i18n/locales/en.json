@@ -1008,7 +1008,9 @@
         "feature2": "Express processing",
         "feature3": "Video consultations",
         "feature4": "Priority support & updates"
-      }
+      },
+      "oneTime": "one-time",
+      "getStarted": "Get Started"
     },
     "featureGrid": {
       "expertTeam": {
@@ -1073,12 +1075,25 @@
     "trust": {
       "title": "Trusted by immigration authorities worldwide",
       "subtitle": "Recognized partners with official immigration agencies",
+      "verifiedPartner": "Verified Partner",
       "logo1": "IRCC",
       "logo2": "CIC",
       "logo3": "USCIS",
       "logo4": "Home Office UK",
       "logo5": "Immigration NZ",
-      "logo6": "Australia Immigration"
+      "logo6": "Australia Immigration",
+      "fullName1": "Immigration, Refugees and Citizenship Canada",
+      "fullName2": "Citizenship and Immigration Canada",
+      "fullName3": "U.S. Citizenship and Immigration Services",
+      "fullName4": "UK Home Office",
+      "fullName5": "Immigration New Zealand",
+      "fullName6": "Department of Home Affairs Australia",
+      "country1": "Canada",
+      "country2": "Canada",
+      "country3": "United States",
+      "country4": "United Kingdom",
+      "country5": "New Zealand",
+      "country6": "Australia"
     },
     "footer": {
       "description": "Professional immigration services helping individuals and families achieve their global dreams.",
@@ -1093,6 +1108,34 @@
       "terms": "Terms of Service",
       "cookies": "Cookie Policy",
       "rights": "All rights reserved."
+    },
+    "checkout": {
+      "success": {
+        "title": "Payment Successful!",
+        "message": "Your subscription has been activated. Redirecting to dashboard...",
+        "redirecting": "Redirecting...",
+        "goToDashboard": "Go to Dashboard"
+      },
+      "page": {
+        "loading": "Loading checkout...",
+        "initializing": "Initializing payment...",
+        "backToHome": "Back to Home",
+        "orderSummary": "Order Summary",
+        "plan": "Plan:",
+        "amount": "Amount:",
+        "total": "Total:",
+        "paymentDetails": "Payment Details",
+        "securePayment": "Secure payment powered by Stripe",
+        "oneTimePayment": "This is a one-time payment. You'll have full access to the dashboard after payment.",
+        "processing": "Processing...",
+        "pay": "Pay",
+        "invalidTier": "Invalid subscription tier. Please select a valid plan.",
+        "returnToHome": "Return to Home",
+        "errorOccurred": "An error occurred",
+        "paymentFailed": "Payment failed",
+        "unexpectedError": "An unexpected error occurred. Please try again.",
+        "paymentSuccessful": "Payment successful! Redirecting to dashboard..."
+      }
     }
   },
   "about": {

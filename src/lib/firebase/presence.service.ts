@@ -52,7 +52,7 @@ function createPresenceRecord(
  * Returns a cleanup function that stops listening to the connection status.
  */
 export function setUserOnline(userUid: string, platform: PresencePlatform = 'web'): () => void {
-  if (typeof window === 'undefined' || !userUid) {
+  if (typeof window === 'undefined' || !userUid || !database) {
     return () => undefined;
   }
 
@@ -116,7 +116,7 @@ export function setUserOffline(
   userUid: string,
   platform: PresencePlatform = 'web'
 ): Promise<void> | undefined {
-  if (typeof window === 'undefined' || !userUid) {
+  if (typeof window === 'undefined' || !userUid || !database) {
     return undefined;
   }
 
@@ -148,7 +148,7 @@ export function setTyping(
   chatRoomId: string,
   isTyping: boolean
 ): Promise<void> | undefined {
-  if (typeof window === 'undefined' || !userUid || !chatRoomId) {
+  if (typeof window === 'undefined' || !userUid || !chatRoomId || !database) {
     return undefined;
   }
 
@@ -176,7 +176,7 @@ export function setTyping(
  * Ensure the typing flag is cleared if the client disconnects unexpectedly.
  */
 export function registerTypingOnDisconnect(chatRoomId: string, userUid: string): void {
-  if (typeof window === 'undefined' || !chatRoomId || !userUid) {
+  if (typeof window === 'undefined' || !chatRoomId || !userUid || !database) {
     return;
   }
 
@@ -196,7 +196,7 @@ export function registerTypingOnDisconnect(chatRoomId: string, userUid: string):
  * Immediately removes the typing record for a user within a chat.
  */
 export function clearTyping(chatRoomId: string, userUid: string): Promise<void> | undefined {
-  if (typeof window === 'undefined' || !chatRoomId || !userUid) {
+  if (typeof window === 'undefined' || !chatRoomId || !userUid || !database) {
     return undefined;
   }
 

@@ -21,6 +21,7 @@ export function subscribeToUserNotifications(
   userId: string,
   onNewNotification: (notification: RealtimeNotification) => void
 ): () => void {
+  if (!database) return () => {};
   const notificationsRef = ref(database, `notifications/${userId}`);
   let lastNotificationTime = Date.now();
 
@@ -77,6 +78,7 @@ export async function markNotificationAsRead(
   notificationId: string
 ): Promise<void> {
   try {
+    if (!database) return;
     const notificationRef = ref(database, `notifications/${userId}/${notificationId}/isRead`);
     await set(notificationRef, true);
     logger.info('Notification marked as read', { userId, notificationId });
@@ -89,6 +91,7 @@ export async function markNotificationAsRead(
 // Get unread count
 export async function getUnreadCount(userId: string): Promise<number> {
   try {
+    if (!database) return 0;
     const notificationsRef = ref(database, `notifications/${userId}`);
     const snapshot = await get(notificationsRef);
 

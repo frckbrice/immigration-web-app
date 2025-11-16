@@ -11,39 +11,39 @@ export function TrustLogos() {
   const authorities = [
     {
       name: t('landing.trust.logo1') || 'IRCC',
-      fullName: 'Immigration, Refugees and Citizenship Canada',
+      fullName: t('landing.trust.fullName1') || 'Immigration, Refugees and Citizenship Canada',
       icon: Shield,
-      country: 'Canada',
+      country: t('landing.trust.country1') || 'Canada',
     },
     {
       name: t('landing.trust.logo2') || 'CIC',
-      fullName: 'Citizenship and Immigration Canada',
+      fullName: t('landing.trust.fullName2') || 'Citizenship and Immigration Canada',
       icon: Building2,
-      country: 'Canada',
+      country: t('landing.trust.country2') || 'Canada',
     },
     {
       name: t('landing.trust.logo3') || 'USCIS',
-      fullName: 'U.S. Citizenship and Immigration Services',
+      fullName: t('landing.trust.fullName3') || 'U.S. Citizenship and Immigration Services',
       icon: Globe,
-      country: 'United States',
+      country: t('landing.trust.country3') || 'United States',
     },
     {
       name: t('landing.trust.logo4') || 'Home Office UK',
-      fullName: 'UK Home Office',
+      fullName: t('landing.trust.fullName4') || 'UK Home Office',
       icon: Award,
-      country: 'United Kingdom',
+      country: t('landing.trust.country4') || 'United Kingdom',
     },
     {
       name: t('landing.trust.logo5') || 'Immigration NZ',
-      fullName: 'Immigration New Zealand',
+      fullName: t('landing.trust.fullName5') || 'Immigration New Zealand',
       icon: CheckCircle2,
-      country: 'New Zealand',
+      country: t('landing.trust.country5') || 'New Zealand',
     },
     {
       name: t('landing.trust.logo6') || 'Australia Immigration',
-      fullName: 'Department of Home Affairs Australia',
+      fullName: t('landing.trust.fullName6') || 'Department of Home Affairs Australia',
       icon: FileCheck,
-      country: 'Australia',
+      country: t('landing.trust.country6') || 'Australia',
     },
   ];
 
@@ -140,7 +140,9 @@ export function TrustLogos() {
                         style={{ color: 'rgba(255, 255, 255, 0.7)' }}
                       >
                         <CheckCircle2 className="h-3 w-3" style={{ color: '#ff4538' }} />
-                        <span>Verified Partner</span>
+                        <span suppressHydrationWarning>
+                          {t('landing.trust.verifiedPartner') || 'Verified Partner'}
+                        </span>
                       </div>
                     </div>
                   </Card>

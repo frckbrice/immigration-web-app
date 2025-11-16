@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import { Navbar } from '@/components/layout/Navbar';
@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 import { CheckCircle2, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 
-export default function CheckoutSuccessPage() {
+function CheckoutSuccessContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { t } = useTranslation();
@@ -40,16 +40,23 @@ export default function CheckoutSuccessPage() {
             <div className="mb-6">
               <CheckCircle2 className="h-16 w-16 mx-auto mb-4" style={{ color: '#ff4538' }} />
               <h1 className="text-2xl font-bold mb-2" style={{ color: '#ffffff' }}>
-                Payment Successful!
+                <span suppressHydrationWarning>
+                  {t('landing.checkout.success.title') || 'Payment Successful!'}
+                </span>
               </h1>
               <p className="text-sm" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
-                Your subscription has been activated. Redirecting to dashboard...
+                <span suppressHydrationWarning>
+                  {t('landing.checkout.success.message') ||
+                    'Your subscription has been activated. Redirecting to dashboard...'}
+                </span>
               </p>
             </div>
             <div className="flex items-center justify-center gap-2 mb-6">
               <Loader2 className="h-4 w-4 animate-spin" style={{ color: '#ff4538' }} />
               <span className="text-sm" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
-                Redirecting...
+                <span suppressHydrationWarning>
+                  {t('landing.checkout.success.redirecting') || 'Redirecting...'}
+                </span>
               </span>
             </div>
             <Button
@@ -63,12 +70,33 @@ export default function CheckoutSuccessPage() {
                 e.currentTarget.style.backgroundColor = '#ff4538';
               }}
             >
-              <Link href="/dashboard">Go to Dashboard</Link>
+              <Link href="/dashboard">
+                <span suppressHydrationWarning>
+                  {t('landing.checkout.success.goToDashboard') || 'Go to Dashboard'}
+                </span>
+              </Link>
             </Button>
           </CardContent>
         </Card>
       </main>
       <Footer />
     </div>
+  );
+}
+
+export default function CheckoutSuccessPage() {
+  return (
+    <Suspense
+      fallback={
+        <div
+          className="min-h-screen flex items-center justify-center"
+          style={{ backgroundColor: '#091a24' }}
+        >
+          <Loader2 className="h-8 w-8 animate-spin" style={{ color: '#ff4538' }} />
+        </div>
+      }
+    >
+      <CheckoutSuccessContent />
+    </Suspense>
   );
 }

@@ -16,6 +16,7 @@ interface PricingTierProps {
 }
 
 function PricingTier({ name, tagline, features, price, tier, highlight }: PricingTierProps) {
+  const { t } = useTranslation();
   return (
     <Card
       className={`relative overflow-hidden border-2 transition-all duration-200 hover:shadow-lg ${
@@ -41,7 +42,7 @@ function PricingTier({ name, tagline, features, price, tier, highlight }: Pricin
             ${price.toLocaleString()}
           </span>
           <span className="text-sm ml-2" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
-            one-time
+            <span suppressHydrationWarning>{t('landing.pricing.oneTime') || 'one-time'}</span>
           </span>
         </div>
       </CardHeader>
@@ -80,7 +81,9 @@ function PricingTier({ name, tagline, features, price, tier, highlight }: Pricin
           }}
           asChild
         >
-          <Link href={`/checkout?tier=${tier}`}>Get Started</Link>
+          <Link href={`/checkout?tier=${tier}`}>
+            <span suppressHydrationWarning>{t('landing.pricing.getStarted') || 'Get Started'}</span>
+          </Link>
         </Button>
       </CardContent>
     </Card>

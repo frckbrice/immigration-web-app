@@ -64,6 +64,10 @@ function subscribeToRoomMessages(
   chatRoomId: string,
   callback: (messages: ChatMessage[]) => void
 ): () => void {
+  if (!database) {
+    logger.error('Firebase Database is not initialized');
+    return () => {}; // Return no-op cleanup function
+  }
   const messagesRef = query(ref(database, `chats/${chatRoomId}/messages`), orderByChild('sentAt'));
 
   onValue(
@@ -112,6 +116,10 @@ function subscribeToUserChatRooms(
   userId: string,
   callback: (rooms: ChatRoom[]) => void
 ): () => void {
+  if (!database) {
+    logger.error('Firebase Database is not initialized');
+    return () => {}; // Return no-op cleanup function
+  }
   const roomsRef = ref(database, 'chats');
 
   onValue(
@@ -186,6 +194,10 @@ function subscribeToUserPresence(
   userId: string,
   callback: (presence: UserPresence | null) => void
 ): () => void {
+  if (!database) {
+    logger.error('Firebase Database is not initialized');
+    return () => {}; // Return no-op cleanup function
+  }
   const presenceRef = ref(database, `presence/${userId}`);
 
   onValue(presenceRef, (snapshot) => {
@@ -199,6 +211,10 @@ function subscribeToMultipleUserPresence(
   userIds: string[],
   callback: (presences: Record<string, UserPresence>) => void
 ): () => void {
+  if (!database) {
+    logger.error('Firebase Database is not initialized');
+    return () => {}; // Return no-op cleanup function
+  }
   const presenceRef = ref(database, 'presence');
   const userIdSet = new Set(userIds);
 
@@ -221,6 +237,10 @@ function subscribeToTyping(
   currentUserId: string | null,
   callback: (typingUsers: TypingIndicator[]) => void
 ): () => void {
+  if (!database) {
+    logger.error('Firebase Database is not initialized');
+    return () => {}; // Return no-op cleanup function
+  }
   const typingRef = ref(database, `typing/${chatRoomId}`);
 
   onValue(typingRef, (snapshot) => {
@@ -289,7 +309,7 @@ export function useRealtimeMessages(chatRoomId: string | null) {
 
       // PERFORMANCE: Throttle read-marking to at most once per 2s
       // Get Firebase UID for comparing with message senderIds (which are Firebase UIDs)
-      const firebaseUser = auth.currentUser;
+      const firebaseUser = auth?.currentUser;
       const firebaseUserId = firebaseUser?.uid;
 
       const now = Date.now();
@@ -345,7 +365,7 @@ export function useRealtimeChatRooms() {
 
     // Get Firebase UID from auth.currentUser for filtering
     // Firebase UID is what's stored in metadata participants, not PostgreSQL ID
-    const firebaseUser = auth.currentUser;
+    const firebaseUser = auth?.currentUser;
     const firebaseUserId = firebaseUser?.uid;
 
     if (!firebaseUserId) {
@@ -493,7 +513,7 @@ export function useMultipleUserPresence(userIds: string[]) {
  */
 export function useTypingIndicators(chatRoomId: string | null) {
   const [typingUsers, setTypingUsers] = useState<TypingIndicator[]>([]);
-  const firebaseUserId = auth.currentUser?.uid ?? null;
+  const firebaseUserId = auth?.currentUser?.uid ?? null;
 
   useEffect(() => {
     if (!chatRoomId || !firebaseUserId) {
@@ -527,7 +547,7 @@ export function useTypingStatus(chatRoomId: string | null) {
     return user.email ?? undefined;
   }, [user]);
 
-  const firebaseUserId = auth.currentUser?.uid ?? null;
+  const firebaseUserId = auth?.currentUser?.uid ?? null;
 
   const startTyping = useCallback(() => {
     if (!chatRoomId || !firebaseUserId) return;
@@ -549,7 +569,7 @@ export function useTypingStatus(chatRoomId: string | null) {
 
     // Auto-stop typing after 3 seconds of no activity
     typingTimeoutRef.current = setTimeout(() => {
-      const currentFirebaseUserId = auth.currentUser?.uid ?? firebaseUserId;
+      const currentFirebaseUserId = auth?.currentUser?.uid ?? firebaseUserId;
       if (!currentFirebaseUserId || !chatRoomId) return;
       setTyping(currentFirebaseUserId, userName, chatRoomId, false);
       isTypingRef.current = false;
@@ -580,7 +600,7 @@ export function useTypingStatus(chatRoomId: string | null) {
       if (typingTimeoutRef.current) {
         clearTimeout(typingTimeoutRef.current);
       }
-      const currentFirebaseUserId = auth.currentUser?.uid ?? firebaseUserId;
+      const currentFirebaseUserId = auth?.currentUser?.uid ?? firebaseUserId;
       if (!chatRoomId || !currentFirebaseUserId) return;
       clearTyping(chatRoomId, currentFirebaseUserId);
     };
@@ -595,7 +615,7 @@ export function useTypingStatus(chatRoomId: string | null) {
  */
 export function usePresenceManagement(platform: 'web' | 'mobile' | 'desktop' = 'web') {
   const { user } = useAuthStore();
-  const firebaseUserId = auth.currentUser?.uid ?? null;
+  const firebaseUserId = auth?.currentUser?.uid ?? null;
 
   useEffect(() => {
     if (!user?.id || !firebaseUserId) return;

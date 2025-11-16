@@ -48,7 +48,9 @@ function CheckoutForm({ tier, clientSecret, amount }: CheckoutFormProps) {
     try {
       const { error: submitError } = await elements.submit();
       if (submitError) {
-        setError(submitError.message || 'An error occurred');
+        setError(
+          submitError.message || t('landing.checkout.page.errorOccurred') || 'An error occurred'
+        );
         setIsProcessing(false);
         return;
       }
@@ -63,17 +65,27 @@ function CheckoutForm({ tier, clientSecret, amount }: CheckoutFormProps) {
       });
 
       if (confirmError) {
-        setError(confirmError.message || 'Payment failed');
+        setError(
+          confirmError.message || t('landing.checkout.page.paymentFailed') || 'Payment failed'
+        );
         setIsProcessing(false);
       } else {
         // Payment succeeded, redirect to dashboard
-        toast.success(sanitizeMessage('Payment successful! Redirecting to dashboard...'));
+        toast.success(
+          sanitizeMessage(
+            t('landing.checkout.page.paymentSuccessful') ||
+              'Payment successful! Redirecting to dashboard...'
+          )
+        );
         setTimeout(() => {
           router.push('/dashboard');
         }, 1500);
       }
     } catch (err) {
-      setError('An unexpected error occurred. Please try again.');
+      setError(
+        t('landing.checkout.page.unexpectedError') ||
+          'An unexpected error occurred. Please try again.'
+      );
       setIsProcessing(false);
     }
   };
@@ -114,10 +126,12 @@ function CheckoutForm({ tier, clientSecret, amount }: CheckoutFormProps) {
         {isProcessing ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            Processing...
+            <span suppressHydrationWarning>
+              {t('landing.checkout.page.processing') || 'Processing...'}
+            </span>
           </>
         ) : (
-          `Pay $${amount.toLocaleString()}`
+          `${t('landing.checkout.page.pay') || 'Pay'} $${amount.toLocaleString()}`
         )}
       </Button>
     </form>
@@ -148,7 +162,10 @@ function CheckoutContent() {
 
     // Validate tier
     if (!tierParam || !isValidTier(tierParam)) {
-      setError('Invalid subscription tier. Please select a valid plan.');
+      setError(
+        t('landing.checkout.page.invalidTier') ||
+          'Invalid subscription tier. Please select a valid plan.'
+      );
       setLoading(false);
       return;
     }
@@ -199,7 +216,9 @@ function CheckoutContent() {
         <div className="text-center">
           <Loader2 className="h-12 w-12 animate-spin mx-auto mb-4" style={{ color: '#ff4538' }} />
           <p className="text-lg" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
-            Loading checkout...
+            <span suppressHydrationWarning>
+              {t('landing.checkout.page.loading') || 'Loading checkout...'}
+            </span>
           </p>
         </div>
       </div>
@@ -221,7 +240,7 @@ function CheckoutContent() {
         >
           <CardContent className="p-6 text-center">
             <p className="text-lg mb-4" style={{ color: '#ff4538' }}>
-              {error || 'Invalid tier'}
+              {error || t('landing.checkout.page.invalidTier') || 'Invalid tier'}
             </p>
             <Button
               asChild
@@ -232,7 +251,11 @@ function CheckoutContent() {
                 backgroundColor: 'transparent',
               }}
             >
-              <Link href="/">Return to Home</Link>
+              <Link href="/">
+                <span suppressHydrationWarning>
+                  {t('landing.checkout.page.returnToHome') || 'Return to Home'}
+                </span>
+              </Link>
             </Button>
           </CardContent>
         </Card>
@@ -253,7 +276,9 @@ function CheckoutContent() {
         <div className="text-center">
           <Loader2 className="h-12 w-12 animate-spin mx-auto mb-4" style={{ color: '#ff4538' }} />
           <p className="text-lg" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
-            Initializing payment...
+            <span suppressHydrationWarning>
+              {t('landing.checkout.page.initializing') || 'Initializing payment...'}
+            </span>
           </p>
         </div>
       </div>
@@ -279,7 +304,9 @@ function CheckoutContent() {
           >
             <Link href="/">
               <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Home
+              <span suppressHydrationWarning>
+                {t('landing.checkout.page.backToHome') || 'Back to Home'}
+              </span>
             </Link>
           </Button>
 
@@ -292,15 +319,27 @@ function CheckoutContent() {
               }}
             >
               <CardHeader>
-                <CardTitle style={{ color: '#ffffff' }}>Order Summary</CardTitle>
+                <CardTitle style={{ color: '#ffffff' }}>
+                  <span suppressHydrationWarning>
+                    {t('landing.checkout.page.orderSummary') || 'Order Summary'}
+                  </span>
+                </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex justify-between items-center">
-                  <span style={{ color: 'rgba(255, 255, 255, 0.7)' }}>Plan:</span>
+                  <span style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+                    <span suppressHydrationWarning>
+                      {t('landing.checkout.page.plan') || 'Plan:'}
+                    </span>
+                  </span>
                   <span style={{ color: '#ffffff', fontWeight: 'bold' }}>{tierName}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span style={{ color: 'rgba(255, 255, 255, 0.7)' }}>Amount:</span>
+                  <span style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+                    <span suppressHydrationWarning>
+                      {t('landing.checkout.page.amount') || 'Amount:'}
+                    </span>
+                  </span>
                   <span style={{ color: '#ffffff', fontWeight: 'bold' }}>
                     ${tierPrice.toLocaleString()}
                   </span>
@@ -309,7 +348,11 @@ function CheckoutContent() {
                   className="flex justify-between items-center pt-4 border-t"
                   style={{ borderColor: 'rgba(255, 255, 255, 0.1)' }}
                 >
-                  <span style={{ color: '#ffffff', fontWeight: 'bold' }}>Total:</span>
+                  <span style={{ color: '#ffffff', fontWeight: 'bold' }}>
+                    <span suppressHydrationWarning>
+                      {t('landing.checkout.page.total') || 'Total:'}
+                    </span>
+                  </span>
                   <span style={{ color: '#ff4538', fontSize: '1.5rem', fontWeight: 'bold' }}>
                     ${tierPrice.toLocaleString()}
                   </span>
@@ -323,8 +366,10 @@ function CheckoutContent() {
                     style={{ color: '#ff4538' }}
                   />
                   <p className="text-sm" style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
-                    This is a one-time payment. You'll have full access to the dashboard after
-                    payment.
+                    <span suppressHydrationWarning>
+                      {t('landing.checkout.page.oneTimePayment') ||
+                        "This is a one-time payment. You'll have full access to the dashboard after payment."}
+                    </span>
                   </p>
                 </div>
               </CardContent>
@@ -338,9 +383,15 @@ function CheckoutContent() {
               }}
             >
               <CardHeader>
-                <CardTitle style={{ color: '#ffffff' }}>Payment Details</CardTitle>
+                <CardTitle style={{ color: '#ffffff' }}>
+                  <span suppressHydrationWarning>
+                    {t('landing.checkout.page.paymentDetails') || 'Payment Details'}
+                  </span>
+                </CardTitle>
                 <CardDescription style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
-                  Secure payment powered by Stripe
+                  <span suppressHydrationWarning>
+                    {t('landing.checkout.page.securePayment') || 'Secure payment powered by Stripe'}
+                  </span>
                 </CardDescription>
               </CardHeader>
               <CardContent>

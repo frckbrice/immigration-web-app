@@ -10,6 +10,7 @@ import { logger } from '@/lib/utils/logger';
  */
 export async function markMessageAsDelivered(chatRoomId: string, messageId: string): Promise<void> {
   try {
+    if (!database) return;
     const messageRef = ref(database, `chats/${chatRoomId}/messages/${messageId}`);
 
     await update(messageRef, {
@@ -33,6 +34,7 @@ export async function markMessageAsRead(
   userId: string
 ): Promise<void> {
   try {
+    if (!database) return;
     const messageRef = ref(database, `chats/${chatRoomId}/messages/${messageId}`);
 
     // Get message to verify recipient
@@ -71,6 +73,7 @@ export async function markMessageAsRead(
  */
 export async function markAllMessagesAsRead(chatRoomId: string, userId: string): Promise<void> {
   try {
+    if (!database) return;
     const messagesRef = ref(database, `chats/${chatRoomId}/messages`);
     const snapshot = await get(messagesRef);
 
@@ -93,7 +96,7 @@ export async function markAllMessagesAsRead(chatRoomId: string, userId: string):
       }
     });
 
-    if (Object.keys(updates).length > 0) {
+    if (Object.keys(updates).length > 0 && database) {
       await update(ref(database), updates);
       logger.info('Marked all messages as read', {
         chatRoomId,
@@ -112,6 +115,7 @@ export async function markAllMessagesAsRead(chatRoomId: string, userId: string):
  */
 export async function getUnreadCount(chatRoomId: string, userId: string): Promise<number> {
   try {
+    if (!database) return 0;
     const messagesRef = ref(database, `chats/${chatRoomId}/messages`);
     const snapshot = await get(messagesRef);
 

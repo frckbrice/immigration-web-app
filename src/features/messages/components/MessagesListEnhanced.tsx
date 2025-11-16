@@ -98,11 +98,15 @@ export function MessagesList({
 
   // Track Firebase UID (may change on auth state changes)
   const [firebaseUserId, setFirebaseUserId] = useState<string | null>(
-    () => auth.currentUser?.uid || null
+    () => auth?.currentUser?.uid || null
   );
 
   // Update Firebase UID when auth state changes
   useEffect(() => {
+    if (!auth) {
+      logger.error('Firebase Auth is not initialized');
+      return;
+    }
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setFirebaseUserId(user?.uid || null);
     });

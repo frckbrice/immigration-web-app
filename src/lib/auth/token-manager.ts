@@ -13,6 +13,10 @@ import { logger } from '@/lib/utils/logger';
  * @returns Firebase ID token or null if not authenticated
  */
 export async function getFreshToken(forceRefresh = false): Promise<string | null> {
+  if (!auth) {
+    logger.warn('Firebase Auth is not initialized');
+    return null;
+  }
   const user = auth.currentUser;
 
   if (!user) {
@@ -37,7 +41,7 @@ export async function getFreshToken(forceRefresh = false): Promise<string | null
  * @returns true if Firebase user is authenticated
  */
 export function isAuthenticated(): boolean {
-  return auth.currentUser !== null;
+  return auth !== null && auth.currentUser !== null;
 }
 
 /**
@@ -45,7 +49,7 @@ export function isAuthenticated(): boolean {
  * @returns Firebase UID or null
  */
 export function getCurrentUserId(): string | null {
-  return auth.currentUser?.uid || null;
+  return auth?.currentUser?.uid || null;
 }
 
 /**
@@ -53,7 +57,7 @@ export function getCurrentUserId(): string | null {
  * @returns User email or null
  */
 export function getCurrentUserEmail(): string | null {
-  return auth.currentUser?.email || null;
+  return auth?.currentUser?.email || null;
 }
 
 /**

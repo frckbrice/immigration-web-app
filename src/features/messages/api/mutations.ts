@@ -22,6 +22,12 @@ export function useSendMessage() {
   return useMutation({
     mutationFn: async (data: SendMessageInput) => {
       try {
+        // Ensure Firebase auth is initialized
+        if (!auth) {
+          logger.error('Firebase Auth is not initialized');
+          throw new Error('Authentication service unavailable. Please refresh and try again.');
+        }
+
         // Debug: Log authentication state
         logger.info('Attempting to send message - auth check', {
           isAuthenticated,
@@ -56,7 +62,7 @@ export function useSendMessage() {
 
         // CRITICAL: Get Firebase UID from authenticated Firebase user
         // Firebase rules validate against auth.uid, not PostgreSQL UUIDs
-        const firebaseUid = auth.currentUser!.uid;
+        const firebaseUid = auth.currentUser.uid;
 
         logger.info('Using Firebase UID for message sending', {
           firebaseUid: firebaseUid.substring(0, 8) + '...',
