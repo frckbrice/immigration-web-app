@@ -1,6 +1,7 @@
 'use client';
 
 import { useTranslation } from 'react-i18next';
+import Link from 'next/link';
 import { GraduationCap, Briefcase, Users, Plane, ArrowRight } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -96,10 +97,14 @@ export function Services() {
                   <CardDescription className="text-base leading-relaxed">
                     <span suppressHydrationWarning>{service.description}</span>
                   </CardDescription>
-                  <Button variant="ghost" className="mt-4 px-0 group-hover:gap-2 transition-all">
-                    <span suppressHydrationWarning>{t('landing.services.learnMore')}</span>
-                    <ArrowRight className="h-4 w-4 ml-1 group-hover:translate-x-1 transition-transform" />
-                  </Button>
+                  <Link
+                    href={`/services/${index === 0 ? 'student-visa' : index === 1 ? 'work-permit' : index === 2 ? 'family-reunification' : 'business-visa'}`}
+                  >
+                    <Button variant="ghost" className="mt-4 px-0 group-hover:gap-2 transition-all">
+                      <span suppressHydrationWarning>{t('landing.services.learnMore')}</span>
+                      <ArrowRight className="h-4 w-4 ml-1 group-hover:translate-x-1 transition-transform" />
+                    </Button>
+                  </Link>
                 </CardContent>
               </Card>
             );
@@ -108,9 +113,11 @@ export function Services() {
 
         {/* CTA */}
         <div className="text-center">
-          <Button size="lg" variant="outline" className="text-lg px-8 h-12 cursor-not-allowed">
-            <span suppressHydrationWarning>{t('landing.services.viewAll')}</span>
-            <ArrowRight className="ml-2 h-5 w-5" />
+          <Button size="lg" variant="outline" className="text-lg px-8 h-12" asChild>
+            <Link href="/services">
+              <span suppressHydrationWarning>{t('landing.services.viewAll')}</span>
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </Link>
           </Button>
         </div>
       </div>

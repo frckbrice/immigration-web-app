@@ -90,13 +90,21 @@ export function LoginForm() {
       !mounted || isLoading ? t('auth.loading.authenticating') : t('auth.loading.redirecting');
     return (
       <div className="w-full max-w-md mx-auto">
-        <Card>
+        <Card
+          style={{
+            backgroundColor: 'rgba(255, 255, 255, 0.03)',
+            borderColor: 'rgba(255, 255, 255, 0.1)',
+          }}
+        >
           <CardContent className="p-12 flex flex-col items-center justify-center space-y-4">
             <div
-              className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"
+              className="animate-spin rounded-full h-8 w-8 border-b-2"
+              style={{ borderColor: '#ff4538' }}
               aria-label={statusLabel}
             />
-            <p className="text-sm text-muted-foreground">{statusLabel}</p>
+            <p className="text-sm" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+              {statusLabel}
+            </p>
           </CardContent>
         </Card>
       </div>
@@ -119,17 +127,40 @@ export function LoginForm() {
       />
 
       <div className="w-full max-w-md mx-auto">
-        <Card>
+        <Card
+          style={{
+            backgroundColor: 'rgba(255, 255, 255, 0.03)',
+            borderColor: 'rgba(255, 255, 255, 0.1)',
+            backdropFilter: 'blur(10px)',
+          }}
+        >
           <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl text-center">{t('auth.welcomeBack')}</CardTitle>
-            <CardDescription className="text-center">{t('auth.signInMessage')}</CardDescription>
+            <CardTitle className="text-2xl text-center" style={{ color: '#ffffff' }}>
+              {t('auth.welcomeBack')}
+            </CardTitle>
+            <CardDescription className="text-center" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+              {t('auth.signInMessage')}
+            </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             {/* Google Sign-In */}
             <Button
               type="button"
               variant="outline"
-              className="w-full"
+              className="w-full transition-all duration-200"
+              style={{
+                borderColor: 'rgba(255, 255, 255, 0.2)',
+                color: 'rgba(255, 255, 255, 0.8)',
+                backgroundColor: 'rgba(255, 255, 255, 0.05)',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = '#ff4538';
+                e.currentTarget.style.backgroundColor = 'rgba(255, 69, 56, 0.1)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.05)';
+              }}
               onClick={handleGoogleSignIn}
               disabled={googleSignInMutation.isPending}
             >
@@ -156,10 +187,16 @@ export function LoginForm() {
 
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
-                <Separator />
+                <div
+                  style={{ borderTop: '1px solid rgba(255, 255, 255, 0.1)' }}
+                  className="w-full"
+                />
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-card px-2 text-muted-foreground">
+                <span
+                  className="px-2"
+                  style={{ backgroundColor: '#091a24', color: 'rgba(255, 255, 255, 0.7)' }}
+                >
                   {t('auth.orContinueWithEmail')}
                 </span>
               </div>
@@ -173,9 +210,24 @@ export function LoginForm() {
                   name="email"
                   render={({ field }: { field: ControllerRenderProps<LoginInput, 'email'> }) => (
                     <FormItem>
-                      <FormLabel>{t('auth.email')}</FormLabel>
+                      <FormLabel style={{ color: '#ffffff' }}>{t('auth.email')}</FormLabel>
                       <FormControl>
-                        <Input type="email" placeholder={t('auth.emailPlaceholder')} {...field} />
+                        <Input
+                          type="email"
+                          placeholder={t('auth.emailPlaceholder')}
+                          {...field}
+                          style={{
+                            backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                            borderColor: 'rgba(255, 255, 255, 0.2)',
+                            color: '#ffffff',
+                          }}
+                          onFocus={(e) => {
+                            e.currentTarget.style.borderColor = '#ff4538';
+                          }}
+                          onBlur={(e) => {
+                            e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                          }}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -188,25 +240,37 @@ export function LoginForm() {
                   name="password"
                   render={({ field }: { field: ControllerRenderProps<LoginInput, 'password'> }) => (
                     <FormItem>
-                      <FormLabel>{t('auth.password')}</FormLabel>
+                      <FormLabel style={{ color: '#ffffff' }}>{t('auth.password')}</FormLabel>
                       <FormControl>
                         <div className="relative">
                           <Input
                             type={showPassword ? 'text' : 'password'}
                             placeholder="••••••••"
                             {...field}
+                            style={{
+                              backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                              borderColor: 'rgba(255, 255, 255, 0.2)',
+                              color: '#ffffff',
+                            }}
+                            onFocus={(e) => {
+                              e.currentTarget.style.borderColor = '#ff4538';
+                            }}
+                            onBlur={(e) => {
+                              e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                            }}
                           />
                           <Button
                             type="button"
                             variant="ghost"
                             size="sm"
                             className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                            style={{ color: 'rgba(255, 255, 255, 0.7)' }}
                             onClick={() => setShowPassword(!showPassword)}
                           >
                             {showPassword ? (
-                              <EyeOff className="h-4 w-4 text-muted-foreground" />
+                              <EyeOff className="h-4 w-4" />
                             ) : (
-                              <Eye className="h-4 w-4 text-muted-foreground" />
+                              <Eye className="h-4 w-4" />
                             )}
                           </Button>
                         </div>
@@ -235,13 +299,26 @@ export function LoginForm() {
                             className="rounded border-input text-primary focus:ring-primary"
                           />
                         </FormControl>
-                        <Label className="text-sm font-normal cursor-pointer">
+                        <Label
+                          className="text-sm font-normal cursor-pointer"
+                          style={{ color: 'rgba(255, 255, 255, 0.8)' }}
+                        >
                           {t('auth.rememberMe')}
                         </Label>
                       </FormItem>
                     )}
                   />
-                  <Link href="/forgot-password" className="text-sm text-primary hover:underline">
+                  <Link
+                    href="/forgot-password"
+                    className="text-sm transition-colors hover:underline"
+                    style={{ color: '#ff4538' }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.color = '#ff5c50';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.color = '#ff4538';
+                    }}
+                  >
                     {t('auth.forgotPassword')}
                   </Link>
                 </div>
@@ -249,7 +326,18 @@ export function LoginForm() {
                 {/* Submit Button */}
                 <Button
                   type="submit"
-                  className="w-full"
+                  className="w-full text-white"
+                  style={{ backgroundColor: '#ff4538' }}
+                  onMouseEnter={(e) => {
+                    if (!form.formState.isSubmitting && !loginMutation.isPending) {
+                      e.currentTarget.style.backgroundColor = '#ff5c50';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!form.formState.isSubmitting && !loginMutation.isPending) {
+                      e.currentTarget.style.backgroundColor = '#ff4538';
+                    }
+                  }}
                   disabled={form.formState.isSubmitting || loginMutation.isPending}
                 >
                   {loginMutation.isPending ? t('auth.signingIn') : t('auth.signIn')}
@@ -258,9 +346,19 @@ export function LoginForm() {
             </Form>
           </CardContent>
           <CardFooter>
-            <p className="text-sm text-center text-muted-foreground w-full">
+            <p className="text-sm text-center w-full" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
               {t('auth.dontHaveAccount')}{' '}
-              <Link href="/register" className="text-primary hover:underline font-medium">
+              <Link
+                href="/register"
+                className="transition-colors hover:underline font-medium"
+                style={{ color: '#ff4538' }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.color = '#ff5c50';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.color = '#ff4538';
+                }}
+              >
                 {t('auth.signUp')}
               </Link>
             </p>

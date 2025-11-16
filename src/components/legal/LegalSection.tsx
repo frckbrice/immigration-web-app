@@ -19,12 +19,17 @@ export function LegalSection({
   return (
     <section className="mb-8">
       <div className="flex items-center gap-3 mb-4">
-        <div className={`w-10 h-10 rounded-lg ${iconBgColor} flex items-center justify-center`}>
-          <Icon className={`h-5 w-5 ${iconColor}`} />
+        <div
+          className="w-10 h-10 rounded-lg flex items-center justify-center"
+          style={{ backgroundColor: 'rgba(255, 69, 56, 0.1)' }}
+        >
+          <Icon className="h-5 w-5" style={{ color: '#ff4538' }} />
         </div>
-        <h2 className="text-2xl font-semibold">{title}</h2>
+        <h2 className="text-2xl font-semibold" style={{ color: '#ffffff' }}>
+          {title}
+        </h2>
       </div>
-      {children}
+      <div style={{ color: 'rgba(255, 255, 255, 0.8)' }}>{children}</div>
     </section>
   );
 }

@@ -44,7 +44,7 @@ const handler = asyncHandler(async (request: NextRequest) => {
     where: whereClause,
     orderBy: { scheduledAt: 'asc' },
     include: {
-      case: {
+      Case: {
         select: {
           id: true,
           referenceNumber: true,

@@ -41,6 +41,8 @@ import {
 } from '@/lib/utils/role-permissions';
 import { useRealtimeNotifications } from '@/features/notifications/hooks/useRealtimeNotifications';
 import { useUnreadReceivedEmails } from '@/features/messages/hooks/useUnreadReceivedEmails';
+import { apiClient } from '@/lib/utils/axios';
+import { logger } from '@/lib/utils/logger';
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   const router = useRouter();
@@ -68,6 +70,42 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
 
   // Get unread received emails count for badge (agents/admins only)
   const { data: unreadReceivedEmailsCount } = useUnreadReceivedEmails();
+
+  // Check payment status for CLIENT users
+  useEffect(() => {
+    if (!isLoading && isAuthenticated && user) {
+      // AGENT and ADMIN bypass payment requirement
+      if (user.role === 'AGENT' || user.role === 'ADMIN') {
+        return;
+      }
+
+      // Prevent redirect loops - don't check if already on checkout page
+      if (pathname === '/checkout' || pathname.startsWith('/checkout/')) {
+        return;
+      }
+
+      // Check payment status for CLIENT users
+      const checkPaymentStatus = async () => {
+        try {
+          const response = await apiClient.get('/api/payments/status');
+          if (response.data.success) {
+            const paymentData = response.data.data;
+            if (!paymentData.hasPaid && !paymentData.bypassed) {
+              // Only redirect if not already on checkout page
+              if (pathname !== '/checkout' && !pathname.startsWith('/checkout/')) {
+                router.push('/checkout');
+              }
+            }
+          }
+        } catch (error) {
+          logger.error('Failed to check payment status', error);
+          // On error, allow access (fail open) - payment check can be retried
+        }
+      };
+
+      checkPaymentStatus();
+    }
+  }, [isLoading, isAuthenticated, user, router, pathname]);
 
   // Show loading state while checking authentication
   if (isLoading) {

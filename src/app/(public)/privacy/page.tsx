@@ -28,13 +28,20 @@ export default function PrivacyPage() {
           <div className="h-4 bg-muted rounded w-5/6"></div>
         </div>
       ) : content ? (
-        <div className="prose dark:prose-invert max-w-none mb-10 whitespace-pre-wrap">
+        <div
+          className="prose dark:prose-invert max-w-none mb-10 whitespace-pre-wrap"
+          style={{ color: 'rgba(255, 255, 255, 0.8)' }}
+        >
           {content}
         </div>
       ) : (
         <>
-          <p className="text-lg text-muted-foreground mb-6">{t('legal.privacy.description')}</p>
-          <p className="mb-6">{t('legal.privacy.intro')}</p>
+          <p className="text-lg mb-6" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+            {t('legal.privacy.description')}
+          </p>
+          <p className="mb-6" style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
+            {t('legal.privacy.intro')}
+          </p>
 
           <LegalSection
             icon={Database}
@@ -178,8 +185,16 @@ export default function PrivacyPage() {
                 {t('legal.privacy.dataSharing.businessTransfers').split(':')[1]}
               </li>
             </ul>
-            <Card className="mt-4 p-4 bg-green-50 dark:bg-green-950/20 border-green-200 dark:border-green-900">
-              <p className="text-sm">✓ {t('legal.privacy.dataSharing.noSelling')}</p>
+            <Card
+              className="mt-4 p-4 border-2"
+              style={{
+                backgroundColor: 'rgba(255, 255, 255, 0.03)',
+                borderColor: 'rgba(255, 69, 56, 0.3)',
+              }}
+            >
+              <p className="text-sm" style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
+                ✓ {t('legal.privacy.dataSharing.noSelling')}
+              </p>
             </Card>
           </LegalSection>
 

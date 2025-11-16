@@ -41,7 +41,23 @@ export function LanguageSwitcher() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="sm" className="gap-2">
+        <Button
+          variant="ghost"
+          size="sm"
+          className="gap-2 transition-all duration-200"
+          style={{
+            color: 'rgba(255, 255, 255, 0.8)',
+            backgroundColor: 'transparent',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.color = '#ff4538';
+            e.currentTarget.style.backgroundColor = 'rgba(255, 69, 56, 0.1)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.color = 'rgba(255, 255, 255, 0.8)';
+            e.currentTarget.style.backgroundColor = 'transparent';
+          }}
+        >
           <Globe className="h-4 w-4" />
           {mounted && (
             <span className="text-sm font-medium">{currentLanguage.code.toUpperCase()}</span>

@@ -20,6 +20,7 @@ import { User } from '@/lib/types';
 import { LoginInput, RegisterInput } from '../schemas/auth.schema';
 import { toast } from 'sonner';
 import { logger } from '@/lib/utils/logger';
+import { sanitizeMessage, sanitizeUserInput, sanitizeApiError } from '@/lib/utils/sanitize';
 
 // API Error Type
 interface ApiError {
@@ -41,6 +42,13 @@ export const useRegister = () => {
 
   return useMutation({
     mutationFn: async (data: RegisterInput): Promise<{ user: User; token: string }> => {
+      // Ensure auth is initialized
+      if (!auth) {
+        throw new Error(
+          'Firebase Auth is not initialized. Please check your Firebase configuration.'
+        );
+      }
+
       // Ensure persistence is set before registration
       await setPersistence(auth, browserLocalPersistence);
 
@@ -69,10 +77,13 @@ export const useRegister = () => {
         accessToken: data.token,
         refreshToken: data.token, // Firebase uses the same token
       });
-      toast.success('Registration successful! Welcome to Patrick Travel Services.');
+      toast.success(
+        sanitizeMessage('Registration successful! Welcome to Patrick Travel Services.')
+      );
 
-      // Redirect immediately - overlay will handle the visual feedback
-      router.push('/dashboard');
+      // New users need to pay before accessing dashboard
+      // Redirect to checkout page
+      router.push('/checkout');
     },
     onError: (error: ApiError) => {
       // Handle errors from backend
@@ -109,7 +120,8 @@ export const useRegister = () => {
         message,
       });
 
-      toast.error(message);
+      // Sanitize error message before displaying to user
+      toast.error(sanitizeApiError(error));
     },
   });
 };
@@ -121,6 +133,13 @@ export const useLogin = () => {
 
   return useMutation({
     mutationFn: async (data: LoginInput): Promise<{ user: User; token: string }> => {
+      // Ensure auth is initialized
+      if (!auth) {
+        throw new Error(
+          'Firebase Auth is not initialized. Please check your Firebase configuration.'
+        );
+      }
+
       // Ensure persistence is set before signing in
       await setPersistence(auth, browserLocalPersistence);
 
@@ -155,15 +174,42 @@ export const useLogin = () => {
         token: refreshedToken, // Use refreshed token with updated claims
       };
     },
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       setAuth({
         user: data.user,
         accessToken: data.token,
         refreshToken: data.token,
       });
-      toast.success(`Welcome back, ${data.user.firstName}!`);
+      toast.success(
+        sanitizeMessage(`Welcome back, ${sanitizeUserInput(data.user.firstName || 'User')}!`)
+      );
 
-      // Redirect immediately - overlay will handle the visual feedback
+      // Check payment status for CLIENT users before redirecting
+      // AGENT and ADMIN bypass payment requirement
+      if (data.user.role === 'CLIENT') {
+        try {
+          const paymentResponse = await apiClient.get('/api/payments/status', {
+            headers: {
+              Authorization: `Bearer ${data.token}`,
+            },
+          });
+
+          if (paymentResponse.data.success) {
+            const paymentData = paymentResponse.data.data;
+            if (!paymentData.hasPaid && !paymentData.bypassed) {
+              // Redirect to checkout if not paid
+              router.push('/checkout');
+              return;
+            }
+          }
+        } catch (error) {
+          logger.error('Failed to check payment status after login', error);
+          // On error, allow access to dashboard (fail open) - payment check will retry in dashboard layout
+        }
+      }
+
+      // Redirect to dashboard - overlay will handle the visual feedback
+      // Dashboard layout will also check payment status as a safety measure
       router.push('/dashboard');
     },
     onError: (error: ApiError) => {
@@ -181,7 +227,8 @@ export const useLogin = () => {
         message = error.response.data.error;
       }
 
-      toast.error(message);
+      // Sanitize error message before displaying to user
+      toast.error(sanitizeApiError(error));
     },
   });
 };
@@ -194,6 +241,13 @@ export const useLogout = () => {
 
   return useMutation({
     mutationFn: async () => {
+      // Ensure auth is initialized
+      if (!auth) {
+        throw new Error(
+          'Firebase Auth is not initialized. Please check your Firebase configuration.'
+        );
+      }
+
       // Sign out from Firebase
       await signOut(auth);
 
@@ -208,7 +262,7 @@ export const useLogout = () => {
     onSuccess: () => {
       logout();
       queryClient.clear(); // Clear all queries
-      toast.success('Logged out successfully');
+      toast.success(sanitizeMessage('Logged out successfully'));
       router.replace('/');
     },
     onError: () => {
@@ -227,6 +281,13 @@ export const useCurrentUser = () => {
   return useQuery({
     queryKey: ['currentUser'],
     queryFn: async (): Promise<User> => {
+      // Ensure auth is initialized
+      if (!auth) {
+        throw new Error(
+          'Firebase Auth is not initialized. Please check your Firebase configuration.'
+        );
+      }
+
       // Get current Firebase user
       const firebaseUser = auth.currentUser;
 
@@ -254,11 +315,17 @@ export const useCurrentUser = () => {
 
 // Hook to get current Firebase user
 export const useFirebaseUser = (): FirebaseUser | null => {
+  if (!auth) {
+    return null;
+  }
   return auth.currentUser;
 };
 
 // Hook to get Firebase ID token
 export const useFirebaseToken = async (): Promise<string | null> => {
+  if (!auth) {
+    return null;
+  }
   const user = auth.currentUser;
   if (!user) return null;
 
@@ -277,6 +344,13 @@ export const useGoogleSignIn = () => {
 
   return useMutation({
     mutationFn: async (): Promise<{ user: User; token: string; isNewUser: boolean }> => {
+      // Ensure auth is initialized
+      if (!auth) {
+        throw new Error(
+          'Firebase Auth is not initialized. Please check your Firebase configuration.'
+        );
+      }
+
       // Ensure persistence is set before Google sign-in
       await setPersistence(auth, browserLocalPersistence);
 
@@ -333,9 +407,11 @@ export const useGoogleSignIn = () => {
       });
 
       if (data.isNewUser) {
-        toast.success('Welcome to Patrick Travel Services!');
+        toast.success(sanitizeMessage('Welcome to Patrick Travel Services!'));
       } else {
-        toast.success(`Welcome back, ${data.user.firstName}!`);
+        toast.success(
+          sanitizeMessage(`Welcome back, ${sanitizeUserInput(data.user.firstName || 'User')}!`)
+        );
       }
 
       // Redirect immediately - overlay will handle the visual feedback
@@ -352,7 +428,8 @@ export const useGoogleSignIn = () => {
         message = error.response.data.error;
       }
 
-      toast.error(message);
+      // Sanitize error message before displaying to user
+      toast.error(sanitizeApiError(error));
     },
   });
 };

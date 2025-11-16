@@ -6,7 +6,6 @@ import { useState, memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Menu, X, LayoutDashboard } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { ThemeSwitcher } from './ThemeSwitcher';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { useAuthStore } from '@/features/auth/store';
 
@@ -18,20 +17,26 @@ export const Navbar = memo(function Navbar() {
 
   // PERFORMANCE: Direct access to avoid memoization dependency issues
   const navigation = [
-    { nameKey: 'landing.footer.services', href: '/#services' },
+    { nameKey: 'landing.footer.services', href: '/services' },
     { nameKey: 'landing.testimonials.title', href: '/#testimonials' },
-    { nameKey: 'landing.contact.title', href: '/#contact' },
+    { nameKey: 'landing.contact.title', href: '/contact' },
     { nameKey: 'landing.footer.about', href: '/about' },
   ];
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-50 w-full border-b border-transparent dark:border-transparent bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <nav
+        className="fixed top-0 left-0 right-0 z-50 w-full border-b"
+        style={{
+          backgroundColor: '#091a24',
+          borderColor: 'rgba(255, 255, 255, 0.1)',
+        }}
+      >
         <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex h-16 items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3">
             {/* PERFORMANCE: Priority loading for logo (above the fold) */}
-            <div className="relative w-10 h-10 sm:w-12 sm:h-12 shrink-0 rounded-lg bg-white/60 dark:bg-white p-1.5 flex items-center justify-center overflow-hidden">
+            <div className="relative w-10 h-10 sm:w-12 sm:h-12 shrink-0 rounded-lg bg-white/60 p-1.5 flex items-center justify-center overflow-hidden">
               <Image
                 src="/images/app-logo.png"
                 alt="Patrick Travel Service"
@@ -41,7 +46,7 @@ export const Navbar = memo(function Navbar() {
                 priority
               />
             </div>
-            <span className="font-bold text-primary text-xl hidden sm:inline-block">
+            <span className="font-bold text-xl hidden sm:inline-block" style={{ color: '#ff4538' }}>
               Patrick Travel Service
             </span>
           </Link>
@@ -52,7 +57,14 @@ export const Navbar = memo(function Navbar() {
               <Link
                 key={item.nameKey}
                 href={item.href}
-                className="text-md font-medium text-muted-foreground hover:text-primary transition-colors"
+                className="text-md font-medium transition-colors"
+                style={{ color: 'rgba(255, 255, 255, 0.8)' }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.color = '#ff4538';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.color = 'rgba(255, 255, 255, 0.8)';
+                }}
               >
                 <span suppressHydrationWarning>{t(item.nameKey)}</span>
               </Link>
@@ -63,13 +75,22 @@ export const Navbar = memo(function Navbar() {
           <div className="flex items-center space-x-4">
             <div className="hidden md:flex items-center space-x-2">
               <LanguageSwitcher />
-              <ThemeSwitcher />
             </div>
 
             {/* SESSION AWARE: Show different buttons based on auth status */}
             <div className="hidden md:flex items-center space-x-2">
               {isAuthenticated ? (
-                <Button asChild>
+                <Button
+                  className="text-white"
+                  style={{ backgroundColor: '#ff4538' }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = '#ff5c50';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = '#ff4538';
+                  }}
+                  asChild
+                >
                   <Link href="/dashboard">
                     <LayoutDashboard className="mr-2 h-4 w-4" />
                     <span suppressHydrationWarning>{t('common.dashboard') || 'Dashboard'}</span>
@@ -77,12 +98,41 @@ export const Navbar = memo(function Navbar() {
                 </Button>
               ) : (
                 <>
-                  <Button variant="ghost" asChild>
+                  <Button
+                    variant="outline"
+                    className="transition-colors"
+                    style={{
+                      color: 'rgba(255, 255, 255, 0.8)',
+                      borderColor: 'rgba(255, 255, 255, 0.2)',
+                      backgroundColor: 'transparent',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.color = '#ff4538';
+                      e.currentTarget.style.borderColor = '#ff4538';
+                      e.currentTarget.style.backgroundColor = 'rgba(255, 69, 56, 0.1)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.color = 'rgba(255, 255, 255, 0.8)';
+                      e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                      e.currentTarget.style.backgroundColor = 'transparent';
+                    }}
+                    asChild
+                  >
                     <Link href="/login">
                       <span suppressHydrationWarning>{t('auth.login')}</span>
                     </Link>
                   </Button>
-                  <Button asChild>
+                  <Button
+                    className="text-white"
+                    style={{ backgroundColor: '#ff4538' }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = '#ff5c50';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = '#ff4538';
+                    }}
+                    asChild
+                  >
                     <Link href="/register">
                       <span suppressHydrationWarning>{t('auth.signUp')}</span>
                     </Link>
@@ -96,6 +146,15 @@ export const Navbar = memo(function Navbar() {
               variant="ghost"
               size="icon"
               className="md:hidden"
+              style={{ color: '#ffffff' }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.color = '#ff4538';
+                e.currentTarget.style.backgroundColor = 'rgba(255, 69, 56, 0.1)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.color = '#ffffff';
+                e.currentTarget.style.backgroundColor = 'transparent';
+              }}
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
               {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -105,13 +164,26 @@ export const Navbar = memo(function Navbar() {
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="md:hidden border-t">
+          <div
+            className="md:hidden border-t"
+            style={{
+              backgroundColor: '#091a24',
+              borderColor: 'rgba(255, 255, 255, 0.1)',
+            }}
+          >
             <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 space-y-3">
               {navigation.map((item) => (
                 <Link
                   key={item.nameKey}
                   href={item.href}
-                  className="block py-2 text-md font-medium text-muted-foreground hover:text-primary transition-colors"
+                  className="block py-2 text-md font-medium transition-colors"
+                  style={{ color: 'rgba(255, 255, 255, 0.8)' }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.color = '#ff4538';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.color = 'rgba(255, 255, 255, 0.8)';
+                  }}
                   onClick={() => setIsMenuOpen(false)}
                 >
                   <span suppressHydrationWarning>{t(item.nameKey)}</span>
@@ -119,12 +191,21 @@ export const Navbar = memo(function Navbar() {
               ))}
               <div className="flex items-center space-x-2 pt-2">
                 <LanguageSwitcher />
-                <ThemeSwitcher />
               </div>
               {/* SESSION AWARE: Show different buttons for mobile */}
               <div className="flex flex-col space-y-2 pt-2">
                 {isAuthenticated ? (
-                  <Button className="w-full" asChild>
+                  <Button
+                    className="w-full text-white"
+                    style={{ backgroundColor: '#ff4538' }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = '#ff5c50';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = '#ff4538';
+                    }}
+                    asChild
+                  >
                     <Link href="/dashboard">
                       <LayoutDashboard className="mr-2 h-4 w-4" />
                       <span suppressHydrationWarning>{t('common.dashboard') || 'Dashboard'}</span>
@@ -132,12 +213,37 @@ export const Navbar = memo(function Navbar() {
                   </Button>
                 ) : (
                   <>
-                    <Button variant="outline" className="w-full" asChild>
+                    <Button
+                      variant="outline"
+                      className="w-full transition-colors"
+                      style={{
+                        borderColor: '#ff4538',
+                        color: '#ff4538',
+                        backgroundColor: 'transparent',
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = 'rgba(255, 69, 56, 0.1)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = 'transparent';
+                      }}
+                      asChild
+                    >
                       <Link href="/login">
                         <span suppressHydrationWarning>{t('auth.login')}</span>
                       </Link>
                     </Button>
-                    <Button className="w-full" asChild>
+                    <Button
+                      className="w-full text-white"
+                      style={{ backgroundColor: '#ff4538' }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = '#ff5c50';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = '#ff4538';
+                      }}
+                      asChild
+                    >
                       <Link href="/register">
                         <span suppressHydrationWarning>{t('auth.signUp')}</span>
                       </Link>

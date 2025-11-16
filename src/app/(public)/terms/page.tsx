@@ -37,12 +37,17 @@ export default function TermsPage() {
           <div className="h-4 bg-muted rounded w-5/6"></div>
         </div>
       ) : content ? (
-        <div className="prose dark:prose-invert max-w-none mb-10 whitespace-pre-wrap">
+        <div
+          className="prose dark:prose-invert max-w-none mb-10 whitespace-pre-wrap"
+          style={{ color: 'rgba(255, 255, 255, 0.8)' }}
+        >
           {content}
         </div>
       ) : (
         <>
-          <p className="text-lg text-muted-foreground mb-6">{t('legal.terms.description')}</p>
+          <p className="text-lg mb-6" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+            {t('legal.terms.description')}
+          </p>
 
           <LegalSection
             icon={FileText}
@@ -51,9 +56,16 @@ export default function TermsPage() {
             title={`1. ${t('legal.terms.acceptance.title')}`}
           >
             <p>{t('legal.terms.acceptance.desc')}</p>
-            <Card className="mt-4 p-4 bg-blue-50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-900">
-              <p className="text-sm">
-                <strong>Important:</strong> {t('legal.terms.acceptance.important')}
+            <Card
+              className="mt-4 p-4 border-2"
+              style={{
+                backgroundColor: 'rgba(255, 255, 255, 0.03)',
+                borderColor: 'rgba(255, 69, 56, 0.3)',
+              }}
+            >
+              <p className="text-sm" style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
+                <strong style={{ color: '#ffffff' }}>Important:</strong>{' '}
+                {t('legal.terms.acceptance.important')}
               </p>
             </Card>
           </LegalSection>
@@ -88,9 +100,16 @@ export default function TermsPage() {
               <li>{t('legal.terms.account.notify')}</li>
               <li>{t('legal.terms.account.noSharing')}</li>
             </ul>
-            <Card className="mt-4 p-4 bg-amber-50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-900">
-              <p className="text-sm">
-                <strong>⚠️ Security Notice:</strong> {t('legal.terms.account.securityNotice')}
+            <Card
+              className="mt-4 p-4 border-2"
+              style={{
+                backgroundColor: 'rgba(255, 255, 255, 0.03)',
+                borderColor: 'rgba(255, 69, 56, 0.3)',
+              }}
+            >
+              <p className="text-sm" style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
+                <strong style={{ color: '#ffffff' }}>⚠️ Security Notice:</strong>{' '}
+                {t('legal.terms.account.securityNotice')}
               </p>
             </Card>
           </LegalSection>
@@ -108,8 +127,16 @@ export default function TermsPage() {
               <li>{t('legal.terms.services.processingTimes')}</li>
               <li>{t('legal.terms.services.additionalDocs')}</li>
             </ul>
-            <Card className="mt-4 p-4 bg-slate-50 dark:bg-slate-900 border-2">
-              <p className="text-sm">{t('legal.terms.services.ourRole')}</p>
+            <Card
+              className="mt-4 p-4 border-2"
+              style={{
+                backgroundColor: 'rgba(255, 255, 255, 0.03)',
+                borderColor: 'rgba(255, 255, 255, 0.1)',
+              }}
+            >
+              <p className="text-sm" style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
+                {t('legal.terms.services.ourRole')}
+              </p>
             </Card>
           </LegalSection>
 
@@ -157,8 +184,16 @@ export default function TermsPage() {
               <li>{t('legal.terms.termination.harassing')}</li>
               <li>{t('legal.terms.termination.compromiseSecurity')}</li>
             </ul>
-            <Card className="mt-4 p-4 bg-blue-50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-900">
-              <p className="text-sm">{t('legal.terms.termination.dataRetention')}</p>
+            <Card
+              className="mt-4 p-4 border-2"
+              style={{
+                backgroundColor: 'rgba(255, 255, 255, 0.03)',
+                borderColor: 'rgba(255, 69, 56, 0.3)',
+              }}
+            >
+              <p className="text-sm" style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
+                {t('legal.terms.termination.dataRetention')}
+              </p>
             </Card>
           </LegalSection>
 
@@ -198,12 +233,20 @@ export default function TermsPage() {
             </div>
           </section>
 
-          <Card className="p-6 bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 border-2">
+          <Card
+            className="p-6 border-2"
+            style={{
+              backgroundColor: 'rgba(255, 255, 255, 0.03)',
+              borderColor: 'rgba(255, 255, 255, 0.1)',
+            }}
+          >
             <div className="flex items-start gap-4">
-              <FileText className="h-6 w-6 text-slate-700 dark:text-slate-300 flex-shrink-0 mt-1" />
+              <FileText className="h-6 w-6 flex-shrink-0 mt-1" style={{ color: '#ff4538' }} />
               <div>
-                <h3 className="font-semibold mb-2">{t('legal.terms.acknowledgment.title')}</h3>
-                <p className="text-sm text-muted-foreground">
+                <h3 className="font-semibold mb-2" style={{ color: '#ffffff' }}>
+                  {t('legal.terms.acknowledgment.title')}
+                </h3>
+                <p className="text-sm" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
                   {t('legal.terms.acknowledgment.desc')}
                 </p>
               </div>

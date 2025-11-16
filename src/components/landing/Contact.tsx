@@ -232,7 +232,7 @@ export function Contact() {
                         <FormControl>
                           <Input
                             type="tel"
-                            placeholder="+1 (234) 567-890"
+                            placeholder="+237600000000"
                             className="h-12"
                             {...field}
                           />

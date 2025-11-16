@@ -131,17 +131,40 @@ export function RegisterForm() {
       />
 
       <div className="w-full max-w-md mx-auto">
-        <Card>
+        <Card
+          style={{
+            backgroundColor: 'rgba(255, 255, 255, 0.03)',
+            borderColor: 'rgba(255, 255, 255, 0.1)',
+            backdropFilter: 'blur(10px)',
+          }}
+        >
           <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl text-center">{t('auth.createAccount')}</CardTitle>
-            <CardDescription className="text-center">{t('auth.signUpMessage')}</CardDescription>
+            <CardTitle className="text-2xl text-center" style={{ color: '#ffffff' }}>
+              {t('auth.createAccount')}
+            </CardTitle>
+            <CardDescription className="text-center" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+              {t('auth.signUpMessage')}
+            </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             {/* Google Sign-In */}
             <Button
               type="button"
               variant="outline"
-              className="w-full"
+              className="w-full transition-all duration-200"
+              style={{
+                borderColor: 'rgba(255, 255, 255, 0.2)',
+                color: 'rgba(255, 255, 255, 0.8)',
+                backgroundColor: 'rgba(255, 255, 255, 0.05)',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = '#ff4538';
+                e.currentTarget.style.backgroundColor = 'rgba(255, 69, 56, 0.1)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.05)';
+              }}
               onClick={handleGoogleSignIn}
               disabled={googleSignInMutation.isPending}
             >
@@ -165,10 +188,16 @@ export function RegisterForm() {
 
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
-                <Separator />
+                <div
+                  style={{ borderTop: '1px solid rgba(255, 255, 255, 0.1)' }}
+                  className="w-full"
+                />
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-card px-2 text-muted-foreground">
+                <span
+                  className="px-2"
+                  style={{ backgroundColor: '#091a24', color: 'rgba(255, 255, 255, 0.7)' }}
+                >
                   {t('auth.orContinueWithEmail')}
                 </span>
               </div>
@@ -182,9 +211,23 @@ export function RegisterForm() {
                   name="firstName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>{t('auth.firstName')}</FormLabel>
+                      <FormLabel style={{ color: '#ffffff' }}>{t('auth.firstName')}</FormLabel>
                       <FormControl>
-                        <Input placeholder={t('auth.placeholders.firstName')} {...field} />
+                        <Input
+                          placeholder={t('auth.placeholders.firstName')}
+                          {...field}
+                          style={{
+                            backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                            borderColor: 'rgba(255, 255, 255, 0.2)',
+                            color: '#ffffff',
+                          }}
+                          onFocus={(e) => {
+                            e.currentTarget.style.borderColor = '#ff4538';
+                          }}
+                          onBlur={(e) => {
+                            e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                          }}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -197,9 +240,23 @@ export function RegisterForm() {
                   name="lastName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>{t('auth.lastName')}</FormLabel>
+                      <FormLabel style={{ color: '#ffffff' }}>{t('auth.lastName')}</FormLabel>
                       <FormControl>
-                        <Input placeholder={t('auth.placeholders.lastName')} {...field} />
+                        <Input
+                          placeholder={t('auth.placeholders.lastName')}
+                          {...field}
+                          style={{
+                            backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                            borderColor: 'rgba(255, 255, 255, 0.2)',
+                            color: '#ffffff',
+                          }}
+                          onFocus={(e) => {
+                            e.currentTarget.style.borderColor = '#ff4538';
+                          }}
+                          onBlur={(e) => {
+                            e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                          }}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -212,9 +269,24 @@ export function RegisterForm() {
                   name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>{t('auth.email')}</FormLabel>
+                      <FormLabel style={{ color: '#ffffff' }}>{t('auth.email')}</FormLabel>
                       <FormControl>
-                        <Input type="email" placeholder={t('auth.emailPlaceholder')} {...field} />
+                        <Input
+                          type="email"
+                          placeholder={t('auth.emailPlaceholder')}
+                          {...field}
+                          style={{
+                            backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                            borderColor: 'rgba(255, 255, 255, 0.2)',
+                            color: '#ffffff',
+                          }}
+                          onFocus={(e) => {
+                            e.currentTarget.style.borderColor = '#ff4538';
+                          }}
+                          onBlur={(e) => {
+                            e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                          }}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -227,9 +299,24 @@ export function RegisterForm() {
                   name="phone"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>{t('auth.phone')}</FormLabel>
+                      <FormLabel style={{ color: '#ffffff' }}>{t('auth.phone')}</FormLabel>
                       <FormControl>
-                        <Input type="tel" placeholder={t('auth.placeholders.phone')} {...field} />
+                        <Input
+                          type="tel"
+                          placeholder={t('auth.placeholders.phone')}
+                          {...field}
+                          style={{
+                            backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                            borderColor: 'rgba(255, 255, 255, 0.2)',
+                            color: '#ffffff',
+                          }}
+                          onFocus={(e) => {
+                            e.currentTarget.style.borderColor = '#ff4538';
+                          }}
+                          onBlur={(e) => {
+                            e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                          }}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -242,9 +329,23 @@ export function RegisterForm() {
                   name="street"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>{t('auth.address.street')}</FormLabel>
+                      <FormLabel style={{ color: '#ffffff' }}>{t('auth.address.street')}</FormLabel>
                       <FormControl>
-                        <Input placeholder={t('auth.placeholders.street')} {...field} />
+                        <Input
+                          placeholder={t('auth.placeholders.street')}
+                          {...field}
+                          style={{
+                            backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                            borderColor: 'rgba(255, 255, 255, 0.2)',
+                            color: '#ffffff',
+                          }}
+                          onFocus={(e) => {
+                            e.currentTarget.style.borderColor = '#ff4538';
+                          }}
+                          onBlur={(e) => {
+                            e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                          }}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -257,9 +358,23 @@ export function RegisterForm() {
                   name="city"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>{t('auth.address.city')}</FormLabel>
+                      <FormLabel style={{ color: '#ffffff' }}>{t('auth.address.city')}</FormLabel>
                       <FormControl>
-                        <Input placeholder={t('auth.placeholders.city')} {...field} />
+                        <Input
+                          placeholder={t('auth.placeholders.city')}
+                          {...field}
+                          style={{
+                            backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                            borderColor: 'rgba(255, 255, 255, 0.2)',
+                            color: '#ffffff',
+                          }}
+                          onFocus={(e) => {
+                            e.currentTarget.style.borderColor = '#ff4538';
+                          }}
+                          onBlur={(e) => {
+                            e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                          }}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -272,9 +387,25 @@ export function RegisterForm() {
                   name="country"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>{t('auth.address.country')}</FormLabel>
+                      <FormLabel style={{ color: '#ffffff' }}>
+                        {t('auth.address.country')}
+                      </FormLabel>
                       <FormControl>
-                        <Input placeholder={t('auth.placeholders.country')} {...field} />
+                        <Input
+                          placeholder={t('auth.placeholders.country')}
+                          {...field}
+                          style={{
+                            backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                            borderColor: 'rgba(255, 255, 255, 0.2)',
+                            color: '#ffffff',
+                          }}
+                          onFocus={(e) => {
+                            e.currentTarget.style.borderColor = '#ff4538';
+                          }}
+                          onBlur={(e) => {
+                            e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                          }}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -287,7 +418,7 @@ export function RegisterForm() {
                   name="password"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>{t('auth.password')}</FormLabel>
+                      <FormLabel style={{ color: '#ffffff' }}>{t('auth.password')}</FormLabel>
                       <FormControl>
                         <div className="relative">
                           <Input
@@ -295,11 +426,23 @@ export function RegisterForm() {
                             placeholder="••••••••"
                             className="pr-10"
                             {...field}
+                            style={{
+                              backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                              borderColor: 'rgba(255, 255, 255, 0.2)',
+                              color: '#ffffff',
+                            }}
+                            onFocus={(e) => {
+                              e.currentTarget.style.borderColor = '#ff4538';
+                            }}
+                            onBlur={(e) => {
+                              e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                            }}
                           />
                           <button
                             type="button"
                             onClick={() => setShowPassword(!showPassword)}
-                            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors z-10"
+                            className="absolute right-3 top-1/2 -translate-y-1/2 transition-colors z-10"
+                            style={{ color: 'rgba(255, 255, 255, 0.7)' }}
                             tabIndex={-1}
                           >
                             {showPassword ? (
@@ -321,24 +464,45 @@ export function RegisterForm() {
                   name="inviteCode"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>
+                      <FormLabel style={{ color: '#ffffff' }}>
                         {t('auth.inviteCode.label')}{' '}
-                        <span className="text-xs text-muted-foreground">
+                        <span className="text-xs" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
                           {t('auth.inviteCode.subLabel')}
                         </span>
                       </FormLabel>
                       <FormControl>
-                        <Input placeholder={t('auth.inviteCode.placeholder')} {...field} />
+                        <Input
+                          placeholder={t('auth.inviteCode.placeholder')}
+                          {...field}
+                          style={{
+                            backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                            borderColor: 'rgba(255, 255, 255, 0.2)',
+                            color: '#ffffff',
+                          }}
+                          onFocus={(e) => {
+                            e.currentTarget.style.borderColor = '#ff4538';
+                          }}
+                          onBlur={(e) => {
+                            e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                          }}
+                        />
                       </FormControl>
-                      <p className="text-xs text-muted-foreground">{t('auth.inviteCode.helper')}</p>
+                      <p className="text-xs" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+                        {t('auth.inviteCode.helper')}
+                      </p>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
 
                 {/* GDPR Consent Section */}
-                <div className="space-y-4 pt-4 border-t">
-                  <p className="text-sm font-medium text-foreground">{t('auth.privacy.title')}</p>
+                <div
+                  className="space-y-4 pt-4"
+                  style={{ borderTop: '1px solid rgba(255, 255, 255, 0.1)' }}
+                >
+                  <p className="text-sm font-medium" style={{ color: '#ffffff' }}>
+                    {t('auth.privacy.title')}
+                  </p>
 
                   {/* Terms & Conditions Checkbox */}
                   <FormField
@@ -350,16 +514,26 @@ export function RegisterForm() {
                           <Checkbox checked={field.value} onCheckedChange={field.onChange} />
                         </FormControl>
                         <div className="space-y-1 leading-none">
-                          <FormLabel className="text-sm font-normal">
+                          <FormLabel
+                            className="text-sm font-normal"
+                            style={{ color: 'rgba(255, 255, 255, 0.8)' }}
+                          >
                             {t('auth.privacy.acceptTermsPrefix')}{' '}
                             <Link
                               href="/terms"
                               target="_blank"
-                              className="text-primary hover:underline font-medium"
+                              className="transition-colors hover:underline font-medium"
+                              style={{ color: '#ff4538' }}
+                              onMouseEnter={(e) => {
+                                e.currentTarget.style.color = '#ff5c50';
+                              }}
+                              onMouseLeave={(e) => {
+                                e.currentTarget.style.color = '#ff4538';
+                              }}
                             >
                               {t('auth.privacy.termsLabel')}
                             </Link>
-                            <span className="text-destructive ml-1">
+                            <span className="ml-1" style={{ color: '#ff4538' }}>
                               {t('auth.privacy.requiredIndicator')}
                             </span>
                           </FormLabel>
@@ -379,16 +553,26 @@ export function RegisterForm() {
                           <Checkbox checked={field.value} onCheckedChange={field.onChange} />
                         </FormControl>
                         <div className="space-y-1 leading-none">
-                          <FormLabel className="text-sm font-normal">
+                          <FormLabel
+                            className="text-sm font-normal"
+                            style={{ color: 'rgba(255, 255, 255, 0.8)' }}
+                          >
                             {t('auth.privacy.acceptPrivacyPrefix')}{' '}
                             <Link
                               href="/privacy"
                               target="_blank"
-                              className="text-primary hover:underline font-medium"
+                              className="transition-colors hover:underline font-medium"
+                              style={{ color: '#ff4538' }}
+                              onMouseEnter={(e) => {
+                                e.currentTarget.style.color = '#ff5c50';
+                              }}
+                              onMouseLeave={(e) => {
+                                e.currentTarget.style.color = '#ff4538';
+                              }}
                             >
                               {t('auth.privacy.privacyLabel')}
                             </Link>
-                            <span className="text-destructive ml-1">
+                            <span className="ml-1" style={{ color: '#ff4538' }}>
                               {t('auth.privacy.requiredIndicator')}
                             </span>
                           </FormLabel>
@@ -398,13 +582,29 @@ export function RegisterForm() {
                     )}
                   />
 
-                  <FormDescription className="text-xs">{t('auth.privacy.notice')}</FormDescription>
+                  <FormDescription
+                    className="text-xs"
+                    style={{ color: 'rgba(255, 255, 255, 0.7)' }}
+                  >
+                    {t('auth.privacy.notice')}
+                  </FormDescription>
                 </div>
 
                 {/* Submit Button */}
                 <Button
                   type="submit"
-                  className="w-full"
+                  className="w-full text-white"
+                  style={{ backgroundColor: '#ff4538' }}
+                  onMouseEnter={(e) => {
+                    if (!form.formState.isSubmitting && !registerMutation.isPending) {
+                      e.currentTarget.style.backgroundColor = '#ff5c50';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!form.formState.isSubmitting && !registerMutation.isPending) {
+                      e.currentTarget.style.backgroundColor = '#ff4538';
+                    }
+                  }}
                   disabled={form.formState.isSubmitting || registerMutation.isPending}
                 >
                   {registerMutation.isPending ? t('auth.signingUp') : t('auth.createAccount')}
@@ -413,9 +613,19 @@ export function RegisterForm() {
             </Form>
           </CardContent>
           <CardFooter>
-            <p className="text-sm text-center text-muted-foreground w-full">
+            <p className="text-sm text-center w-full" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
               {t('auth.alreadyHaveAccount')}{' '}
-              <Link href="/login" className="text-primary hover:underline font-medium">
+              <Link
+                href="/login"
+                className="transition-colors hover:underline font-medium"
+                style={{ color: '#ff4538' }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.color = '#ff5c50';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.color = '#ff4538';
+                }}
+              >
                 {t('auth.signIn')}
               </Link>
             </p>

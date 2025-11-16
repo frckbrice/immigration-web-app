@@ -139,10 +139,7 @@ export function FAQSection({
   };
 
   return (
-    <section
-      className="py-12 md:py-20 bg-linear-to-b from-blue-200/30 via-indigo-200/20 to-purple-200/30 dark:from-transparent dark:via-transparent dark:to-transparent"
-      id="faq"
-    >
+    <section className="py-12 md:py-20" style={{ backgroundColor: '#091a24' }} id="faq">
       {/* Schema.org markup for Google FAQ rich snippets */}
       <script
         type="application/ld+json"
@@ -152,20 +149,50 @@ export function FAQSection({
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-4">{sectionTitle}</h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">{sectionDescription}</p>
+          <h2
+            className="text-3xl md:text-4xl font-bold tracking-tight mb-4"
+            style={{ color: '#ffffff' }}
+          >
+            {sectionTitle}
+          </h2>
+          <p className="text-lg max-w-2xl mx-auto" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+            {sectionDescription}
+          </p>
         </div>
 
         {/* Search Bar */}
         {showSearch && (
           <div className="max-w-2xl mx-auto mb-6">
-            <label className="relative block rounded-xl border border-border bg-background/80 shadow-sm transition focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/30">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+            <label
+              className="relative block rounded-xl border shadow-sm transition focus-within:ring-2"
+              style={{
+                borderColor: 'rgba(255, 255, 255, 0.2)',
+                backgroundColor: 'rgba(255, 255, 255, 0.05)',
+              }}
+              onFocus={(e) => {
+                e.currentTarget.style.borderColor = '#ff4538';
+                e.currentTarget.style.boxShadow = '0 0 0 2px rgba(255, 69, 56, 0.3)';
+              }}
+              onBlur={(e) => {
+                e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                e.currentTarget.style.boxShadow = 'none';
+              }}
+            >
+              <span
+                className="absolute left-3 top-1/2 -translate-y-1/2"
+                style={{ color: 'rgba(255, 255, 255, 0.6)' }}
+              >
                 <Search className="h-5 w-5" />
               </span>
               <Input
                 placeholder={t('faq.section.searchPlaceholder')}
-                className="h-12 border-0 bg-transparent pl-12 pr-4 text-base placeholder:text-muted-foreground focus-visible:ring-0"
+                className="h-12 border-0 bg-transparent pl-12 pr-4 text-base focus-visible:ring-0"
+                style={
+                  {
+                    color: '#ffffff',
+                    '--placeholder-color': 'rgba(255, 255, 255, 0.5)',
+                  } as React.CSSProperties
+                }
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -183,7 +210,16 @@ export function FAQSection({
                   .filter((category): category is string => Boolean(category))
               )
             ).map((category) => (
-              <Badge key={category} variant="secondary" className="px-3 py-1 text-sm">
+              <Badge
+                key={category}
+                variant="secondary"
+                className="px-3 py-1 text-sm"
+                style={{
+                  backgroundColor: 'rgba(255, 69, 56, 0.2)',
+                  color: '#ff4538',
+                  borderColor: 'rgba(255, 69, 56, 0.3)',
+                }}
+              >
                 {getCategoryLabel(category)}
               </Badge>
             ))}
@@ -199,10 +235,14 @@ export function FAQSection({
           >
             {/* Mobile: Scrollable horizontal tabs | Desktop: Compact grid */}
             <div className="mb-8 overflow-x-auto scrollbar-hide">
-              <TabsList className="w-full inline-flex md:flex md:flex-wrap md:justify-center gap-1 h-auto p-1.5 bg-muted/50 rounded-lg">
+              <TabsList
+                className="w-full inline-flex md:flex md:flex-wrap md:justify-center gap-1 h-auto p-1.5 rounded-lg"
+                style={{ backgroundColor: 'rgba(255, 255, 255, 0.05)' }}
+              >
                 <TabsTrigger
                   value="all"
-                  className="whitespace-nowrap px-3 py-2 text-xs md:text-sm rounded-md"
+                  className="whitespace-nowrap px-3 py-2 text-xs md:text-sm rounded-md data-[state=active]:bg-[#ff4538] data-[state=active]:text-white"
+                  style={{ color: 'rgba(255, 255, 255, 0.7)' }}
                 >
                   {t('faq.section.allQuestions')}
                 </TabsTrigger>
@@ -210,10 +250,18 @@ export function FAQSection({
                   <TabsTrigger
                     key={category}
                     value={category}
-                    className="whitespace-nowrap px-2.5 py-2 text-xs md:text-sm flex items-center gap-1.5 rounded-md"
+                    className="whitespace-nowrap px-2.5 py-2 text-xs md:text-sm flex items-center gap-1.5 rounded-md data-[state=active]:bg-[#ff4538] data-[state=active]:text-white"
+                    style={{ color: 'rgba(255, 255, 255, 0.7)' }}
                   >
                     <span className="truncate">{getCategoryLabel(category)}</span>
-                    <Badge variant="secondary" className="text-[10px] px-1.5 py-0.5 leading-none">
+                    <Badge
+                      variant="secondary"
+                      className="text-[10px] px-1.5 py-0.5 leading-none"
+                      style={{
+                        backgroundColor: 'rgba(255, 69, 56, 0.2)',
+                        color: '#ff4538',
+                      }}
+                    >
                       {faqsByCategory[category]?.length || 0}
                     </Badge>
                   </TabsTrigger>
@@ -233,37 +281,19 @@ export function FAQSection({
 
         {/* No Results */}
         {filteredFAQs.length === 0 && searchQuery && (
-          <Card className="max-w-2xl mx-auto">
+          <Card
+            className="max-w-2xl mx-auto"
+            style={{ backgroundColor: '#091a24', borderColor: 'rgba(255, 255, 255, 0.1)' }}
+          >
             <CardContent className="py-12 text-center">
-              <Search className="mx-auto h-12 w-12 text-muted-foreground mb-4 opacity-50" />
-              <h3 className="text-lg font-semibold mb-2">{t('faq.section.noResults')}</h3>
-              <p className="text-muted-foreground">{t('faq.section.noResultsDesc')}</p>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Contact Support Card */}
-        {showContactSupport && (
-          <Card className="max-w-2xl mx-auto mt-12">
-            <CardContent className="pt-6">
-              <div className="text-center">
-                <MessageCircle className="h-12 w-12 mx-auto mb-4 text-primary" />
-                <h3 className="text-xl font-semibold mb-2">
-                  {t('faq.section.stillHaveQuestions')}
-                </h3>
-                <p className="text-muted-foreground mb-6">{t('faq.section.supportReady')}</p>
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <Button size="lg" asChild>
-                    <Link href="/#contact">
-                      <MessageCircle className="mr-2 h-5 w-5" />
-                      {t('faq.section.contactSupportBtn')}
-                    </Link>
-                  </Button>
-                  <Button size="lg" variant="outline" asChild>
-                    <a href="/register">{t('faq.section.createAccountBtn')}</a>
-                  </Button>
-                </div>
-              </div>
+              <Search
+                className="mx-auto h-12 w-12 mb-4 opacity-50"
+                style={{ color: 'rgba(255, 255, 255, 0.5)' }}
+              />
+              <h3 className="text-lg font-semibold mb-2" style={{ color: '#ffffff' }}>
+                {t('faq.section.noResults')}
+              </h3>
+              <p style={{ color: 'rgba(255, 255, 255, 0.7)' }}>{t('faq.section.noResultsDesc')}</p>
             </CardContent>
           </Card>
         )}
@@ -315,7 +345,8 @@ function FAQAccordion({ faqs, searchQuery }: { faqs: any[]; searchQuery: string 
             e.preventDefault();
             setExpandedAnswers({ ...expandedAnswers, [faqId]: true });
           }}
-          className="ml-2 text-primary hover:underline font-medium"
+          className="ml-2 hover:underline font-medium"
+          style={{ color: '#ff4538' }}
         >
           {t('faq.section.readMore')}
         </button>
@@ -329,19 +360,40 @@ function FAQAccordion({ faqs, searchQuery }: { faqs: any[]; searchQuery: string 
         <Accordion type="single" collapsible key={faq.id} className="w-full">
           <AccordionItem
             value={faq.id}
-            className="border rounded-lg px-4 md:px-5 bg-card hover:bg-muted/30 transition-colors shadow-sm"
+            className="border rounded-lg px-4 md:px-5 transition-colors shadow-sm"
+            style={{
+              borderColor: 'rgba(255, 255, 255, 0.1)',
+              backgroundColor: 'rgba(255, 255, 255, 0.03)',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.05)';
+              e.currentTarget.style.borderColor = 'rgba(255, 69, 56, 0.3)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.03)';
+              e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+            }}
           >
             <AccordionTrigger className="text-left hover:no-underline py-4 gap-3">
               <div className="flex items-start gap-3">
-                <div className="shrink-0 w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center mt-0.5">
-                  <HelpCircle className="h-3.5 w-3.5 text-primary" />
+                <div
+                  className="shrink-0 w-6 h-6 rounded-full flex items-center justify-center mt-0.5"
+                  style={{ backgroundColor: 'rgba(255, 69, 56, 0.2)' }}
+                >
+                  <HelpCircle className="h-3.5 w-3.5" style={{ color: '#ff4538' }} />
                 </div>
-                <span className="font-semibold text-sm md:text-base pr-2 leading-snug">
+                <span
+                  className="font-semibold text-sm md:text-base pr-2 leading-snug"
+                  style={{ color: '#ffffff' }}
+                >
                   {highlightText(faq.question)}
                 </span>
               </div>
             </AccordionTrigger>
-            <AccordionContent className="text-muted-foreground pb-4 pl-9 text-sm leading-relaxed">
+            <AccordionContent
+              className="pb-4 pl-9 text-sm leading-relaxed"
+              style={{ color: 'rgba(255, 255, 255, 0.7)' }}
+            >
               {getTruncatedAnswer(faq.answer, faq.id)}
             </AccordionContent>
           </AccordionItem>

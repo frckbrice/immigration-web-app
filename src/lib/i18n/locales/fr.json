@@ -850,7 +850,25 @@
       "viewAll": "Voir Tous les Services",
       "learnMore": "En Savoir Plus",
       "mostPopular": "Le Plus Populaire",
-      "highDemand": "Forte Demande"
+      "highDemand": "Forte Demande",
+      "ctaTitle": "Prêt à Commencer?",
+      "ctaDescription": "Contactez-nous dès aujourd'hui pour discuter de vos besoins en matière d'immigration.",
+      "contactUs": "Nous Contacter",
+      "getStarted": "Commencer",
+      "features": {
+        "visaApplication": "Assistance à la Demande de Visa",
+        "documentation": "Support Documentation",
+        "consultation": "Consultation d'Expert",
+        "workPermit": "Traitement du Permis de Travail",
+        "employerSupport": "Support Employeur",
+        "compliance": "Assistance Conformité",
+        "sponsorship": "Guidance Parrainage",
+        "familyVisa": "Traitement Visa Familial",
+        "reunification": "Support Réunification",
+        "businessVisa": "Traitement Visa d'Affaires",
+        "investment": "Guidance Investissement",
+        "businessSupport": "Support Commercial"
+      }
     },
     "testimonials": {
       "title": "Ce Que Disent Nos Clients",
@@ -891,6 +909,7 @@
       "name": "Nom Complet",
       "emailLabel": "Adresse E-mail",
       "phoneLabel": "Numéro de Téléphone (Optionnel)",
+      "subject": "Sujet (Optionnel)",
       "message": "Message",
       "messagePlaceholder": "Parlez-nous de vos besoins en matière d'immigration...",
       "send": "Envoyer le Message",
@@ -903,6 +922,124 @@
       "cannotFind": "Vous ne trouvez pas ce que vous cherchez?",
       "supportTeam": "Notre équipe d'assistance est là pour vous aider",
       "contactSupport": "Contacter le Support"
+    },
+    "getStarted": {
+      "title": "Commencer",
+      "subtitle": "Rencontrez un consultant en immigration expert et commencez votre parcours aujourd'hui.",
+      "cta": "Essayer maintenant",
+      "talk": "Parler aux ventes"
+    },
+    "pricing": {
+      "title": "Rapide, plus rapide et le plus rapide",
+      "subtitle": "Un portefeuille d'abonnements parmi lesquels choisir pour répondre à vos besoins en temps réel.",
+      "footer": "Tous les plans incluent une consultation gratuite",
+      "partner1": "Visas étudiants",
+      "partner2": "Permis de travail",
+      "partner3": "Parrainage familial",
+      "basic": {
+        "name": "De base",
+        "tagline": "Support d'immigration essentiel",
+        "feature1": "Révision et conseils sur les documents",
+        "feature2": "Assistance pour les formulaires de demande",
+        "feature3": "Support par email"
+      },
+      "standard": {
+        "name": "Standard",
+        "tagline": "Choix le plus populaire",
+        "feature1": "Support complet pour la demande",
+        "feature2": "Traitement prioritaire",
+        "feature3": "Support téléphonique et email 24/7",
+        "feature4": "Tableau de bord de suivi des dossiers"
+      },
+      "premium": {
+        "name": "Premium",
+        "tagline": "Solution d'immigration complète",
+        "feature1": "Consultant en immigration dédié",
+        "feature2": "Traitement express",
+        "feature3": "Consultations vidéo",
+        "feature4": "Support et mises à jour prioritaires"
+      }
+    },
+    "featureGrid": {
+      "expertTeam": {
+        "title": "Équipe d'experts",
+        "highlight": "Professionnels agréés",
+        "description": "Notre équipe de consultants en immigration agréés apporte des années d'expérience et d'expertise pour vous guider à chaque étape."
+      },
+      "successRate": {
+        "title": "Taux de réussite élevé",
+        "highlight": "94% de taux de réussite",
+        "description": "Avec des milliers de demandes de visa traitées avec succès, nous maintenons l'un des taux de réussite les plus élevés de l'industrie."
+      },
+      "support": {
+        "title": "Support 24/7",
+        "highlight": "Toujours là pour vous",
+        "description": "Notre équipe de support dévouée est disponible 24h/24 et 7j/7 pour répondre à vos questions et fournir des conseils lorsque vous en avez besoin."
+      },
+      "documentManagement": {
+        "title": "Gestion des documents",
+        "highlight": "Sécurisé et organisé",
+        "description": "Gardez tous vos documents d'immigration organisés et sécurisés en un seul endroit. Accédez-y à tout moment, n'importe où."
+      },
+      "security": {
+        "title": "Sécurisé et confidentiel",
+        "highlight": "Votre vie privée compte",
+        "description": "Nous protégeons vos informations personnelles avec des mesures de sécurité de pointe et maintenons une stricte confidentialité."
+      },
+      "globalReach": {
+        "title": "Portée mondiale",
+        "highlight": "50+ pays",
+        "description": "Réseau étendu à travers plusieurs pays et systèmes d'immigration. Nous vous aidons à naviguer dans l'immigration dans le monde entier."
+      }
+    },
+    "features": {
+      "startJourney": {
+        "title": "Commencez votre parcours en quelques minutes",
+        "description": "Commencez votre demande d'immigration en quelques clics. Notre plateforme est prête pour la production et s'adapte pour gérer tout votre parcours d'immigration.",
+        "cta": "Commencer"
+      },
+      "fastProcessing": {
+        "title": "Traitement rapide qui s'adapte",
+        "highlight": "94% de taux de réussite avec des processus rationalisés",
+        "description": "Notre équipe d'experts traite les demandes efficacement avec des délais de traitement rapides. Suivez le statut de votre dossier en temps réel et recevez des mises à jour instantanément.",
+        "cta": "Voir comment ça fonctionne"
+      },
+      "comprehensive": {
+        "title": "Services d'immigration complets",
+        "description": "Des visas étudiants aux permis de travail, de la réunification familiale aux visas d'affaires—nous offrons des solutions d'immigration complètes adaptées à vos besoins avec des conseils d'experts à chaque étape.",
+        "cta": "Voir tous les services"
+      },
+      "expertGuidance": {
+        "title": "Conseils et support d'experts",
+        "description": "Nos consultants en immigration agréés fournissent des conseils personnalisés tout au long de votre parcours. Obtenez des réponses à vos questions, une assistance documentaire et un support professionnel lorsque vous en avez le plus besoin.",
+        "cta": "Contacter nos experts"
+      },
+      "secure": {
+        "title": "Traitement sécurisé et confidentiel",
+        "description": "Vos informations personnelles et documents sont protégés avec des mesures de sécurité de pointe. Nous maintenons une stricte confidentialité et respectons toutes les réglementations sur la protection des données.",
+        "cta": "En savoir plus"
+      }
+    },
+    "trust": {
+      "title": "Approuvé par les autorités d'immigration du monde entier",
+      "subtitle": "Partenaires reconnus avec les agences d'immigration officielles",
+      "logo1": "IRCC",
+      "logo2": "CIC",
+      "logo3": "USCIS",
+      "logo4": "Home Office UK",
+      "logo5": "Immigration NZ",
+      "logo6": "Immigration Australie"
+    },
+    "hero": {
+      "title": "Votre voyage vers un nouvel avenir commence ici",
+      "subtitle": "Services d'immigration experts pour vous aider à réaliser vos rêves d'étudier, travailler ou vivre à l'étranger.",
+      "cta": "Commencer",
+      "login": "Se connecter",
+      "trustedPartners": "Approuvé par les principaux partenaires d'immigration :",
+      "partner1": "IRCC",
+      "partner2": "CIC",
+      "partner3": "USCIS",
+      "partner4": "Home Office UK"
     },
     "footer": {
       "description": "Services d'immigration professionnels aidant les individus et les familles à réaliser leurs rêves mondiaux.",

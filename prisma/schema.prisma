@@ -37,6 +37,10 @@ model User {
   privacyAcceptedAt    DateTime?
   termsAcceptedAt      DateTime?
   firebaseId           String?            @unique
+  hasPaid              Boolean            @default(false)
+  subscriptionTier     String?            // Basic, Standard, Premium
+  paymentDate          DateTime?
+  subscriptionExpiresAt DateTime?         // For tracking purposes (one-time payment)
   activityLogs         ActivityLog[]
   assignedCases        Case[]             @relation("AgentCases")
   cases                Case[]             @relation("ClientCases")

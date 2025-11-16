@@ -72,6 +72,10 @@ export default function ForgotPasswordPage() {
   });
 
   const onSubmit = async (data: ForgotPasswordInput) => {
+    if (!auth) {
+      toast.error('Firebase Auth is not initialized. Please refresh the page.');
+      return;
+    }
     try {
       await sendPasswordResetEmail(auth, data.email);
       setEmailSent(true);
@@ -107,19 +111,54 @@ export default function ForgotPasswordPage() {
   if (emailSent) {
     return (
       <div className="w-full max-w-md mx-auto">
-        <Card>
+        <Card
+          style={{
+            backgroundColor: 'rgba(255, 255, 255, 0.03)',
+            borderColor: 'rgba(255, 255, 255, 0.1)',
+          }}
+        >
           <CardHeader className="text-center">
-            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-green-100 dark:bg-green-900">
-              <CheckCircle2 className="h-6 w-6 text-green-600 dark:text-green-400" />
+            <div
+              className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full"
+              style={{ backgroundColor: 'rgba(255, 69, 56, 0.2)' }}
+            >
+              <CheckCircle2 className="h-6 w-6" style={{ color: '#ff4538' }} />
             </div>
-            <CardTitle>{t('auth.checkEmail')}</CardTitle>
-            <CardDescription>{t('auth.resetLinkSent')}</CardDescription>
+            <CardTitle style={{ color: '#ffffff' }}>{t('auth.checkEmail')}</CardTitle>
+            <CardDescription style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+              {t('auth.resetLinkSent')}
+            </CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
-            <Button asChild className="w-full">
+            <Button
+              asChild
+              className="w-full text-white"
+              style={{ backgroundColor: '#ff4538' }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#ff5c50';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = '#ff4538';
+              }}
+            >
               <Link href="/login">{t('auth.backToLogin')}</Link>
             </Button>
-            <Button variant="outline" onClick={() => setEmailSent(false)} className="w-full">
+            <Button
+              variant="outline"
+              onClick={() => setEmailSent(false)}
+              className="w-full transition-all duration-200"
+              style={{
+                borderColor: '#ff4538',
+                color: '#ff4538',
+                backgroundColor: 'transparent',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = 'rgba(255, 69, 56, 0.1)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'transparent';
+              }}
+            >
               {t('auth.sendAnotherEmail')}
             </Button>
           </CardContent>
@@ -130,10 +169,17 @@ export default function ForgotPasswordPage() {
 
   return (
     <div className="w-full max-w-md mx-auto">
-      <Card>
+      <Card
+        style={{
+          backgroundColor: 'rgba(255, 255, 255, 0.03)',
+          borderColor: 'rgba(255, 255, 255, 0.1)',
+        }}
+      >
         <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl text-center">{t('auth.resetPassword')}</CardTitle>
-          <CardDescription className="text-center">
+          <CardTitle className="text-2xl text-center" style={{ color: '#ffffff' }}>
+            {t('auth.resetPassword')}
+          </CardTitle>
+          <CardDescription className="text-center" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
             {t('auth.resetPasswordDescription')}
           </CardDescription>
         </CardHeader>
@@ -145,23 +191,63 @@ export default function ForgotPasswordPage() {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{t('auth.email')}</FormLabel>
+                    <FormLabel style={{ color: '#ffffff' }}>{t('auth.email')}</FormLabel>
                     <FormControl>
-                      <Input type="email" placeholder={t('auth.emailPlaceholder')} {...field} />
+                      <Input
+                        type="email"
+                        placeholder={t('auth.emailPlaceholder')}
+                        {...field}
+                        style={{
+                          backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                          borderColor: 'rgba(255, 255, 255, 0.2)',
+                          color: '#ffffff',
+                        }}
+                        onFocus={(e) => {
+                          e.currentTarget.style.borderColor = '#ff4538';
+                        }}
+                        onBlur={(e) => {
+                          e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                        }}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
 
-              <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
+              <Button
+                type="submit"
+                className="w-full text-white"
+                style={{ backgroundColor: '#ff4538' }}
+                onMouseEnter={(e) => {
+                  if (!form.formState.isSubmitting) {
+                    e.currentTarget.style.backgroundColor = '#ff5c50';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!form.formState.isSubmitting) {
+                    e.currentTarget.style.backgroundColor = '#ff4538';
+                  }
+                }}
+                disabled={form.formState.isSubmitting}
+              >
                 {form.formState.isSubmitting ? t('auth.sending') : t('auth.sendResetLink')}
               </Button>
             </form>
           </Form>
         </CardContent>
         <CardFooter>
-          <Link href="/login" className="text-sm text-primary hover:underline mx-auto">
+          <Link
+            href="/login"
+            className="text-sm transition-colors hover:underline mx-auto"
+            style={{ color: '#ff4538' }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.color = '#ff5c50';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.color = '#ff4538';
+            }}
+          >
             {t('auth.backToLogin')}
           </Link>
         </CardFooter>

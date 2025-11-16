@@ -76,6 +76,10 @@ function ResetPasswordForm() {
       return;
     }
 
+    if (!auth) {
+      toast.error('Firebase Auth is not initialized. Please refresh the page.');
+      return;
+    }
     try {
       await confirmPasswordReset(auth, oobCode, data.password);
       toast.success('Password reset successful! You can now log in.');
@@ -115,12 +119,32 @@ function ResetPasswordForm() {
   if (!oobCode) {
     return (
       <div className="w-full max-w-md mx-auto">
-        <Card className="border-2">
+        <Card
+          className="border-2"
+          style={{
+            backgroundColor: 'rgba(255, 255, 255, 0.03)',
+            borderColor: 'rgba(255, 255, 255, 0.1)',
+          }}
+        >
           <CardContent className="p-8 text-center">
-            <div className="mb-4 text-red-600 dark:text-red-400 text-5xl">⚠️</div>
-            <h2 className="text-2xl font-bold mb-4">{t('auth.invalidResetLink')}</h2>
-            <p className="text-muted-foreground mb-6">{t('auth.invalidResetLinkDescription')}</p>
-            <Button asChild>
+            <div className="mb-4 text-5xl">⚠️</div>
+            <h2 className="text-2xl font-bold mb-4" style={{ color: '#ffffff' }}>
+              {t('auth.invalidResetLink')}
+            </h2>
+            <p className="mb-6" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+              {t('auth.invalidResetLinkDescription')}
+            </p>
+            <Button
+              asChild
+              className="text-white"
+              style={{ backgroundColor: '#ff4538' }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#ff5c50';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = '#ff4538';
+              }}
+            >
               <Link href="/forgot-password">{t('auth.requestNewResetLink')}</Link>
             </Button>
           </CardContent>
@@ -131,10 +155,20 @@ function ResetPasswordForm() {
 
   return (
     <div className="w-full max-w-md mx-auto">
-      <Card className="border-2">
+      <Card
+        className="border-2"
+        style={{
+          backgroundColor: 'rgba(255, 255, 255, 0.03)',
+          borderColor: 'rgba(255, 255, 255, 0.1)',
+        }}
+      >
         <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl text-center">{t('auth.resetPassword')}</CardTitle>
-          <CardDescription className="text-center">{t('auth.enterNewPassword')}</CardDescription>
+          <CardTitle className="text-2xl text-center" style={{ color: '#ffffff' }}>
+            {t('auth.resetPassword')}
+          </CardTitle>
+          <CardDescription className="text-center" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+            {t('auth.enterNewPassword')}
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -144,19 +178,31 @@ function ResetPasswordForm() {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{t('auth.password')}</FormLabel>
+                    <FormLabel style={{ color: '#ffffff' }}>{t('auth.password')}</FormLabel>
                     <FormControl>
                       <div className="relative">
                         <Input
                           type={showPassword ? 'text' : 'password'}
                           placeholder="••••••••"
                           {...field}
+                          style={{
+                            backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                            borderColor: 'rgba(255, 255, 255, 0.2)',
+                            color: '#ffffff',
+                          }}
+                          onFocus={(e) => {
+                            e.currentTarget.style.borderColor = '#ff4538';
+                          }}
+                          onBlur={(e) => {
+                            e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                          }}
                         />
                         <button
                           type="button"
                           onClick={() => setShowPassword(!showPassword)}
                           aria-label={showPassword ? 'Hide password' : 'Show password'}
-                          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                          className="absolute right-3 top-1/2 -translate-y-1/2 transition-colors"
+                          style={{ color: 'rgba(255, 255, 255, 0.7)' }}
                         >
                           {showPassword ? (
                             <EyeOff className="h-4 w-4" />
@@ -176,19 +222,31 @@ function ResetPasswordForm() {
                 name="confirmPassword"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{t('auth.confirmPassword')}</FormLabel>
+                    <FormLabel style={{ color: '#ffffff' }}>{t('auth.confirmPassword')}</FormLabel>
                     <FormControl>
                       <div className="relative">
                         <Input
                           type={showPassword ? 'text' : 'password'}
                           placeholder="••••••••"
                           {...field}
+                          style={{
+                            backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                            borderColor: 'rgba(255, 255, 255, 0.2)',
+                            color: '#ffffff',
+                          }}
+                          onFocus={(e) => {
+                            e.currentTarget.style.borderColor = '#ff4538';
+                          }}
+                          onBlur={(e) => {
+                            e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                          }}
                         />
                         <button
                           type="button"
                           onClick={() => setShowPassword(!showPassword)}
                           aria-label={showPassword ? 'Hide password' : 'Show password'}
-                          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                          className="absolute right-3 top-1/2 -translate-y-1/2 transition-colors"
+                          style={{ color: 'rgba(255, 255, 255, 0.7)' }}
                         >
                           {showPassword ? (
                             <EyeOff className="h-4 w-4" />
@@ -203,14 +261,39 @@ function ResetPasswordForm() {
                 )}
               />
 
-              <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
+              <Button
+                type="submit"
+                className="w-full text-white"
+                style={{ backgroundColor: '#ff4538' }}
+                onMouseEnter={(e) => {
+                  if (!form.formState.isSubmitting) {
+                    e.currentTarget.style.backgroundColor = '#ff5c50';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!form.formState.isSubmitting) {
+                    e.currentTarget.style.backgroundColor = '#ff4538';
+                  }
+                }}
+                disabled={form.formState.isSubmitting}
+              >
                 {form.formState.isSubmitting ? t('auth.resetting') : t('auth.resetPassword')}
               </Button>
             </form>
           </Form>
         </CardContent>
         <CardFooter>
-          <Link href="/login" className="text-sm text-primary hover:underline mx-auto">
+          <Link
+            href="/login"
+            className="text-sm transition-colors hover:underline mx-auto"
+            style={{ color: '#ff4538' }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.color = '#ff5c50';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.color = '#ff4538';
+            }}
+          >
             {t('auth.backToLogin')}
           </Link>
         </CardFooter>
@@ -223,10 +306,23 @@ function LoadingFallback() {
   const { t } = useTranslation();
   return (
     <div className="w-full max-w-md mx-auto">
-      <Card className="border-2">
+      <Card
+        className="border-2"
+        style={{
+          backgroundColor: 'rgba(255, 255, 255, 0.03)',
+          borderColor: 'rgba(255, 255, 255, 0.1)',
+        }}
+      >
         <CardContent className="p-8 text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-          <p className="mt-4 text-muted-foreground" suppressHydrationWarning>
+          <div
+            className="animate-spin rounded-full h-12 w-12 border-b-2 mx-auto"
+            style={{ borderColor: '#ff4538' }}
+          ></div>
+          <p
+            className="mt-4"
+            style={{ color: 'rgba(255, 255, 255, 0.7)' }}
+            suppressHydrationWarning
+          >
             {t('common.loading')}
           </p>
         </CardContent>
