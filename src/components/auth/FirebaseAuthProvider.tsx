@@ -32,6 +32,13 @@ export function FirebaseAuthProvider({ children }: { children: React.ReactNode }
       }
     }
 
+    // Ensure auth is initialized before setting up listeners
+    if (!auth) {
+      logger.error('Firebase Auth is not initialized');
+      setLoading(false);
+      return;
+    }
+
     // Listen to Firebase auth state changes
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
@@ -127,7 +134,7 @@ export function FirebaseAuthProvider({ children }: { children: React.ReactNode }
     // Set up token refresh interval (refresh every 50 minutes, tokens expire after 1 hour)
     const tokenRefreshInterval = setInterval(
       async () => {
-        if (auth.currentUser) {
+        if (auth && auth.currentUser) {
           try {
             const token = await auth.currentUser.getIdToken(true); // Force refresh
             const cachedUserStr = localStorage.getItem('userCache') || localStorage.getItem('user');
