@@ -64,6 +64,10 @@ model User {
 
   @@index([email])
   @@index([role])
+  @@index([isActive])
+  @@index([deletionScheduledFor])
+  @@index([lastLogin])
+  @@index([role, isActive, deletionScheduledFor])
 }
 
 model Case {

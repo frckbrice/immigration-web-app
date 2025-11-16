@@ -199,46 +199,29 @@ export async function scheduleInactiveUsersForDeletion(): Promise<SchedulingStat
   try {
     const now = new Date();
 
-    // Calculate threshold dates
+    // Calculate threshold dates (use setUTCMonth to avoid timezone issues)
     const threeMonthsAgo = new Date(now);
-    threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+    threeMonthsAgo.setUTCMonth(threeMonthsAgo.getUTCMonth() - 3);
+    threeMonthsAgo.setUTCHours(0, 0, 0, 0); // Start of day for consistent comparison
 
     const sixMonthsAgo = new Date(now);
-    sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+    sixMonthsAgo.setUTCMonth(sixMonthsAgo.getUTCMonth() - 6);
+    sixMonthsAgo.setUTCHours(0, 0, 0, 0); // Start of day for consistent comparison
 
     // Calculate deletion date (30 days from now, same as manual deletion)
     const deletionDate = new Date(now);
-    deletionDate.setDate(deletionDate.getDate() + 30);
+    deletionDate.setUTCDate(deletionDate.getUTCDate() + 30);
 
-    // Find all active CLIENT users not already scheduled for deletion
-    const activeClients = await prisma.user.findMany({
-      where: {
-        role: 'CLIENT',
-        isActive: true,
-        deletionScheduledFor: null, // Not already scheduled
-      },
-      select: {
-        id: true,
-        email: true,
-        firstName: true,
-        lastName: true,
-        createdAt: true,
-        lastLogin: true,
-        cases: {
-          select: {
-            id: true,
-            submissionDate: true, // Case model uses submissionDate, not createdAt
-          },
-          orderBy: {
-            submissionDate: 'desc', // Order by submissionDate
-          },
-          take: 1, // Only need the most recent case
-        },
-      },
-    });
+    // PERFORMANCE: Use batch processing to avoid loading all users into memory
+    // Process in batches of 100 users at a time
+    const BATCH_SIZE = 100;
+    let skip = 0;
+    let hasMore = true;
 
-    logger.info(`Found ${activeClients.length} active CLIENT users to check`, {
-      count: activeClients.length,
+    logger.info('Starting batch processing of active CLIENT users', {
+      batchSize: BATCH_SIZE,
+      threeMonthsAgo: threeMonthsAgo.toISOString(),
+      sixMonthsAgo: sixMonthsAgo.toISOString(),
     });
 
     // Filter users who meet the criteria
@@ -248,50 +231,105 @@ export async function scheduleInactiveUsersForDeletion(): Promise<SchedulingStat
       reason: string;
     }> = [];
 
-    for (const user of activeClients) {
-      try {
-        // Check login inactivity (6 months)
-        const lastLoginDate = user.lastLogin || user.createdAt; // Use createdAt if never logged in
-        const isLoginInactive = lastLoginDate < sixMonthsAgo;
+    // Process users in batches to avoid memory issues
+    while (hasMore) {
+      const activeClients = await prisma.user.findMany({
+        where: {
+          role: 'CLIENT',
+          isActive: true,
+          deletionScheduledFor: null, // Not already scheduled
+          // PERFORMANCE: Pre-filter users who might be inactive based on createdAt
+          // This reduces the dataset we need to process
+          OR: [
+            { lastLogin: { lte: sixMonthsAgo } }, // Has login older than 6 months
+            { lastLogin: null, createdAt: { lte: sixMonthsAgo } }, // Never logged in, account older than 6 months
+          ],
+        },
+        select: {
+          id: true,
+          email: true,
+          firstName: true,
+          lastName: true,
+          createdAt: true,
+          lastLogin: true,
+          cases: {
+            select: {
+              id: true,
+              submissionDate: true, // Case model uses submissionDate, not createdAt
+            },
+            orderBy: {
+              submissionDate: 'desc', // Order by submissionDate
+            },
+            take: 1, // Only need the most recent case
+          },
+        },
+        skip,
+        take: BATCH_SIZE,
+      });
 
-        // Check case inactivity (3 months)
-        let isCaseInactive = false;
-        let inactivityReason = '';
-
-        if (user.cases.length === 0) {
-          // User has no cases - check if account is older than 3 months
-          if (user.createdAt < threeMonthsAgo) {
-            isCaseInactive = true;
-            inactivityReason = 'No cases created and account older than 3 months';
-          }
-        } else {
-          // User has cases - check if last case is older than 3 months
-          const lastCaseDate = user.cases[0].submissionDate;
-          if (lastCaseDate < threeMonthsAgo) {
-            isCaseInactive = true;
-            inactivityReason = `Last case created more than 3 months ago (${lastCaseDate.toISOString()})`;
-          }
-        }
-
-        // Schedule if both conditions are met
-        if (isLoginInactive && isCaseInactive) {
-          const loginReason = user.lastLogin
-            ? `Last login: ${user.lastLogin.toISOString()} (more than 6 months ago)`
-            : `Never logged in, account created: ${user.createdAt.toISOString()} (more than 6 months ago)`;
-
-          usersToSchedule.push({
-            id: user.id,
-            email: user.email,
-            reason: `${loginReason}. ${inactivityReason}.`,
-          });
-        }
-      } catch (error: any) {
-        logger.error('Error checking user inactivity criteria', {
-          userId: user.id,
-          error: error.message,
-        });
-        stats.errors++;
+      if (activeClients.length === 0) {
+        hasMore = false;
+        break;
       }
+
+      logger.info(`Processing batch of ${activeClients.length} users`, {
+        skip,
+        batchSize: activeClients.length,
+      });
+
+      // Filter users who meet the criteria
+      for (const user of activeClients) {
+        try {
+          // Check login inactivity (6 months)
+          // Edge case: Handle null lastLogin - use createdAt if never logged in
+          const lastLoginDate = user.lastLogin || user.createdAt;
+          // Use <= for boundary condition (exactly 6 months = inactive)
+          const isLoginInactive = lastLoginDate <= sixMonthsAgo;
+
+          // Check case inactivity (3 months)
+          let isCaseInactive = false;
+          let inactivityReason = '';
+
+          if (user.cases.length === 0) {
+            // User has no cases - check if account is older than 3 months
+            // Use <= for boundary condition (exactly 3 months = inactive)
+            if (user.createdAt <= threeMonthsAgo) {
+              isCaseInactive = true;
+              inactivityReason = 'No cases created and account older than 3 months';
+            }
+          } else {
+            // User has cases - check if last case is older than 3 months
+            const lastCaseDate = user.cases[0]?.submissionDate;
+            if (lastCaseDate && lastCaseDate <= threeMonthsAgo) {
+              isCaseInactive = true;
+              inactivityReason = `Last case created more than 3 months ago (${lastCaseDate.toISOString()})`;
+            }
+          }
+
+          // Schedule if both conditions are met
+          if (isLoginInactive && isCaseInactive) {
+            const loginReason = user.lastLogin
+              ? `Last login: ${user.lastLogin.toISOString()} (more than 6 months ago)`
+              : `Never logged in, account created: ${user.createdAt.toISOString()} (more than 6 months ago)`;
+
+            usersToSchedule.push({
+              id: user.id,
+              email: user.email,
+              reason: `${loginReason}. ${inactivityReason}.`,
+            });
+          }
+        } catch (error: any) {
+          logger.error('Error checking user inactivity criteria', {
+            userId: user.id,
+            error: error.message,
+          });
+          stats.errors++;
+        }
+      }
+
+      // Check if we have more users to process
+      hasMore = activeClients.length === BATCH_SIZE;
+      skip += BATCH_SIZE;
     }
 
     if (usersToSchedule.length === 0) {
@@ -303,51 +341,83 @@ export async function scheduleInactiveUsersForDeletion(): Promise<SchedulingStat
       count: usersToSchedule.length,
     });
 
-    // Schedule each user for deletion
-    for (const userToSchedule of usersToSchedule) {
-      try {
-        await prisma.user.update({
-          where: { id: userToSchedule.id },
-          data: {
-            isActive: false, // Mark inactive immediately
-            deletionScheduledFor: deletionDate, // Schedule deletion in 30 days
-            deletionReason: `Automatic scheduling: ${userToSchedule.reason}`,
-          },
-        });
+    // Schedule each user for deletion (use transaction for atomicity)
+    // Process in smaller batches to avoid long-running transactions
+    const UPDATE_BATCH_SIZE = 50;
+    for (let i = 0; i < usersToSchedule.length; i += UPDATE_BATCH_SIZE) {
+      const batch = usersToSchedule.slice(i, i + UPDATE_BATCH_SIZE);
 
-        // Disable Firebase account (prevent login)
-        if (adminAuth) {
+      await Promise.all(
+        batch.map(async (userToSchedule) => {
           try {
-            await adminAuth.updateUser(userToSchedule.id, {
-              disabled: true,
-            });
-            logger.info('Firebase account disabled for inactive user', {
-              userId: userToSchedule.id,
-            });
-          } catch (firebaseError: any) {
-            if (firebaseError.code !== 'auth/user-not-found') {
-              logger.error('Failed to disable Firebase account for inactive user', {
-                userId: userToSchedule.id,
-                error: firebaseError.message,
+            // Use transaction to ensure atomicity
+            await prisma.$transaction(async (tx) => {
+              // Double-check user is still eligible (prevent race conditions)
+              const user = await tx.user.findUnique({
+                where: { id: userToSchedule.id },
+                select: {
+                  id: true,
+                  isActive: true,
+                  deletionScheduledFor: true,
+                },
               });
-            }
-          }
-        }
 
-        stats.usersScheduled++;
-        logger.info('Inactive user scheduled for deletion', {
-          userId: userToSchedule.id,
-          email: userToSchedule.email,
-          scheduledFor: deletionDate.toISOString(),
-          reason: userToSchedule.reason,
-        });
-      } catch (error: any) {
-        logger.error('Error scheduling inactive user for deletion', {
-          userId: userToSchedule.id,
-          error: error.message,
-        });
-        stats.errors++;
-      }
+              // Skip if user was already scheduled or deactivated by another process
+              if (!user || !user.isActive || user.deletionScheduledFor) {
+                logger.warn('User no longer eligible for scheduling', {
+                  userId: userToSchedule.id,
+                  isActive: user?.isActive,
+                  deletionScheduledFor: user?.deletionScheduledFor?.toISOString(),
+                });
+                return;
+              }
+
+              // Update user
+              await tx.user.update({
+                where: { id: userToSchedule.id },
+                data: {
+                  isActive: false, // Mark inactive immediately
+                  deletionScheduledFor: deletionDate, // Schedule deletion in 30 days
+                  deletionReason: `Automatic scheduling: ${userToSchedule.reason}`,
+                },
+              });
+            });
+
+            // Disable Firebase account (outside transaction as it's external service)
+            if (adminAuth) {
+              try {
+                await adminAuth.updateUser(userToSchedule.id, {
+                  disabled: true,
+                });
+                logger.info('Firebase account disabled for inactive user', {
+                  userId: userToSchedule.id,
+                });
+              } catch (firebaseError: any) {
+                if (firebaseError.code !== 'auth/user-not-found') {
+                  logger.error('Failed to disable Firebase account for inactive user', {
+                    userId: userToSchedule.id,
+                    error: firebaseError.message,
+                  });
+                }
+              }
+            }
+
+            stats.usersScheduled++;
+            logger.info('Inactive user scheduled for deletion', {
+              userId: userToSchedule.id,
+              email: userToSchedule.email,
+              scheduledFor: deletionDate.toISOString(),
+              reason: userToSchedule.reason,
+            });
+          } catch (error: any) {
+            logger.error('Error scheduling inactive user for deletion', {
+              userId: userToSchedule.id,
+              error: error.message,
+            });
+            stats.errors++;
+          }
+        })
+      );
     }
 
     logger.info('Automatic scheduling of inactive users completed', {
