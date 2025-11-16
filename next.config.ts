@@ -48,6 +48,25 @@ const nextConfig: NextConfig = {
   /* config options here */
   output: 'standalone',
 
+  // Enable instrumentation hook for cron initialization (enabled by default if instrumentation.ts exists)
+  experimental: {
+    serverActions: {
+      bodySizeLimit: '10mb',
+      allowedOrigins: ['localhost:3000'],
+    },
+    // PERFORMANCE: Optimize package imports to reduce bundle size
+    optimizePackageImports: [
+      'lucide-react',
+      'date-fns',
+      'recharts',
+      '@tanstack/react-query',
+      'react-hook-form',
+      'zod',
+      'firebase/auth',
+      'firebase/database',
+    ],
+  },
+
   //TODO: Uncomment this when we have a way to fix the ESLint errors
   eslint: {
     ignoreDuringBuilds: true,
@@ -77,25 +96,6 @@ const nextConfig: NextConfig = {
 
   // Compression
   compress: true,
-
-  // Server Actions
-  experimental: {
-    serverActions: {
-      bodySizeLimit: '10mb',
-      allowedOrigins: ['localhost:3000'],
-    },
-    // PERFORMANCE: Optimize package imports to reduce bundle size
-    optimizePackageImports: [
-      'lucide-react',
-      'date-fns',
-      'recharts',
-      '@tanstack/react-query',
-      'react-hook-form',
-      'zod',
-      'firebase/auth',
-      'firebase/database',
-    ],
-  },
 
   // PERFORMANCE: Production optimizations
   reactStrictMode: true,
