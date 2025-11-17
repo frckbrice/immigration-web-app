@@ -186,8 +186,17 @@ jobs:
           npx vercel link --yes --project "$VERCEL_PROJECT_ID" --scope "$VERCEL_ORG_ID" --token "$VERCEL_TOKEN"
 
           echo "Deploying to Vercel..."
-          npx vercel deploy \
-            --prod \
-            --yes \
-            --token "$VERCEL_TOKEN" \
-            --scope "$VERCEL_ORG_ID"
+          if [ "${{ github.ref }}" == "refs/heads/main" ]; then
+            echo "Deploying to production..."
+            npx vercel deploy \
+              --prod \
+              --yes \
+              --token "$VERCEL_TOKEN" \
+              --scope "$VERCEL_ORG_ID"
+          else
+            echo "Deploying preview..."
+            npx vercel deploy \
+              --yes \
+              --token "$VERCEL_TOKEN" \
+              --scope "$VERCEL_ORG_ID"
+          fi
