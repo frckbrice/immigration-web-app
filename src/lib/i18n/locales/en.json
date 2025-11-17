@@ -208,7 +208,6 @@
     "myCases": "My Cases",
     "allCases": "All Cases",
     "caseDetails": "Case Details",
-    "status": "Status",
     "priority": "Priority",
     "serviceType": "Service Type",
     "referenceNumber": "Reference Number",
@@ -233,6 +232,9 @@
       "approved": "Approved",
       "rejected": "Rejected",
       "closed": "Closed"
+    },
+    "appointmentStatus": {
+      "SCHEDULED": "Scheduled"
     },
     "failedToUpdateStatus": "Failed to update case status. Please try again.",
     "caseMarkedAsClosed": "Case marked as closed.",
@@ -480,7 +482,6 @@
         "chatTooltip": "Start a real-time chat with this client",
         "emailTooltip": "Send a formal email to this client",
         "chat": "Chat",
-        "email": "Email",
         "viewDocument": "View Document",
         "downloadDocument": "Download Document",
         "approve": "Approve",
@@ -510,7 +511,8 @@
         "noteCannotBeEmpty": "Note cannot be empty",
         "noteSavedSuccessfully": "Internal note saved successfully",
         "failedToSaveNote": "Failed to save note",
-        "clientInfoNotAvailable": "Client information not available"
+        "clientInfoNotAvailable": "Client information not available",
+        "selectStatus": "Select status"
       },
       "selectStatus": "Select status",
       "advisor": "Advisor",
@@ -1101,7 +1103,7 @@
     "client_plural": "Clients",
     "clientCount": "{{count}} client",
     "clientCount_plural": "{{count}} clients",
-    "viewDetails": "View Details",
+   
     "viewCases": "View Cases",
     "contact": "Contact",
     "phone": "Phone",
@@ -1362,7 +1364,6 @@
       "general": "General",
       "active": "Active",
       "inactive": "Inactive",
-      "creating": "Creating...",
       "required": "Required",
       "editTemplate": "Edit Template",
       "duplicateTemplate": "Duplicate Template",

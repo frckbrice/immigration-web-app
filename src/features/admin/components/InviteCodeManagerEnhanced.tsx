@@ -165,11 +165,11 @@ export function InviteCodeManagerEnhanced() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
-            <Key className="h-8 w-8 text-primary" />
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold leading-tight flex items-center gap-2">
+            <Key className="h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8 text-primary" />
             {t('inviteCodes.management')}
           </h1>
-          <p className="text-muted-foreground mt-2">{t('inviteCodes.description')}</p>
+          <p className="text-xs sm:text-sm text-muted-foreground mt-1.5 sm:mt-2 leading-relaxed">{t('inviteCodes.description')}</p>
         </div>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>

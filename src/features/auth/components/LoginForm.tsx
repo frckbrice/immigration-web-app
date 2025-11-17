@@ -39,6 +39,7 @@ export function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [redirecting, setRedirecting] = useState(false);
+  const [eyeIconColor, setEyeIconColor] = useState('#ffffff');
   const loginMutation = useLogin();
   const googleSignInMutation = useGoogleSignIn();
   const { t } = useTranslation();
@@ -254,9 +255,15 @@ export function LoginForm() {
                             }}
                             onFocus={(e) => {
                               e.currentTarget.style.borderColor = '#ff4538';
+                              const bgColor = window.getComputedStyle(e.currentTarget).backgroundColor;
+                              const isWhite = bgColor === 'rgb(255, 255, 255)' || bgColor === 'white';
+                              setEyeIconColor(isWhite ? 'rgba(0, 0, 0, 0.7)' : '#ffffff');
                             }}
                             onBlur={(e) => {
                               e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                              const bgColor = window.getComputedStyle(e.currentTarget).backgroundColor;
+                              const isWhite = bgColor === 'rgb(255, 255, 255)' || bgColor === 'white';
+                              setEyeIconColor(isWhite ? 'rgba(0, 0, 0, 0.7)' : '#ffffff');
                             }}
                           />
                           <Button
@@ -265,14 +272,14 @@ export function LoginForm() {
                             size="sm"
                             className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
                             style={{
-                              color: '#ffffff',
+                              color: eyeIconColor,
                               backgroundColor: 'transparent',
                             }}
                             onMouseEnter={(e) => {
                               e.currentTarget.style.color = '#ff4538';
                             }}
                             onMouseLeave={(e) => {
-                              e.currentTarget.style.color = '#ffffff';
+                              e.currentTarget.style.color = eyeIconColor;
                             }}
                             onClick={() => setShowPassword(!showPassword)}
                           >

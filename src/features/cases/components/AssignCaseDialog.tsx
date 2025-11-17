@@ -164,28 +164,34 @@ export function AssignCaseDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto sm:max-h-[80vh]">
-        <DialogHeader>
-          <DialogTitle>{t('cases.dialogs.assignCase.title')}</DialogTitle>
-          <DialogDescription>{t('cases.dialogs.assignCase.description')}</DialogDescription>
+      <DialogContent 
+        className="max-w-2xl max-h-[95vh] overflow-y-auto sm:max-h-[90vh] w-[95vw] sm:w-full"
+        style={{ borderColor: '#ff4538', borderWidth: '1px', borderStyle: 'solid' }}
+      >
+        <DialogHeader className="pb-2 sm:pb-3">
+          <DialogTitle className="text-base sm:text-lg font-semibold leading-tight flex items-center gap-2">
+            <UserCheck className="h-4 w-4 sm:h-5 sm:w-5" style={{ color: '#ff4538' }} />
+            {t('cases.dialogs.assignCase.title')}
+          </DialogTitle>
+          <DialogDescription className="text-xs sm:text-sm leading-relaxed">{t('cases.dialogs.assignCase.description')}</DialogDescription>
         </DialogHeader>
 
         {/* Current Case Info */}
-        <div className="rounded-lg border p-4 bg-muted/50">
-          <div className="flex items-start justify-between">
-            <div>
-              <p className="text-sm font-medium">
+        <div className="rounded-lg border p-3 sm:p-4 bg-muted/50 space-y-2 sm:space-y-3" style={{ borderColor: 'rgba(255, 69, 56, 0.2)' }}>
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-0">
+            <div className="flex-1 min-w-0">
+              <p className="text-xs sm:text-sm font-medium break-words">
                 {t('cases.dialogs.assignCase.case')}: {caseData.referenceNumber}
               </p>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-xs sm:text-sm text-muted-foreground break-words">
                 {t('cases.dialogs.assignCase.client')}: {caseData.client?.firstName}{' '}
                 {caseData.client?.lastName}
               </p>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-xs sm:text-sm text-muted-foreground break-words">
                 {t('cases.dialogs.assignCase.service')}: {caseData.serviceType.replace(/_/g, ' ')}
               </p>
             </div>
-            <Badge variant="outline">{caseData.status}</Badge>
+            <Badge variant="outline" className="text-[10px] sm:text-xs w-fit">{caseData.status}</Badge>
           </div>
         </div>
 
@@ -339,7 +345,7 @@ export function AssignCaseDialog({
           )}
         </div>
 
-        <DialogFooter>
+        <DialogFooter className="flex-col sm:flex-row gap-2 sm:gap-0">
           <Button
             variant="outline"
             onClick={() => {
@@ -347,6 +353,20 @@ export function AssignCaseDialog({
               onOpenChange(false);
             }}
             disabled={assignCase.isPending}
+            className="w-full sm:w-auto text-xs sm:text-sm h-8 sm:h-9"
+            style={{
+              backgroundColor: 'transparent',
+              borderColor: 'rgba(255, 255, 255, 0.1)',
+              borderWidth: '1px',
+              borderStyle: 'solid',
+              color: 'inherit',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor = 'rgba(255, 69, 56, 0.5)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+            }}
           >
             {t('cases.dialogs.assignCase.cancel')}
           </Button>
@@ -355,15 +375,29 @@ export function AssignCaseDialog({
             disabled={
               !selectedAgentId || assignCase.isPending || !selectedAgent?.metrics.isAvailable
             }
+            className="w-full sm:w-auto text-xs sm:text-sm h-8 sm:h-9"
+            style={{
+              backgroundColor: '#361d22',
+              borderColor: '#ff4538',
+              borderWidth: '1px',
+              borderStyle: 'solid',
+              color: 'white',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.opacity = '0.9';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.opacity = '1';
+            }}
           >
             {assignCase.isPending ? (
               <>
-                <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                <RefreshCw className="mr-1.5 sm:mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4 animate-spin" style={{ color: '#ff4538' }} />
                 {t('cases.dialogs.assignCase.assigning')}
               </>
             ) : (
               <>
-                <UserCheck className="mr-2 h-4 w-4" />
+                <UserCheck className="mr-1.5 sm:mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4" style={{ color: '#ff4538' }} />
                 {t('cases.dialogs.assignCase.assignCase')}
               </>
             )}

@@ -262,6 +262,11 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                           ? unreadReceivedEmailsCount
                           : undefined;
 
+                      // Check if current path matches or starts with item href (for nested routes)
+                      const isActive =
+                        pathname === item.href ||
+                        (pathname.startsWith(item.href + '/') && item.href !== '/dashboard');
+
                       return (
                         <Link
                           key={item.href}
@@ -269,12 +274,12 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                           onClick={() => setMobileMenuOpen(false)}
                           className={cn(
                             'flex items-center justify-between space-x-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors cursor-pointer',
-                            pathname === item.href
+                            isActive
                               ? 'text-white'
                               : 'text-white/70 hover:bg-white/10 hover:text-white'
                           )}
                           style={
-                            pathname === item.href
+                            isActive
                               ? {
                                   backgroundColor: '#ff4538',
                                 }
@@ -310,13 +315,13 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
               </Sheet>
 
               <Link href="/dashboard" className="flex items-center space-x-3 cursor-pointer">
-                <div className="relative flex items-center justify-center w-12 h-12 rounded-lg bg-transparent dark:bg-white/10 dark:backdrop-blur-sm dark:border dark:border-white/20 p-1.5">
+                <div className="relative flex items-center justify-center w-14 h-14 sm:w-12 sm:h-12 rounded-lg bg-transparent dark:bg-white/10 dark:backdrop-blur-sm dark:border dark:border-white/20 p-1.5">
                   <Image
                     src="/images/app-logo.png"
                     alt="Patrick Travel Service"
-                    width={48}
-                    height={48}
-                    className="object-contain"
+                    width={56}
+                    height={56}
+                    className="object-contain w-full h-full"
                     priority
                   />
                 </div>
@@ -332,8 +337,8 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
             {/* Right Section - Language & User Info */}
             <div className="flex items-center space-x-3 sm:space-x-4">
               {/* Language Switcher */}
-              <div className="hidden sm:flex items-center space-x-2 text-white">
-                <LanguageSwitcher />
+              <div className="flex items-center space-x-2 text-white">
+                <LanguageSwitcher variant="light" />
               </div>
 
               <Separator orientation="vertical" className="h-6 hidden sm:block" />
@@ -349,7 +354,12 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                       />
                       <AvatarFallback
                         className="text-sm font-medium text-white"
-                        style={{ backgroundColor: '#091a24' }}
+                        style={{
+                          backgroundColor: '#091a24',
+                          borderColor: '#ff4538',
+                          borderWidth: '1px',
+                          borderStyle: 'solid',
+                        }}
                       >
                         {getInitials()}
                       </AvatarFallback>
@@ -428,12 +438,17 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                     ? unreadReceivedEmailsCount
                     : undefined;
 
+                // Check if current path matches or starts with item href (for nested routes)
+                const isActive =
+                  pathname === item.href ||
+                  (pathname.startsWith(item.href + '/') && item.href !== '/dashboard');
+
                 return (
                   <NavLink
                     key={item.href}
                     href={item.href}
                     icon={item.icon}
-                    isActive={pathname === item.href}
+                    isActive={isActive}
                     badge={badgeCount}
                   >
                     {item.title}

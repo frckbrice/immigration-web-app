@@ -404,8 +404,8 @@ export function DocumentsByCaseTable() {
         {/* Header */}
         <div className="flex justify-between items-start">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold">{t('documents.title')}</h1>
-            <p className="text-xs sm:text-sm text-muted-foreground mt-1 sm:mt-2">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold leading-tight">{t('documents.title')}</h1>
+            <p className="text-xs sm:text-sm text-muted-foreground mt-1.5 sm:mt-2 leading-relaxed">
               {isClient
                 ? t('documents.manageDocuments')
                 : user?.role === 'ADMIN'
@@ -475,7 +475,7 @@ export function DocumentsByCaseTable() {
                 className="mx-auto h-10 w-10 sm:h-12 sm:w-12 text-muted-foreground mb-3 sm:mb-4 opacity-50"
                 style={{ color: '#ff4538' }}
               />
-              <h3 className="text-base sm:text-lg font-semibold mb-1.5 sm:mb-2">
+              <h3 className="text-lg sm:text-xl font-semibold mb-1.5 sm:mb-2 leading-tight">
                 {t('documents.noDocumentsFound')}
               </h3>
               <p className="text-xs sm:text-sm text-muted-foreground">

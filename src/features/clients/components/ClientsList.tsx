@@ -61,8 +61,8 @@ export function ClientsList() {
       <Card style={{ borderColor: '#ff4538', borderWidth: '1px', borderStyle: 'solid' }}>
         <CardContent className="py-12 text-center">
           <Users className="mx-auto h-12 w-12 text-destructive mb-4 opacity-50" />
-          <h3 className="text-lg font-semibold mb-2">{t('clients.failedToLoad')}</h3>
-          <p className="text-muted-foreground">{t('clients.failedToLoadDescription')}</p>
+          <h3 className="text-lg sm:text-xl font-semibold mb-2 leading-tight">{t('clients.failedToLoad')}</h3>
+          <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">{t('clients.failedToLoadDescription')}</p>
         </CardContent>
       </Card>
     );
@@ -81,10 +81,10 @@ export function ClientsList() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold leading-tight">
             {user?.role === 'AGENT' ? t('clients.myClients') : t('clients.allClients')}
           </h1>
-          <p className="text-muted-foreground mt-2">
+          <p className="text-xs sm:text-sm text-muted-foreground mt-1.5 sm:mt-2 leading-relaxed">
             {user?.role === 'AGENT'
               ? t('clients.myClientsDescription')
               : t('clients.allClientsDescription')}
@@ -100,10 +100,10 @@ export function ClientsList() {
         <Card style={{ borderColor: '#ff4538', borderWidth: '1px', borderStyle: 'solid' }}>
           <CardContent className="py-12 text-center">
             <Users className="mx-auto h-12 w-12 text-muted-foreground mb-4 opacity-50" />
-            <h3 className="text-lg font-semibold mb-2">
+            <h3 className="text-lg sm:text-xl font-semibold mb-2 leading-tight">
               {searchQuery ? t('clients.noClientsFound') : t('clients.noClientsYet')}
             </h3>
-            <p className="text-muted-foreground">
+            <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
               {searchQuery ? t('clients.adjustFilters') : t('clients.clientsWillAppear')}
             </p>
           </CardContent>

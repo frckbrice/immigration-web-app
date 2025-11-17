@@ -570,18 +570,34 @@ export function InviteCodesTable({ onRefresh }: InviteCodesTableProps) {
               size="sm"
               onClick={() => table.setPageIndex(0)}
               disabled={!table.getCanPreviousPage()}
+              style={{
+                backgroundColor: 'transparent',
+                borderColor: 'rgba(255, 69, 56, 0.3)',
+                borderWidth: '1px',
+                borderStyle: 'solid',
+                color: 'white',
+              }}
+              className="disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <ChevronsLeft className="h-4 w-4" />
+              <ChevronsLeft className="h-4 w-4" style={{ color: 'white' }} />
             </Button>
             <Button
               variant="outline"
               size="sm"
               onClick={() => table.previousPage()}
               disabled={!table.getCanPreviousPage()}
+              style={{
+                backgroundColor: 'transparent',
+                borderColor: 'rgba(255, 69, 56, 0.3)',
+                borderWidth: '1px',
+                borderStyle: 'solid',
+                color: 'white',
+              }}
+              className="disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <ChevronLeft className="h-4 w-4" />
+              <ChevronLeft className="h-4 w-4" style={{ color: 'white' }} />
             </Button>
-            <span className="text-sm">
+            <span className="text-sm text-white">
               {t('inviteCodes.table.page', {
                 current: pagination.pageIndex + 1,
                 total: paginationMeta.totalPages,
@@ -592,16 +608,32 @@ export function InviteCodesTable({ onRefresh }: InviteCodesTableProps) {
               size="sm"
               onClick={() => table.nextPage()}
               disabled={!table.getCanNextPage()}
+              style={{
+                backgroundColor: 'transparent',
+                borderColor: 'rgba(255, 69, 56, 0.3)',
+                borderWidth: '1px',
+                borderStyle: 'solid',
+                color: 'white',
+              }}
+              className="disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <ChevronRight className="h-4 w-4" />
+              <ChevronRight className="h-4 w-4" style={{ color: 'white' }} />
             </Button>
             <Button
               variant="outline"
               size="sm"
               onClick={() => table.setPageIndex(paginationMeta.totalPages - 1)}
               disabled={!table.getCanNextPage()}
+              style={{
+                backgroundColor: 'transparent',
+                borderColor: 'rgba(255, 69, 56, 0.3)',
+                borderWidth: '1px',
+                borderStyle: 'solid',
+                color: 'white',
+              }}
+              className="disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <ChevronsRight className="h-4 w-4" />
+              <ChevronsRight className="h-4 w-4" style={{ color: 'white' }} />
             </Button>
           </div>
         </div>

@@ -401,7 +401,7 @@ export function ReceivedEmailsTable({ preselectedMessageId }: ReceivedEmailsTabl
     return (
       <Card style={{ borderColor: '#ff4538', borderWidth: '1px', borderStyle: 'solid' }}>
         <CardHeader>
-          <CardTitle className="text-lg font-semibold">Received Emails</CardTitle>
+          <CardTitle className="text-sm sm:text-base font-semibold">Received Emails</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           {[1, 2, 3].map((i) => (
@@ -416,7 +416,7 @@ export function ReceivedEmailsTable({ preselectedMessageId }: ReceivedEmailsTabl
     return (
       <Card style={{ borderColor: '#ff4538', borderWidth: '1px', borderStyle: 'solid' }}>
         <CardHeader>
-          <CardTitle className="text-lg font-semibold">Received Emails</CardTitle>
+          <CardTitle className="text-sm sm:text-base font-semibold">Received Emails</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="text-center py-8 text-muted-foreground">
@@ -433,8 +433,8 @@ export function ReceivedEmailsTable({ preselectedMessageId }: ReceivedEmailsTabl
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle className="text-lg font-semibold">Received Emails</CardTitle>
-            <p className="text-sm text-muted-foreground mt-1">
+            <CardTitle className="text-sm sm:text-base font-semibold">Received Emails</CardTitle>
+            <p className="text-xs sm:text-sm text-muted-foreground mt-1 leading-relaxed">
               Incoming emails and replies from clients
             </p>
           </div>
