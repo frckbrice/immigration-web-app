@@ -146,13 +146,13 @@ jobs:
 
 
   deploy:
-    name: Deploy to Vercel
+    name: Deploy to Vercel (Production)
     runs-on: ubuntu-latest
     # needs: [build, docker]
     needs: build
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/feature/'))
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     environment:
-      name: ${{ github.ref == 'refs/heads/main' && 'production' || 'preview' }}
+      name: production
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -186,17 +186,8 @@ jobs:
           npx vercel link --yes --project "$VERCEL_PROJECT_ID" --scope "$VERCEL_ORG_ID" --token "$VERCEL_TOKEN"
 
           echo "Deploying to Vercel..."
-          if [ "${{ github.ref }}" == "refs/heads/main" ]; then
-            echo "Deploying to production..."
-            npx vercel deploy \
-              --prod \
-              --yes \
-              --token "$VERCEL_TOKEN" \
-              --scope "$VERCEL_ORG_ID"
-          else
-            echo "Deploying preview..."
-            npx vercel deploy \
-              --yes \
-              --token "$VERCEL_TOKEN" \
-              --scope "$VERCEL_ORG_ID"
-          fi
+          npx vercel deploy \
+            --prod \
+            --yes \
+            --token "$VERCEL_TOKEN" \
+            --scope "$VERCEL_ORG_ID"
