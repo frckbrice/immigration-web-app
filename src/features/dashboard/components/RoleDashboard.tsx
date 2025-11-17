@@ -3,6 +3,7 @@
 import { useAuthStore } from '@/features/auth/store';
 import { useRouter } from 'next/navigation';
 import { useEffect, lazy, Suspense } from 'react';
+import { useTranslation } from 'react-i18next';
 
 // PERFORMANCE: Lazy load dashboard components to reduce initial bundle size
 const DashboardHome = lazy(() =>
@@ -14,11 +15,15 @@ const AgentDashboard = lazy(() =>
 
 // Loading fallback component
 function DashboardLoading() {
+  const { t } = useTranslation();
   return (
     <div className="flex h-screen items-center justify-center">
       <div className="text-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent mx-auto mb-4" />
-        <p className="text-muted-foreground">Loading dashboard...</p>
+        <div
+          className="h-8 w-8 animate-spin rounded-full border-4 border-t-transparent mx-auto mb-4"
+          style={{ borderColor: '#ff4538', borderTopColor: 'transparent' }}
+        />
+        <p className="text-white/70">{t('dashboard.loading')}</p>
       </div>
     </div>
   );

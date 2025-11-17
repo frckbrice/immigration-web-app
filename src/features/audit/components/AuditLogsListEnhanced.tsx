@@ -3,6 +3,7 @@
 import { useAuthStore } from '@/features/auth/store';
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 import { useActivityLogs, exportActivityLogs } from '../api';
 import {
   flexRender,
@@ -48,6 +49,7 @@ import { ActivityLog } from '../api/types';
 export function AuditLogsListEnhanced() {
   const { user, isLoading: isAuthLoading } = useAuthStore();
   const router = useRouter();
+  const { t } = useTranslation();
 
   // Filters state
   const [searchQuery, setSearchQuery] = useState('');
@@ -104,7 +106,7 @@ export function AuditLogsListEnhanced() {
 
     try {
       setIsExporting(true);
-      toast.info('Preparing export...');
+      toast.info(t('auditLogs.preparingExport'));
       await exportActivityLogs({
         search: searchQuery || undefined,
         action: actionFilter || undefined,
@@ -112,13 +114,13 @@ export function AuditLogsListEnhanced() {
         startDate: startDate || undefined,
         endDate: endDate || undefined,
       });
-      toast.success('Activity logs exported successfully');
+      toast.success(t('auditLogs.exportedSuccessfully'));
     } catch (error) {
-      toast.error('Failed to export activity logs');
+      toast.error(t('auditLogs.failedToExport'));
     } finally {
       setIsExporting(false);
     }
-  }, [searchQuery, actionFilter, userIdFilter, startDate, endDate, isExporting]);
+  }, [searchQuery, actionFilter, userIdFilter, startDate, endDate, isExporting, t]);
 
   // Clear all filters
   const handleClearFilters = useCallback(() => {
@@ -128,8 +130,8 @@ export function AuditLogsListEnhanced() {
     setStartDate('');
     setEndDate('');
     setCurrentPage(1);
-    toast.info('Filters cleared');
-  }, []);
+    toast.info(t('auditLogs.filtersCleared'));
+  }, [t]);
 
   // Get badge colors based on role - MOVED BEFORE EARLY RETURN
   const getRoleBadgeColor = useCallback((role: string) => {
@@ -162,7 +164,7 @@ export function AuditLogsListEnhanced() {
               onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
               className="-ml-4"
             >
-              Timestamp
+              {t('auditLogs.timestamp')}
               {column.getIsSorted() === 'asc' ? (
                 <ArrowUp className="ml-2 h-4 w-4" />
               ) : column.getIsSorted() === 'desc' ? (
@@ -193,7 +195,7 @@ export function AuditLogsListEnhanced() {
               onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
               className="-ml-4"
             >
-              User
+              {t('auditLogs.user')}
               {column.getIsSorted() === 'asc' ? (
                 <ArrowUp className="ml-2 h-4 w-4" />
               ) : column.getIsSorted() === 'desc' ? (
@@ -229,7 +231,7 @@ export function AuditLogsListEnhanced() {
               onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
               className="-ml-4"
             >
-              Action
+              {t('auditLogs.action')}
               {column.getIsSorted() === 'asc' ? (
                 <ArrowUp className="ml-2 h-4 w-4" />
               ) : column.getIsSorted() === 'desc' ? (
@@ -249,7 +251,7 @@ export function AuditLogsListEnhanced() {
       },
       {
         accessorKey: 'description',
-        header: 'Description',
+        header: t('auditLogs.descriptionColumn'),
         cell: ({ row }) => (
           <p className="text-sm max-w-md line-clamp-2">{row.original.description}</p>
         ),
@@ -257,7 +259,7 @@ export function AuditLogsListEnhanced() {
       },
       {
         accessorKey: 'ipAddress',
-        header: 'IP Address',
+        header: t('auditLogs.ipAddress'),
         cell: ({ row }) => (
           <span className="text-xs font-mono text-muted-foreground">
             {row.original.ipAddress || 'N/A'}
@@ -266,7 +268,7 @@ export function AuditLogsListEnhanced() {
         enableSorting: false,
       },
     ],
-    [formatTimestamp, getRoleBadgeColor]
+    [formatTimestamp, getRoleBadgeColor, t]
   );
 
   // Prepare data for table - MOVED BEFORE EARLY RETURNS
@@ -305,19 +307,26 @@ export function AuditLogsListEnhanced() {
         <div>
           <h1 className="text-3xl font-bold tracking-tight">
             <Shield className="inline-block mr-2 h-8 w-8 text-primary" />
-            Audit Logs
+            {t('auditLogs.title')}
           </h1>
-          <p className="text-muted-foreground mt-2">
-            Track all system activities and changes for security and compliance
-          </p>
+          <p className="text-muted-foreground mt-2">{t('auditLogs.trackAllActivities')}</p>
         </div>
-        <Card>
+        <Card style={{ borderColor: '#ff4538', borderWidth: '1px', borderStyle: 'solid' }}>
           <CardContent className="py-12 text-center">
             <AlertCircle className="mx-auto h-12 w-12 text-destructive mb-4" />
-            <p className="text-destructive mb-4">Failed to load activity logs. Please try again.</p>
-            <Button onClick={() => refetch()}>
+            <p className="text-destructive mb-4">{t('auditLogs.failedToLoad')}</p>
+            <Button
+              onClick={() => refetch()}
+              className="text-white"
+              style={{
+                backgroundColor: '#361d22',
+                borderColor: '#ff4538',
+                borderWidth: '1px',
+                borderStyle: 'solid',
+              }}
+            >
               <RefreshCw className="mr-2 h-4 w-4" />
-              Retry
+              {t('auditLogs.retry')}
             </Button>
           </CardContent>
         </Card>
@@ -332,25 +341,34 @@ export function AuditLogsListEnhanced() {
         <div>
           <h1 className="text-3xl font-bold tracking-tight">
             <Shield className="inline-block mr-2 h-8 w-8 text-primary" />
-            Audit Logs
+            {t('auditLogs.title')}
           </h1>
-          <p className="text-muted-foreground mt-2">
-            Track all system activities and changes for security and compliance
-          </p>
+          <p className="text-muted-foreground mt-2">{t('auditLogs.trackAllActivities')}</p>
         </div>
         <div className="flex items-center gap-2">
           <Badge variant="secondary" className="text-base px-4 py-2">
-            {totalLogs} {totalLogs === 1 ? 'entry' : 'entries'}
+            {t('auditLogs.entries', { count: totalLogs })}
           </Badge>
-          <Button onClick={handleExport} variant="outline" disabled={isExporting || isLoading}>
+          <Button
+            onClick={handleExport}
+            variant="outline"
+            disabled={isExporting || isLoading}
+            className="text-white"
+            style={{
+              backgroundColor: '#143240',
+              borderColor: 'rgba(255, 69, 56, 0.3)',
+              borderWidth: '1px',
+              borderStyle: 'solid',
+            }}
+          >
             <Download className={`mr-2 h-4 w-4 ${isExporting ? 'animate-pulse' : ''}`} />
-            {isExporting ? 'Exporting...' : 'Export'}
+            {isExporting ? t('auditLogs.exporting') : t('auditLogs.export')}
           </Button>
         </div>
       </div>
 
       {/* Filters */}
-      <Card>
+      <Card style={{ borderColor: '#ff4538', borderWidth: '1px', borderStyle: 'solid' }}>
         <CardContent className="pt-6">
           <div className="flex flex-col gap-4">
             {/* Search and Filter Button */}
@@ -358,7 +376,7 @@ export function AuditLogsListEnhanced() {
               <div className="relative flex-1">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
-                  placeholder="Search logs by action or description..."
+                  placeholder={t('auditLogs.searchLogsPlaceholder')}
                   className="pl-10"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
@@ -366,9 +384,18 @@ export function AuditLogsListEnhanced() {
               </div>
               <Popover open={filtersOpen} onOpenChange={setFiltersOpen}>
                 <PopoverTrigger asChild>
-                  <Button variant="outline" className="gap-2">
+                  <Button
+                    variant="outline"
+                    className="gap-2 text-white"
+                    style={{
+                      backgroundColor: '#143240',
+                      borderColor: 'rgba(255, 69, 56, 0.3)',
+                      borderWidth: '1px',
+                      borderStyle: 'solid',
+                    }}
+                  >
                     <Filter className="h-4 w-4" />
-                    Filters
+                    {t('auditLogs.filters')}
                     {hasActiveFilters && (
                       <Badge variant="secondary" className="ml-1 px-1.5 py-0.5 text-xs">
                         {[actionFilter, userIdFilter, startDate, endDate].filter(Boolean).length}
@@ -379,16 +406,18 @@ export function AuditLogsListEnhanced() {
                 <PopoverContent className="w-80" align="end">
                   <div className="space-y-4">
                     <div>
-                      <h4 className="font-medium text-sm mb-3">Filter Activity Logs</h4>
+                      <h4 className="font-medium text-sm mb-3">
+                        {t('auditLogs.filterActivityLogs')}
+                      </h4>
                     </div>
 
                     <div className="space-y-2">
                       <Label htmlFor="action-filter" className="text-sm">
-                        Action
+                        {t('auditLogs.actionFilter')}
                       </Label>
                       <Input
                         id="action-filter"
-                        placeholder="e.g. LOGIN, UPDATE, DELETE"
+                        placeholder={t('auditLogs.actionFilterPlaceholder')}
                         value={actionFilter}
                         onChange={(e) => setActionFilter(e.target.value)}
                       />
@@ -396,11 +425,11 @@ export function AuditLogsListEnhanced() {
 
                     <div className="space-y-2">
                       <Label htmlFor="user-filter" className="text-sm">
-                        User ID
+                        {t('auditLogs.userIdFilter')}
                       </Label>
                       <Input
                         id="user-filter"
-                        placeholder="Filter by user ID"
+                        placeholder={t('auditLogs.userIdFilterPlaceholder')}
                         value={userIdFilter}
                         onChange={(e) => setUserIdFilter(e.target.value)}
                       />
@@ -408,7 +437,7 @@ export function AuditLogsListEnhanced() {
 
                     <div className="space-y-2">
                       <Label htmlFor="start-date" className="text-sm">
-                        Start Date
+                        {t('auditLogs.startDate')}
                       </Label>
                       <Input
                         id="start-date"
@@ -420,7 +449,7 @@ export function AuditLogsListEnhanced() {
 
                     <div className="space-y-2">
                       <Label htmlFor="end-date" className="text-sm">
-                        End Date
+                        {t('auditLogs.endDate')}
                       </Label>
                       <Input
                         id="end-date"
@@ -434,19 +463,47 @@ export function AuditLogsListEnhanced() {
                       <Button
                         variant="outline"
                         size="sm"
-                        className="flex-1"
+                        className="flex-1 text-white"
                         onClick={handleClearFilters}
+                        style={{
+                          backgroundColor: '#143240',
+                          borderColor: 'rgba(255, 69, 56, 0.3)',
+                          borderWidth: '1px',
+                          borderStyle: 'solid',
+                        }}
                       >
-                        Clear All
+                        {t('auditLogs.clearAll')}
                       </Button>
-                      <Button size="sm" className="flex-1" onClick={() => setFiltersOpen(false)}>
-                        Apply
+                      <Button
+                        size="sm"
+                        className="flex-1 text-white"
+                        onClick={() => setFiltersOpen(false)}
+                        style={{
+                          backgroundColor: '#143240',
+                          borderColor: 'rgba(255, 69, 56, 0.3)',
+                          borderWidth: '1px',
+                          borderStyle: 'solid',
+                        }}
+                      >
+                        {t('auditLogs.apply')}
                       </Button>
                     </div>
                   </div>
                 </PopoverContent>
               </Popover>
-              <Button variant="ghost" size="icon" onClick={() => refetch()} disabled={isLoading}>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => refetch()}
+                disabled={isLoading}
+                className="text-white"
+                style={{
+                  backgroundColor: '#143240',
+                  borderColor: 'rgba(255, 69, 56, 0.3)',
+                  borderWidth: '1px',
+                  borderStyle: 'solid',
+                }}
+              >
                 <RefreshCw className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
               </Button>
             </div>
@@ -456,7 +513,7 @@ export function AuditLogsListEnhanced() {
               <div className="flex flex-wrap gap-2">
                 {actionFilter && (
                   <Badge variant="secondary" className="gap-1">
-                    Action: {actionFilter}
+                    {t('auditLogs.actionBadge', { action: actionFilter })}
                     <button
                       onClick={() => setActionFilter('')}
                       className="ml-1 hover:bg-secondary-foreground/20 rounded-full"
@@ -467,7 +524,7 @@ export function AuditLogsListEnhanced() {
                 )}
                 {userIdFilter && (
                   <Badge variant="secondary" className="gap-1">
-                    User: {userIdFilter.substring(0, 8)}...
+                    {t('auditLogs.userBadge', { userId: userIdFilter.substring(0, 8) })}
                     <button
                       onClick={() => setUserIdFilter('')}
                       className="ml-1 hover:bg-secondary-foreground/20 rounded-full"
@@ -478,7 +535,7 @@ export function AuditLogsListEnhanced() {
                 )}
                 {startDate && (
                   <Badge variant="secondary" className="gap-1">
-                    From: {new Date(startDate).toLocaleDateString()}
+                    {t('auditLogs.fromBadge', { date: new Date(startDate).toLocaleDateString() })}
                     <button
                       onClick={() => setStartDate('')}
                       className="ml-1 hover:bg-secondary-foreground/20 rounded-full"
@@ -489,7 +546,7 @@ export function AuditLogsListEnhanced() {
                 )}
                 {endDate && (
                   <Badge variant="secondary" className="gap-1">
-                    To: {new Date(endDate).toLocaleDateString()}
+                    {t('auditLogs.toBadge', { date: new Date(endDate).toLocaleDateString() })}
                     <button
                       onClick={() => setEndDate('')}
                       className="ml-1 hover:bg-secondary-foreground/20 rounded-full"
@@ -506,32 +563,44 @@ export function AuditLogsListEnhanced() {
 
       {/* Logs Table */}
       {logs.length === 0 ? (
-        <Card>
+        <Card style={{ borderColor: '#ff4538', borderWidth: '1px', borderStyle: 'solid' }}>
           <CardContent className="py-12 text-center">
             <FileText className="mx-auto h-12 w-12 text-muted-foreground mb-4 opacity-50" />
             <h3 className="text-lg font-semibold mb-2">
-              {hasActiveFilters ? 'No logs match your filters' : 'No activity logs yet'}
+              {hasActiveFilters
+                ? t('auditLogs.noLogsMatchFilters')
+                : t('auditLogs.noActivityLogsYet')}
             </h3>
             <p className="text-muted-foreground mb-4">
               {hasActiveFilters
-                ? 'Try adjusting your filter criteria'
-                : 'Activity logs will appear here as users perform actions in the system'}
+                ? t('auditLogs.tryAdjustingFilters')
+                : t('auditLogs.activityLogsWillAppear')}
             </p>
             {hasActiveFilters && (
-              <Button variant="outline" onClick={handleClearFilters}>
-                Clear Filters
+              <Button
+                variant="outline"
+                onClick={handleClearFilters}
+                className="text-white"
+                style={{
+                  backgroundColor: '#143240',
+                  borderColor: 'rgba(255, 69, 56, 0.3)',
+                  borderWidth: '1px',
+                  borderStyle: 'solid',
+                }}
+              >
+                {t('auditLogs.clearFilters')}
               </Button>
             )}
           </CardContent>
         </Card>
       ) : (
-        <Card>
+        <Card style={{ borderColor: '#ff4538', borderWidth: '1px', borderStyle: 'solid' }}>
           <CardHeader>
             <CardTitle className="flex items-center">
               <FileText className="mr-2 h-5 w-5" />
-              Activity Logs
+              {t('auditLogs.activityLogs')}
             </CardTitle>
-            <CardDescription>Detailed audit trail of all system activities</CardDescription>
+            <CardDescription>{t('auditLogs.detailedAuditTrail')}</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="rounded-md border">
@@ -567,49 +636,49 @@ export function AuditLogsListEnhanced() {
           {/* Pagination */}
           {totalPages > 1 && (
             <CardContent className="border-t py-4">
-              <div className="flex items-center justify-between gap-4">
-                <div className="text-sm text-muted-foreground">
-                  Page {currentPage} of {totalPages} ({totalLogs} total entries)
-                </div>
-                <div className="flex items-center gap-2">
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-0 mt-4">
+                <p className="text-xs sm:text-sm text-muted-foreground order-2 sm:order-1">
+                  {t('auditLogs.pageOfTotal', {
+                    current: currentPage,
+                    total: totalPages,
+                    totalLogs,
+                  })}
+                </p>
+                <div className="flex items-center gap-2 order-1 sm:order-2 w-full sm:w-auto justify-center sm:justify-end">
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                     disabled={currentPage === 1 || isLoading}
+                    className="text-white h-9 sm:h-8 px-3 sm:px-3"
+                    style={{
+                      backgroundColor: '#143240',
+                      borderColor: 'rgba(255, 69, 56, 0.3)',
+                      borderWidth: '1px',
+                      borderStyle: 'solid',
+                    }}
                   >
-                    <ChevronLeft className="h-4 w-4" />
-                    <span className="hidden sm:inline ml-1">Previous</span>
+                    <ChevronLeft className="h-4 w-4 sm:mr-1" />
+                    <span className="hidden sm:inline">{t('auditLogs.previous')}</span>
                   </Button>
-                  <div className="flex items-center gap-1">
-                    {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                      // Show pages around current page
-                      const page = i + 1;
-                      if (totalPages <= 5) return page;
-                      if (currentPage <= 3) return page;
-                      if (currentPage >= totalPages - 2) return totalPages - 4 + i;
-                      return currentPage - 2 + i;
-                    }).map((page) => (
-                      <Button
-                        key={page}
-                        variant={currentPage === page ? 'default' : 'outline'}
-                        size="sm"
-                        onClick={() => setCurrentPage(page)}
-                        className="w-9 h-9 p-0"
-                        disabled={isLoading}
-                      >
-                        {page}
-                      </Button>
-                    ))}
-                  </div>
+                  <span className="text-xs sm:text-sm text-muted-foreground px-2 whitespace-nowrap">
+                    Page {currentPage} of {totalPages}
+                  </span>
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
                     disabled={currentPage === totalPages || isLoading}
+                    className="text-white h-9 sm:h-8 px-3 sm:px-3"
+                    style={{
+                      backgroundColor: '#143240',
+                      borderColor: 'rgba(255, 69, 56, 0.3)',
+                      borderWidth: '1px',
+                      borderStyle: 'solid',
+                    }}
                   >
-                    <span className="hidden sm:inline mr-1">Next</span>
-                    <ChevronRight className="h-4 w-4" />
+                    <span className="hidden sm:inline">{t('auditLogs.next')}</span>
+                    <ChevronRight className="h-4 w-4 sm:ml-1" />
                   </Button>
                 </div>
               </div>

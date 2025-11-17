@@ -25,7 +25,7 @@ async function executeScheduledDeletions(): Promise<void> {
   try {
     // Dynamic import to avoid loading heavy dependencies during module initialization
     const { processScheduledDeletions, scheduleInactiveUsersForDeletion } = await import(
-      './scheduled-deletions-handler.js'
+      '@/lib/cron/scheduled-deletions-handler'
     );
 
     // Step 1: Schedule inactive users for deletion (if they meet criteria)

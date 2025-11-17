@@ -95,7 +95,7 @@ export function FAQManagement() {
   // Only ADMIN can access this page
   if (user?.role !== 'ADMIN') {
     return (
-      <Card>
+      <Card style={{ borderColor: '#ff4538', borderWidth: '1px', borderStyle: 'solid' }}>
         <CardContent className="py-12 text-center">
           <HelpCircle className="mx-auto h-12 w-12 text-destructive mb-4 opacity-50" />
           <h3 className="text-lg font-semibold mb-2">
@@ -113,7 +113,7 @@ export function FAQManagement() {
 
   if (error) {
     return (
-      <Card>
+      <Card style={{ borderColor: '#ff4538', borderWidth: '1px', borderStyle: 'solid' }}>
         <CardContent className="py-12 text-center">
           <HelpCircle className="mx-auto h-12 w-12 text-destructive mb-4 opacity-50" />
           <h3 className="text-lg font-semibold mb-2">{t('faq.managementPage.loadError.title')}</h3>
@@ -200,7 +200,15 @@ export function FAQManagement() {
               value={languageFilter}
               onValueChange={(value: 'all' | 'en' | 'fr') => setLanguageFilter(value)}
             >
-              <SelectTrigger className="w-32">
+              <SelectTrigger
+                className="w-32 text-white"
+                style={{
+                  backgroundColor: '#143240',
+                  borderColor: 'rgba(255, 69, 56, 0.3)',
+                  borderWidth: '1px',
+                  borderStyle: 'solid',
+                }}
+              >
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -213,7 +221,16 @@ export function FAQManagement() {
               </SelectContent>
             </Select>
           </div>
-          <Button onClick={() => setIsCreateDialogOpen(true)}>
+          <Button
+            onClick={() => setIsCreateDialogOpen(true)}
+            className="text-white"
+            style={{
+              backgroundColor: '#361d22',
+              borderColor: '#ff4538',
+              borderWidth: '1px',
+              borderStyle: 'solid',
+            }}
+          >
             <Plus className="mr-2 h-4 w-4" />
             {t('faq.managementPage.addButton')}
           </Button>
@@ -222,19 +239,19 @@ export function FAQManagement() {
 
       {/* Stats */}
       <div className="grid gap-4 md:grid-cols-3">
-        <Card>
+        <Card style={{ borderColor: '#ff4538', borderWidth: '1px', borderStyle: 'solid' }}>
           <CardHeader className="pb-3">
             <CardDescription>{t('faq.managementPage.stats.total')}</CardDescription>
             <CardTitle className="text-3xl">{faqs.length}</CardTitle>
           </CardHeader>
         </Card>
-        <Card>
+        <Card style={{ borderColor: '#ff4538', borderWidth: '1px', borderStyle: 'solid' }}>
           <CardHeader className="pb-3">
             <CardDescription>{t('faq.managementPage.stats.active')}</CardDescription>
             <CardTitle className="text-3xl">{faqs.filter((f) => f.isActive).length}</CardTitle>
           </CardHeader>
         </Card>
-        <Card>
+        <Card style={{ borderColor: '#ff4538', borderWidth: '1px', borderStyle: 'solid' }}>
           <CardHeader className="pb-3">
             <CardDescription>{t('faq.managementPage.stats.categories')}</CardDescription>
             <CardTitle className="text-3xl">{categories.length}</CardTitle>
@@ -286,7 +303,15 @@ export function FAQManagement() {
                   value={formData.category}
                   onValueChange={(value) => setFormData({ ...formData, category: value })}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger
+                    className="text-white"
+                    style={{
+                      backgroundColor: '#143240',
+                      borderColor: 'rgba(255, 69, 56, 0.3)',
+                      borderWidth: '1px',
+                      borderStyle: 'solid',
+                    }}
+                  >
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -306,7 +331,15 @@ export function FAQManagement() {
                     setFormData({ ...formData, language: value })
                   }
                 >
-                  <SelectTrigger>
+                  <SelectTrigger
+                    className="text-white"
+                    style={{
+                      backgroundColor: '#143240',
+                      borderColor: 'rgba(255, 69, 56, 0.3)',
+                      borderWidth: '1px',
+                      borderStyle: 'solid',
+                    }}
+                  >
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -343,12 +376,29 @@ export function FAQManagement() {
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setIsCreateDialogOpen(false)}>
+            <Button
+              variant="outline"
+              onClick={() => setIsCreateDialogOpen(false)}
+              className="text-white"
+              style={{
+                backgroundColor: '#143240',
+                borderColor: 'rgba(255, 69, 56, 0.3)',
+                borderWidth: '1px',
+                borderStyle: 'solid',
+              }}
+            >
               {t('common.cancel')}
             </Button>
             <Button
               onClick={handleCreate}
               disabled={createMutation.isPending || !formData.question || !formData.answer}
+              className="text-white"
+              style={{
+                backgroundColor: '#361d22',
+                borderColor: '#ff4538',
+                borderWidth: '1px',
+                borderStyle: 'solid',
+              }}
             >
               {createMutation.isPending
                 ? t('faq.managementPage.createDialog.submitting')
@@ -390,7 +440,15 @@ export function FAQManagement() {
                   value={formData.category}
                   onValueChange={(value) => setFormData({ ...formData, category: value })}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger
+                    className="text-white"
+                    style={{
+                      backgroundColor: '#361d22',
+                      borderColor: '#ff4538',
+                      borderWidth: '1px',
+                      borderStyle: 'solid',
+                    }}
+                  >
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -410,7 +468,15 @@ export function FAQManagement() {
                     setFormData({ ...formData, language: value })
                   }
                 >
-                  <SelectTrigger>
+                  <SelectTrigger
+                    className="text-white"
+                    style={{
+                      backgroundColor: '#361d22',
+                      borderColor: '#ff4538',
+                      borderWidth: '1px',
+                      borderStyle: 'solid',
+                    }}
+                  >
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -447,12 +513,29 @@ export function FAQManagement() {
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
+            <Button
+              variant="outline"
+              onClick={() => setIsEditDialogOpen(false)}
+              className="text-white"
+              style={{
+                backgroundColor: '#143240',
+                borderColor: 'rgba(255, 69, 56, 0.3)',
+                borderWidth: '1px',
+                borderStyle: 'solid',
+              }}
+            >
               {t('common.cancel')}
             </Button>
             <Button
               onClick={handleEdit}
               disabled={updateMutation.isPending || !formData.question || !formData.answer}
+              className="text-white"
+              style={{
+                backgroundColor: '#361d22',
+                borderColor: '#ff4538',
+                borderWidth: '1px',
+                borderStyle: 'solid',
+              }}
             >
               {updateMutation.isPending
                 ? t('faq.managementPage.editDialog.submitting')

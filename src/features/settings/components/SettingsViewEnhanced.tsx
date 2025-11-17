@@ -4,7 +4,7 @@
 
 import { memo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ThemeSwitcher } from '@/components/layout/ThemeSwitcher';
+// import { ThemeSwitcher } from '@/components/layout/ThemeSwitcher'; // Commented out - theme no longer needed
 import { LanguageSwitcher } from '@/components/layout/LanguageSwitcher';
 import {
   Settings,
@@ -104,22 +104,22 @@ export function SettingsView() {
   const handlePasswordChange = async () => {
     // Validation
     if (!passwordForm.current || !passwordForm.new || !passwordForm.confirm) {
-      toast.error('All password fields are required');
+      toast.error(t('settings.securitySettings.allFieldsRequired'));
       return;
     }
 
     if (passwordForm.new !== passwordForm.confirm) {
-      toast.error('New passwords do not match');
+      toast.error(t('settings.securitySettings.passwordsDoNotMatch'));
       return;
     }
 
     if (passwordForm.new.length < 8) {
-      toast.error('Password must be at least 8 characters');
+      toast.error(t('settings.securitySettings.passwordMinLength'));
       return;
     }
 
     if (passwordForm.current === passwordForm.new) {
-      toast.error('New password must be different from current password');
+      toast.error(t('settings.securitySettings.passwordMustBeDifferent'));
       return;
     }
 
@@ -129,7 +129,7 @@ export function SettingsView() {
     const hasNumber = /[0-9]/.test(passwordForm.new);
 
     if (!hasUpperCase || !hasLowerCase || !hasNumber) {
-      toast.error('Password must contain uppercase, lowercase, and numbers');
+      toast.error(t('settings.securitySettings.passwordRequirements'));
       return;
     }
 
@@ -162,11 +162,9 @@ export function SettingsView() {
           <h1 className="text-3xl font-bold tracking-tight">{t('settings.title')}</h1>
           <p className="text-muted-foreground mt-2">{t('settings.subtitle')}</p>
         </div>
-        <Card>
+        <Card style={{ borderColor: '#ff4538', borderWidth: '1px', borderStyle: 'solid' }}>
           <CardContent className="pt-6">
-            <p className="text-destructive">
-              Failed to load settings. Please try refreshing the page.
-            </p>
+            <p className="text-destructive">{t('settings.errorLoadingSettings')}</p>
           </CardContent>
         </Card>
       </div>
@@ -182,16 +180,17 @@ export function SettingsView() {
       </div>
 
       {/* Appearance */}
-      <Card>
+      <Card style={{ borderColor: '#ff4538', borderWidth: '1px', borderStyle: 'solid' }}>
         <CardHeader>
           <CardTitle className="flex items-center">
-            <Palette className="mr-2 h-5 w-5" />
+            <Palette className="mr-2 h-5 w-5" style={{ color: '#ff4538' }} />
             {t('settings.appearance.title')}
           </CardTitle>
           <CardDescription>{t('settings.appearance.description')}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="flex items-center justify-between">
+          {/* Theme section commented out - no longer needed */}
+          {/* <div className="flex items-center justify-between">
             <div className="space-y-0.5">
               <Label>{t('settings.appearance.themeLabel')}</Label>
               <p className="text-sm text-muted-foreground">
@@ -200,7 +199,7 @@ export function SettingsView() {
             </div>
             <ThemeSwitcher />
           </div>
-          <Separator />
+          <Separator /> */}
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
               <Label>{t('settings.appearance.languageLabel')}</Label>
@@ -208,16 +207,16 @@ export function SettingsView() {
                 {t('settings.appearance.languageDescription')}
               </p>
             </div>
-            <LanguageSwitcher />
+            <LanguageSwitcher variant="dark" />
           </div>
         </CardContent>
       </Card>
 
       {/* Notifications */}
-      <Card>
+      <Card style={{ borderColor: '#ff4538', borderWidth: '1px', borderStyle: 'solid' }}>
         <CardHeader>
           <CardTitle className="flex items-center">
-            <Bell className="mr-2 h-5 w-5" />
+            <Bell className="mr-2 h-5 w-5" style={{ color: '#ff4538' }} />
             {t('settings.notificationSettings.title')}
           </CardTitle>
           <CardDescription>{t('settings.notificationSettings.description')}</CardDescription>
@@ -250,10 +249,10 @@ export function SettingsView() {
       </Card>
 
       {/* Security */}
-      <Card>
+      <Card style={{ borderColor: '#ff4538', borderWidth: '1px', borderStyle: 'solid' }}>
         <CardHeader>
           <CardTitle className="flex items-center">
-            <Shield className="mr-2 h-5 w-5" />
+            <Shield className="mr-2 h-5 w-5" style={{ color: '#ff4538' }} />
             {t('settings.securitySettings.title')}
           </CardTitle>
           <CardDescription>{t('settings.securitySettings.description')}</CardDescription>
@@ -263,7 +262,10 @@ export function SettingsView() {
           {isOAuthUser ? (
             <div className="border rounded-lg p-4 bg-muted/50">
               <div className="flex gap-3">
-                <AlertCircle className="h-5 w-5 text-muted-foreground flex-shrink-0 mt-0.5" />
+                <AlertCircle
+                  className="h-5 w-5 flex-shrink-0 mt-0.5"
+                  style={{ color: '#ff4538' }}
+                />
                 <div>
                   <h4 className="font-medium text-sm mb-1">
                     {t('settings.securitySettings.oauthPasswordTitle')}
@@ -286,8 +288,19 @@ export function SettingsView() {
           ) : (
             <Dialog open={isPasswordDialogOpen} onOpenChange={setIsPasswordDialogOpen}>
               <DialogTrigger asChild>
-                <Button type="button" variant="outline" className="w-full justify-start">
-                  <Lock className="mr-2 h-4 w-4" />
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full justify-start hover:border-[#ff4538]/50 transition-colors"
+                  style={{
+                    backgroundColor: 'transparent',
+                    borderColor: 'rgba(255, 69, 56, 0.3)',
+                    borderWidth: '1px',
+                    borderStyle: 'solid',
+                    color: 'inherit',
+                  }}
+                >
+                  <Lock className="mr-2 h-4 w-4" style={{ color: '#ff4538' }} />
                   {t('settings.securitySettings.changePassword')}
                 </Button>
               </DialogTrigger>
@@ -382,7 +395,7 @@ export function SettingsView() {
                       </Button>
                     </div>
                     <p className="text-xs text-muted-foreground">
-                      Must be at least 8 characters with uppercase, lowercase, and numbers
+                      {t('settings.securitySettings.passwordHint')}
                     </p>
                   </div>
                   <div className="space-y-2">
@@ -436,6 +449,14 @@ export function SettingsView() {
                       setIsPasswordDialogOpen(false);
                     }}
                     disabled={changePassword.isPending}
+                    className="hover:border-[#ff4538]/50 transition-colors disabled:opacity-50"
+                    style={{
+                      backgroundColor: 'transparent',
+                      borderColor: 'rgba(255, 69, 56, 0.3)',
+                      borderWidth: '1px',
+                      borderStyle: 'solid',
+                      color: 'inherit',
+                    }}
                   >
                     {t('settings.securitySettings.cancel')}
                   </Button>
@@ -443,9 +464,16 @@ export function SettingsView() {
                     type="button"
                     onClick={handlePasswordChange}
                     disabled={changePassword.isPending}
+                    className="text-white hover:opacity-90 transition-opacity disabled:opacity-50"
+                    style={{
+                      backgroundColor: '#361d22',
+                      borderColor: '#ff4538',
+                      borderWidth: '1px',
+                      borderStyle: 'solid',
+                    }}
                   >
                     {changePassword.isPending
-                      ? 'Updating...'
+                      ? t('settings.securitySettings.updating')
                       : t('settings.securitySettings.updatePassword')}
                   </Button>
                 </DialogFooter>
@@ -453,13 +481,35 @@ export function SettingsView() {
             </Dialog>
           )}
 
-          <Button variant="outline" className="w-full justify-start">
-            <Smartphone className="mr-2 h-4 w-4" />
-            {t('settings.securitySettings.twoFactorAuth')}
-            <Badge variant="secondary" className="ml-auto">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
+            <Button
+              variant="outline"
+              className="w-full sm:w-auto justify-start hover:border-[#ff4538]/50 transition-colors"
+              style={{
+                backgroundColor: 'transparent',
+                borderColor: 'rgba(255, 69, 56, 0.3)',
+                borderWidth: '1px',
+                borderStyle: 'solid',
+                color: 'inherit',
+              }}
+            >
+              <Smartphone className="mr-2 h-4 w-4 shrink-0" style={{ color: '#ff4538' }} />
+              <span className="truncate">{t('settings.securitySettings.twoFactorAuth')}</span>
+            </Button>
+            <Badge
+              variant="secondary"
+              className="shrink-0 text-xs sm:text-sm"
+              style={{
+                backgroundColor: '#361d22',
+                borderColor: 'rgba(255, 69, 56, 0.3)',
+                borderWidth: '1px',
+                borderStyle: 'solid',
+                color: 'white',
+              }}
+            >
               {t('settings.securitySettings.comingSoon')}
             </Badge>
-          </Button>
+          </div>
         </CardContent>
       </Card>
     </div>

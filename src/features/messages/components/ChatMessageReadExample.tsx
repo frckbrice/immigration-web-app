@@ -2,6 +2,7 @@
 // This demonstrates how to use the new hooks in a chat component
 
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useMarkMessageRead, useMarkMessagesRead } from '@/features/messages/api/mutations';
 import { Button } from '@/components/ui/button';
 import { Check, CheckCheck } from 'lucide-react';
@@ -23,6 +24,7 @@ interface ChatMessageProps {
 }
 
 export function ChatMessage({ message, chatRoomId, currentUserId }: ChatMessageProps) {
+  const { t } = useTranslation();
   const markMessageRead = useMarkMessageRead();
   const markMessagesRead = useMarkMessagesRead();
 
@@ -51,7 +53,7 @@ export function ChatMessage({ message, chatRoomId, currentUserId }: ChatMessageP
           {message.isRead ? (
             <div className="flex items-center gap-1 text-green-600">
               <CheckCheck className="h-4 w-4" />
-              <span className="text-xs">Read</span>
+              <span className="text-xs">{t('messages.read') || 'Read'}</span>
               {message.readAt && (
                 <span className="text-xs text-gray-500">
                   {new Date(message.readAt).toLocaleTimeString()}
@@ -61,7 +63,7 @@ export function ChatMessage({ message, chatRoomId, currentUserId }: ChatMessageP
           ) : (
             <div className="flex items-center gap-1 text-gray-500">
               <Check className="h-4 w-4" />
-              <span className="text-xs">Sent</span>
+              <span className="text-xs">{t('messages.sent') || 'Sent'}</span>
             </div>
           )}
         </div>
@@ -74,7 +76,7 @@ export function ChatMessage({ message, chatRoomId, currentUserId }: ChatMessageP
           onClick={handleMarkAsRead}
           disabled={markMessageRead.isPending}
         >
-          Mark as Read
+          {t('messages.markAsRead') || 'Mark as Read'}
         </Button>
       )}
     </div>
@@ -89,6 +91,7 @@ interface ChatListProps {
 }
 
 export function ChatList({ messages, chatRoomId, currentUserId }: ChatListProps) {
+  const { t } = useTranslation();
   const markMessagesRead = useMarkMessagesRead();
 
   const handleMarkAllAsRead = () => {
@@ -111,7 +114,7 @@ export function ChatList({ messages, chatRoomId, currentUserId }: ChatListProps)
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold">Messages</h3>
+        <h3 className="text-lg font-semibold">{t('messages.title') || 'Messages'}</h3>
         {unreadCount > 0 && (
           <Button
             size="sm"
@@ -119,7 +122,8 @@ export function ChatList({ messages, chatRoomId, currentUserId }: ChatListProps)
             onClick={handleMarkAllAsRead}
             disabled={markMessagesRead.isPending}
           >
-            Mark All as Read ({unreadCount})
+            {t('messages.markAllAsRead', { count: unreadCount }) ||
+              `Mark All as Read (${unreadCount})`}
           </Button>
         )}
       </div>

@@ -28,6 +28,7 @@ export interface PaymentRecord {
   caseNumber?: string;
   date: string;
   status: 'completed' | 'pending' | 'failed' | 'refunded' | string;
+  stripeIntentId?: string;
 }
 
 export interface RefundResponse {

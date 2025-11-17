@@ -61,6 +61,40 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ received: true });
       }
 
+      // Idempotency check: Skip if payment is already completed
+      if (payment.status === 'COMPLETED') {
+        logger.info('Payment already completed (idempotency)', {
+          paymentId: payment.id,
+          paymentIntentId: paymentIntent.id,
+          userId: payment.userId,
+        });
+
+        // Double-check user status is set
+        if (!payment.user.hasPaid) {
+          const tier = paymentIntent.metadata?.tier;
+          if (tier && (tier === 'basic' || tier === 'standard' || tier === 'premium')) {
+            const tierUpper = tier.toUpperCase();
+            await prisma.user.update({
+              where: { id: payment.userId },
+              data: {
+                hasPaid: true,
+                subscriptionTier: tierUpper,
+                paymentDate: payment.createdAt, // Use original payment date
+                subscriptionExpiresAt: new Date(
+                  payment.createdAt.getTime() + 365 * 24 * 60 * 60 * 1000
+                ),
+              },
+            });
+            logger.info('User payment status synced (idempotency)', {
+              userId: payment.userId,
+              tier: tierUpper,
+            });
+          }
+        }
+
+        return NextResponse.json({ received: true });
+      }
+
       // Update payment status
       await prisma.payment.update({
         where: { id: payment.id },
@@ -74,25 +108,32 @@ export async function POST(request: NextRequest) {
       const userId = payment.userId;
 
       if (tier && (tier === 'basic' || tier === 'standard' || tier === 'premium')) {
-        // Update user payment status
-        // Store tier in uppercase for consistency (BASIC, STANDARD, PREMIUM)
+        // Idempotency check: Only update if user hasn't paid or tier doesn't match
         const tierUpper = tier.toUpperCase();
-        await prisma.user.update({
-          where: { id: userId },
-          data: {
-            hasPaid: true,
-            subscriptionTier: tierUpper,
-            paymentDate: new Date(),
-            // Set expiration to 1 year from now (for tracking purposes, even though it's one-time)
-            subscriptionExpiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
-          },
-        });
+        if (!payment.user.hasPaid || payment.user.subscriptionTier !== tierUpper) {
+          await prisma.user.update({
+            where: { id: userId },
+            data: {
+              hasPaid: true,
+              subscriptionTier: tierUpper,
+              paymentDate: new Date(),
+              // Set expiration to 1 year from now (for tracking purposes, even though it's one-time)
+              subscriptionExpiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
+            },
+          });
 
-        logger.info('User payment status updated', {
-          userId,
-          tier,
-          paymentIntentId: paymentIntent.id,
-        });
+          logger.info('User payment status updated', {
+            userId,
+            tier,
+            paymentIntentId: paymentIntent.id,
+          });
+        } else {
+          logger.info('User payment status already set (idempotency)', {
+            userId,
+            tier: tierUpper,
+            paymentIntentId: paymentIntent.id,
+          });
+        }
       } else {
         logger.warn('Invalid or missing tier in payment metadata', {
           paymentIntentId: paymentIntent.id,

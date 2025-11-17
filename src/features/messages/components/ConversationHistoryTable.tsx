@@ -130,9 +130,11 @@ export function ConversationHistoryTable() {
     const now = new Date();
     const diffHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60));
 
-    if (diffHours < 1) return 'Just now';
-    if (diffHours < 24) return `${diffHours}h ago`;
-    if (diffHours < 48) return 'Yesterday';
+    if (diffHours < 1) return t('messages.justNow') || t('notifications.justNow') || 'Just now';
+    if (diffHours < 24)
+      return t('notifications.hoursAgo', { hours: diffHours }) || `${diffHours}h ago`;
+    if (diffHours < 48)
+      return t('messages.yesterday') || t('notifications.yesterday') || 'Yesterday';
     return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
   };
 
@@ -160,21 +162,21 @@ export function ConversationHistoryTable() {
         return (
           <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
             <Mail className="h-3 w-3 mr-1" />
-            Email
+            {t('messages.email') || 'Email'}
           </Badge>
         );
       case 'CHAT':
         return (
           <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
             <MessageSquare className="h-3 w-3 mr-1" />
-            Chat
+            {t('messages.chat') || 'Chat'}
           </Badge>
         );
       case 'MIXED':
         return (
           <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-200">
             <MessageCircle className="h-3 w-3 mr-1" />
-            Mixed
+            {t('messages.mixed') || 'Mixed'}
           </Badge>
         );
       default:
@@ -212,101 +214,148 @@ export function ConversationHistoryTable() {
     return (
       <Card>
         <CardContent className="py-12 text-center">
-          <p className="text-red-600">Failed to load conversation history</p>
-          <p className="text-sm text-muted-foreground mt-2">Please try again later</p>
+          <p className="text-red-600">
+            {t('messages.failedToLoadHistory') || 'Failed to load conversation history'}
+          </p>
+          <p className="text-sm text-muted-foreground mt-2">
+            {t('common.tryAgainLater') || 'Please try again later'}
+          </p>
         </CardContent>
       </Card>
     );
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Statistics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
-        <Card className="p-4">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-medium text-muted-foreground">Total Conversations</span>
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-2 sm:gap-3">
+        <Card
+          className="p-2.5 sm:p-4"
+          style={{ borderColor: '#ff4538', borderWidth: '1px', borderStyle: 'solid' }}
+        >
+          <div className="flex items-center justify-between mb-1 sm:mb-2">
+            <span className="text-[10px] sm:text-xs font-medium text-muted-foreground truncate pr-1">
+              {t('messages.totalConversations') || 'Total Conversations'}
+            </span>
           </div>
-          <div className="flex items-baseline gap-2">
-            <span className="text-2xl font-bold">{stats.totalConversations}</span>
-          </div>
-        </Card>
-
-        <Card className="p-4">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-medium text-muted-foreground">Email Threads</span>
-            <Mail className="h-3.5 w-3.5 text-blue-600" />
-          </div>
-          <div className="flex items-baseline gap-2">
-            <span className="text-2xl font-bold">{stats.emailConversations}</span>
+          <div className="flex items-baseline gap-1 sm:gap-2">
+            <span className="text-lg sm:text-2xl font-bold">{stats.totalConversations}</span>
           </div>
         </Card>
 
-        <Card className="p-4">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-medium text-muted-foreground">Chat Sessions</span>
-            <MessageSquare className="h-3.5 w-3.5 text-green-600" />
+        <Card
+          className="p-2.5 sm:p-4"
+          style={{ borderColor: '#ff4538', borderWidth: '1px', borderStyle: 'solid' }}
+        >
+          <div className="flex items-center justify-between mb-1 sm:mb-2">
+            <span className="text-[10px] sm:text-xs font-medium text-muted-foreground truncate pr-1">
+              {t('messages.emailThreads') || 'Email Threads'}
+            </span>
+            <Mail className="h-3 w-3 sm:h-3.5 sm:w-3.5 shrink-0" style={{ color: '#ff4538' }} />
           </div>
-          <div className="flex items-baseline gap-2">
-            <span className="text-2xl font-bold">{stats.chatConversations}</span>
-          </div>
-        </Card>
-
-        <Card className="p-4">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-medium text-muted-foreground">Total Messages</span>
-          </div>
-          <div className="flex items-baseline gap-2">
-            <span className="text-2xl font-bold">{stats.totalMessages}</span>
+          <div className="flex items-baseline gap-1 sm:gap-2">
+            <span className="text-lg sm:text-2xl font-bold">{stats.emailConversations}</span>
           </div>
         </Card>
 
-        <Card className="p-4">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-medium text-muted-foreground">Unread Messages</span>
+        <Card
+          className="p-2.5 sm:p-4"
+          style={{ borderColor: '#ff4538', borderWidth: '1px', borderStyle: 'solid' }}
+        >
+          <div className="flex items-center justify-between mb-1 sm:mb-2">
+            <span className="text-[10px] sm:text-xs font-medium text-muted-foreground truncate pr-1">
+              {t('messages.chatSessions') || 'Chat Sessions'}
+            </span>
+            <MessageSquare
+              className="h-3 w-3 sm:h-3.5 sm:w-3.5 shrink-0"
+              style={{ color: '#ff4538' }}
+            />
           </div>
-          <div className="flex items-baseline gap-2">
-            <span className="text-2xl font-bold text-orange-600">{stats.unreadMessages}</span>
+          <div className="flex items-baseline gap-1 sm:gap-2">
+            <span className="text-lg sm:text-2xl font-bold">{stats.chatConversations}</span>
+          </div>
+        </Card>
+
+        <Card
+          className="p-2.5 sm:p-4"
+          style={{ borderColor: '#ff4538', borderWidth: '1px', borderStyle: 'solid' }}
+        >
+          <div className="flex items-center justify-between mb-1 sm:mb-2">
+            <span className="text-[10px] sm:text-xs font-medium text-muted-foreground truncate pr-1">
+              {t('messages.totalMessages') || 'Total Messages'}
+            </span>
+          </div>
+          <div className="flex items-baseline gap-1 sm:gap-2">
+            <span className="text-lg sm:text-2xl font-bold">{stats.totalMessages}</span>
+          </div>
+        </Card>
+
+        <Card
+          className="p-2.5 sm:p-4 col-span-2 md:col-span-1"
+          style={{ borderColor: '#ff4538', borderWidth: '1px', borderStyle: 'solid' }}
+        >
+          <div className="flex items-center justify-between mb-1 sm:mb-2">
+            <span className="text-[10px] sm:text-xs font-medium text-muted-foreground truncate pr-1">
+              {t('messages.unreadMessages') || 'Unread Messages'}
+            </span>
+          </div>
+          <div className="flex items-baseline gap-1 sm:gap-2">
+            <span className="text-lg sm:text-2xl font-bold text-orange-600">
+              {stats.unreadMessages}
+            </span>
           </div>
         </Card>
       </div>
 
       {/* Filters */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg">Conversation History</CardTitle>
+      <Card style={{ borderColor: '#ff4538', borderWidth: '1px', borderStyle: 'solid' }}>
+        <CardHeader className="pb-3 sm:pb-6">
+          <CardTitle className="text-base sm:text-lg">
+            {t('messages.conversationHistory') || 'Conversation History'}
+          </CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="flex flex-col sm:flex-row gap-4">
+        <CardContent className="pt-0">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
             {/* Search */}
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Search
+                className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 sm:h-4 sm:w-4"
+                style={{ color: '#ff4538' }}
+              />
               <Input
-                placeholder="Search conversations..."
+                placeholder={t('messages.searchConversations') || 'Search conversations...'}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10"
+                className="pl-9 sm:pl-10 h-10 sm:h-11 text-sm sm:text-base"
               />
             </div>
 
             {/* Type Filter */}
             <Select value={typeFilter} onValueChange={(value: any) => setTypeFilter(value)}>
-              <SelectTrigger className="w-full sm:w-[200px]">
-                <Filter className="h-4 w-4 mr-2" />
-                <SelectValue placeholder="Filter by type" />
+              <SelectTrigger
+                className="w-full sm:w-[200px] h-10 sm:h-11 text-white [&_svg]:!text-[#ff4538]"
+                style={{
+                  backgroundColor: '#143240',
+                  borderColor: 'rgba(255, 69, 56, 0.3)',
+                  borderWidth: '1px',
+                  borderStyle: 'solid',
+                }}
+              >
+                <Filter className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-2 shrink-0" />
+                <SelectValue placeholder={t('messages.filterByType') || 'Filter by type'} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Types</SelectItem>
+                <SelectItem value="all">{t('messages.allTypes') || 'All Types'}</SelectItem>
                 <SelectItem value="EMAIL">
                   <div className="flex items-center gap-2">
                     <Mail className="h-4 w-4" />
-                    Email Only
+                    {t('messages.emailOnly') || 'Email Only'}
                   </div>
                 </SelectItem>
                 <SelectItem value="CHAT">
                   <div className="flex items-center gap-2">
                     <MessageSquare className="h-4 w-4" />
-                    Chat Only
+                    {t('messages.chatOnly') || 'Chat Only'}
                   </div>
                 </SelectItem>
               </SelectContent>
@@ -316,16 +365,22 @@ export function ConversationHistoryTable() {
       </Card>
 
       {/* Conversations Table */}
-      <Card>
+      <Card style={{ borderColor: '#ff4538', borderWidth: '1px', borderStyle: 'solid' }}>
         <CardContent className="p-0">
           {conversations.length === 0 ? (
-            <div className="py-12 text-center">
-              <MessageCircle className="mx-auto h-12 w-12 text-muted-foreground mb-4 opacity-50" />
-              <h3 className="text-lg font-semibold">No conversations found</h3>
-              <p className="text-sm text-muted-foreground mt-2">
+            <div className="py-8 sm:py-12 text-center px-4">
+              <MessageCircle
+                className="mx-auto h-10 w-10 sm:h-12 sm:w-12 text-muted-foreground mb-3 sm:mb-4 opacity-50"
+                style={{ color: '#ff4538' }}
+              />
+              <h3 className="text-base sm:text-lg font-semibold">
+                {t('messages.noConversationsFound') || 'No conversations found'}
+              </h3>
+              <p className="text-xs sm:text-sm text-muted-foreground mt-1 sm:mt-2">
                 {searchQuery
-                  ? 'Try adjusting your search or filters'
-                  : 'Start messaging with clients to see conversations here'}
+                  ? t('messages.tryAdjustingSearch') || 'Try adjusting your search or filters'
+                  : t('messages.startMessagingClients') ||
+                    'Start messaging with clients to see conversations here'}
               </p>
             </div>
           ) : (
@@ -333,35 +388,54 @@ export function ConversationHistoryTable() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Participant</TableHead>
-                    <TableHead>Type</TableHead>
-                    <TableHead>Last Message</TableHead>
-                    <TableHead>Case</TableHead>
-                    <TableHead className="text-center">Messages</TableHead>
-                    <TableHead className="text-center">Unread</TableHead>
-                    <TableHead>Last Activity</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
+                    <TableHead className="text-xs sm:text-sm">
+                      {t('messages.participant') || 'Participant'}
+                    </TableHead>
+                    <TableHead className="text-xs sm:text-sm">
+                      {t('messages.type') || 'Type'}
+                    </TableHead>
+                    <TableHead className="text-xs sm:text-sm hidden sm:table-cell">
+                      {t('messages.lastMessage') || 'Last Message'}
+                    </TableHead>
+                    <TableHead className="text-xs sm:text-sm hidden md:table-cell">
+                      {t('cases.referenceNumber') || 'Case'}
+                    </TableHead>
+                    <TableHead className="text-center text-xs sm:text-sm">
+                      {t('messages.messages') || 'Messages'}
+                    </TableHead>
+                    <TableHead className="text-center text-xs sm:text-sm">
+                      {t('messages.unread') || 'Unread'}
+                    </TableHead>
+                    <TableHead className="text-xs sm:text-sm hidden lg:table-cell">
+                      {t('messages.lastActivity') || 'Last Activity'}
+                    </TableHead>
+                    <TableHead className="text-right text-xs sm:text-sm">
+                      {t('common.actions') || 'Actions'}
+                    </TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {conversations.map((conversation) => (
                     <TableRow key={conversation.id} className="hover:bg-muted/50">
                       {/* Participant */}
-                      <TableCell>
-                        <div className="flex items-center gap-3">
-                          <Avatar className="h-9 w-9">
-                            <AvatarFallback className="text-xs">
+                      <TableCell className="py-2 sm:py-4">
+                        <div className="flex items-center gap-2 sm:gap-3">
+                          <Avatar className="h-7 w-7 sm:h-9 sm:w-9 shrink-0">
+                            <AvatarFallback className="text-[10px] sm:text-xs">
                               {getInitials(conversation.participantName)}
                             </AvatarFallback>
                           </Avatar>
-                          <div className="min-w-0">
-                            <p className="font-medium text-sm truncate">
+                          <div className="min-w-0 flex-1">
+                            <p className="font-medium text-xs sm:text-sm truncate">
                               {conversation.participantName}
                             </p>
-                            <p className="text-xs text-muted-foreground truncate">
+                            <p className="text-[10px] sm:text-xs text-muted-foreground truncate">
                               {conversation.participantEmail}
                             </p>
-                            <Badge variant="outline" className="text-xs mt-1">
+                            <Badge
+                              variant="outline"
+                              className="text-[10px] sm:text-xs mt-0.5 sm:mt-1 h-4 sm:h-5 px-1 sm:px-1.5"
+                            >
                               {conversation.participantRole}
                             </Badge>
                           </div>
@@ -369,21 +443,27 @@ export function ConversationHistoryTable() {
                       </TableCell>
 
                       {/* Type */}
-                      <TableCell>
+                      <TableCell className="py-2 sm:py-4">
                         {getConversationTypeBadge(conversation.conversationType)}
                       </TableCell>
 
                       {/* Last Message */}
-                      <TableCell>
+                      <TableCell className="py-2 sm:py-4 hidden sm:table-cell">
                         <div className="max-w-xs">
-                          <p className="text-sm truncate">{conversation.lastMessage}</p>
-                          <div className="flex items-center gap-1 mt-1">
+                          <p className="text-xs sm:text-sm truncate">{conversation.lastMessage}</p>
+                          <div className="flex items-center gap-1 mt-0.5 sm:mt-1">
                             {conversation.lastMessageType === 'EMAIL' ? (
-                              <Mail className="h-3 w-3 text-muted-foreground" />
+                              <Mail
+                                className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-muted-foreground shrink-0"
+                                style={{ color: '#ff4538' }}
+                              />
                             ) : (
-                              <MessageSquare className="h-3 w-3 text-muted-foreground" />
+                              <MessageSquare
+                                className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-muted-foreground shrink-0"
+                                style={{ color: '#ff4538' }}
+                              />
                             )}
-                            <span className="text-xs text-muted-foreground">
+                            <span className="text-[10px] sm:text-xs text-muted-foreground">
                               {conversation.lastMessageType}
                             </span>
                           </div>
@@ -391,11 +471,14 @@ export function ConversationHistoryTable() {
                       </TableCell>
 
                       {/* Case */}
-                      <TableCell>
+                      <TableCell className="py-2 sm:py-4 hidden md:table-cell">
                         {conversation.caseReference ? (
                           <div className="flex items-center gap-1">
-                            <Briefcase className="h-3 w-3 text-muted-foreground" />
-                            <span className="text-sm font-medium">
+                            <Briefcase
+                              className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-muted-foreground shrink-0"
+                              style={{ color: '#ff4538' }}
+                            />
+                            <span className="text-xs sm:text-sm font-medium truncate">
                               {conversation.caseReference}
                             </span>
                           </div>
@@ -405,14 +488,19 @@ export function ConversationHistoryTable() {
                       </TableCell>
 
                       {/* Message Count */}
-                      <TableCell className="text-center">
-                        <Badge variant="secondary">{conversation.messageCount}</Badge>
+                      <TableCell className="text-center py-2 sm:py-4">
+                        <Badge
+                          variant="secondary"
+                          className="text-xs sm:text-sm h-5 sm:h-6 px-1.5 sm:px-2"
+                        >
+                          {conversation.messageCount}
+                        </Badge>
                       </TableCell>
 
                       {/* Unread Count */}
-                      <TableCell className="text-center">
+                      <TableCell className="text-center py-2 sm:py-4">
                         {conversation.unreadCount > 0 ? (
-                          <Badge className="bg-orange-500 hover:bg-orange-600">
+                          <Badge className="bg-orange-500 hover:bg-orange-600 text-xs sm:text-sm h-5 sm:h-6 px-1.5 sm:px-2">
                             {conversation.unreadCount}
                           </Badge>
                         ) : (
@@ -421,35 +509,54 @@ export function ConversationHistoryTable() {
                       </TableCell>
 
                       {/* Last Activity */}
-                      <TableCell>
-                        <div className="flex items-center gap-1 text-sm">
-                          <Calendar className="h-3 w-3 text-muted-foreground" />
-                          <span className="text-muted-foreground">
+                      <TableCell className="py-2 sm:py-4 hidden lg:table-cell">
+                        <div className="flex items-center gap-1 text-xs sm:text-sm">
+                          <Calendar
+                            className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-muted-foreground shrink-0"
+                            style={{ color: '#ff4538' }}
+                          />
+                          <span className="text-muted-foreground truncate">
                             {formatDate(conversation.lastMessageTime)}
                           </span>
                         </div>
                       </TableCell>
 
                       {/* Actions */}
-                      <TableCell className="text-right">
-                        <div className="flex justify-end gap-2">
+                      <TableCell className="text-right py-2 sm:py-4">
+                        <div className="flex justify-end gap-1 sm:gap-2">
                           <Button
                             variant="ghost"
                             size="sm"
                             onClick={() => handleStartChat(conversation)}
-                            className="gap-1"
+                            className="gap-1 h-7 sm:h-8 px-2 sm:px-3 text-white"
+                            style={{
+                              backgroundColor: '#143240',
+                              borderColor: 'rgba(255, 69, 56, 0.3)',
+                              borderWidth: '1px',
+                              borderStyle: 'solid',
+                            }}
                           >
-                            <MessageSquare className="h-3 w-3" />
-                            <span className="hidden sm:inline">Chat</span>
+                            <MessageSquare className="h-3 w-3 shrink-0" />
+                            <span className="hidden sm:inline text-xs sm:text-sm">
+                              {t('messages.chat') || 'Chat'}
+                            </span>
                           </Button>
                           <Button
                             variant="ghost"
                             size="sm"
                             onClick={() => handleSendEmail(conversation)}
-                            className="gap-1"
+                            className="gap-1 h-7 sm:h-8 px-2 sm:px-3 text-white"
+                            style={{
+                              backgroundColor: '#143240',
+                              borderColor: 'rgba(255, 69, 56, 0.3)',
+                              borderWidth: '1px',
+                              borderStyle: 'solid',
+                            }}
                           >
-                            <Send className="h-3 w-3" />
-                            <span className="hidden sm:inline">Email</span>
+                            <Send className="h-3 w-3 shrink-0" />
+                            <span className="hidden sm:inline text-xs sm:text-sm">
+                              {t('messages.email') || 'Email'}
+                            </span>
                           </Button>
                         </div>
                       </TableCell>
@@ -464,8 +571,14 @@ export function ConversationHistoryTable() {
 
       {/* Pagination Info */}
       {data?.pagination && data.pagination.total > 0 && (
-        <div className="text-sm text-muted-foreground text-center">
-          Showing {conversations.length} of {data.pagination.total} conversations
+        <div className="text-xs sm:text-sm text-muted-foreground text-center">
+          {conversations.length === data.pagination.total
+            ? t('messages.allConversations', { total: data.pagination.total }) ||
+              `${data.pagination.total} ${data.pagination.total === 1 ? 'conversation' : 'conversations'}`
+            : t('messages.showingConversations', {
+                showing: conversations.length,
+                total: data.pagination.total,
+              }) || `Showing ${conversations.length} of ${data.pagination.total} conversations`}
         </div>
       )}
     </div>

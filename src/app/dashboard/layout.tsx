@@ -6,7 +6,6 @@ import { useAuthStore } from '@/features/auth/store';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useLogout } from '@/features/auth/api/useAuth';
-import { ThemeSwitcher } from '@/components/layout/ThemeSwitcher';
 import { LanguageSwitcher } from '@/components/layout/LanguageSwitcher';
 import { useTranslation } from 'react-i18next';
 import {
@@ -23,7 +22,7 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import {
   DropdownMenu,
@@ -74,46 +73,117 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   // Check payment status for CLIENT users
   useEffect(() => {
     if (!isLoading && isAuthenticated && user) {
+      logger.info('[DashboardLayout] Checking payment status', {
+        userId: user.id,
+        role: user.role,
+        pathname,
+      });
+
       // AGENT and ADMIN bypass payment requirement
       if (user.role === 'AGENT' || user.role === 'ADMIN') {
+        logger.info('[DashboardLayout] User bypasses payment check (AGENT/ADMIN)', {
+          userId: user.id,
+          role: user.role,
+        });
         return;
       }
 
-      // Prevent redirect loops - don't check if already on checkout page
+      // Prevent redirect loops - don't check if already on checkout page or success page
       if (pathname === '/checkout' || pathname.startsWith('/checkout/')) {
+        logger.info('[DashboardLayout] Skipping payment check - already on checkout page', {
+          userId: user.id,
+          pathname,
+        });
         return;
       }
 
       // Check payment status for CLIENT users
       const checkPaymentStatus = async () => {
         try {
+          logger.info('[DashboardLayout] Calling payment status API', {
+            userId: user.id,
+            role: user.role,
+          });
+
           const response = await apiClient.get('/api/payments/status');
-          if (response.data.success) {
+
+          logger.info('[DashboardLayout] Payment status API response received', {
+            userId: user.id,
+            success: response.data.success,
+            hasData: !!response.data.data,
+            responseData: response.data.data,
+          });
+
+          if (response.data.success && response.data.data) {
             const paymentData = response.data.data;
-            if (!paymentData.hasPaid && !paymentData.bypassed) {
-              // Only redirect if not already on checkout page
+            const hasPaid = paymentData.hasPaid === true;
+            const bypassed = paymentData.bypassed === true;
+
+            logger.info('[DashboardLayout] Payment status check result', {
+              userId: user.id,
+              role: user.role,
+              hasPaid: paymentData.hasPaid,
+              hasPaidBoolean: hasPaid,
+              bypassed: paymentData.bypassed,
+              bypassedBoolean: bypassed,
+              willRedirect: !hasPaid && !bypassed,
+            });
+
+            // Only redirect if user hasn't paid and isn't bypassed
+            if (!hasPaid && !bypassed) {
               if (pathname !== '/checkout' && !pathname.startsWith('/checkout/')) {
+                logger.info('[DashboardLayout] Redirecting to checkout - payment required', {
+                  userId: user.id,
+                  hasPaid: paymentData.hasPaid,
+                  bypassed: paymentData.bypassed,
+                });
                 router.push('/checkout');
               }
+            } else {
+              logger.info('[DashboardLayout] Payment verified - allowing access', {
+                userId: user.id,
+                hasPaid: paymentData.hasPaid,
+                bypassed: paymentData.bypassed,
+              });
             }
+          } else {
+            logger.warn('[DashboardLayout] Payment status API returned invalid response', {
+              userId: user.id,
+              success: response.data.success,
+              hasData: !!response.data.data,
+            });
           }
         } catch (error) {
-          logger.error('Failed to check payment status', error);
-          // On error, allow access (fail open) - payment check can be retried
+          logger.error('[DashboardLayout] Failed to check payment status', error, {
+            userId: user.id,
+            role: user.role,
+          });
+          // On error, redirect to checkout to be safe
+          if (pathname !== '/checkout' && !pathname.startsWith('/checkout/')) {
+            router.push('/checkout');
+          }
         }
       };
 
-      checkPaymentStatus();
+      // Check payment status after a short delay
+      const delayTimer = setTimeout(() => {
+        checkPaymentStatus();
+      }, 1000);
+
+      return () => clearTimeout(delayTimer);
     }
   }, [isLoading, isAuthenticated, user, router, pathname]);
 
   // Show loading state while checking authentication
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div
+        className="min-h-screen flex items-center justify-center"
+        style={{ backgroundColor: '#091a24' }}
+      >
         <div className="text-center">
-          <Loader2 className="h-12 w-12 animate-spin text-primary mx-auto" />
-          <p className="mt-4 text-muted-foreground" suppressHydrationWarning>
+          <Loader2 className="h-12 w-12 animate-spin mx-auto" style={{ color: '#ff4538' }} />
+          <p className="mt-4 text-white/70" suppressHydrationWarning>
             {t('common.loading')}
           </p>
         </div>
@@ -124,10 +194,13 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   // Show loading state while redirecting to login
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div
+        className="min-h-screen flex items-center justify-center"
+        style={{ backgroundColor: '#091a24' }}
+      >
         <div className="text-center">
-          <Loader2 className="h-12 w-12 animate-spin text-primary mx-auto" />
-          <p className="mt-4 text-muted-foreground" suppressHydrationWarning>
+          <Loader2 className="h-12 w-12 animate-spin mx-auto" style={{ color: '#ff4538' }} />
+          <p className="mt-4 text-white/70" suppressHydrationWarning>
             {t('dashboard.redirectingToLogin')}
           </p>
         </div>
@@ -151,9 +224,12 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen" style={{ backgroundColor: '#091a24' }}>
       {/* Top Navigation */}
-      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <header
+        className="sticky top-0 z-50 w-full border-b backdrop-blur supports-[backdrop-filter]:bg-opacity-60"
+        style={{ backgroundColor: '#091a24', borderColor: '#ff4538' }}
+      >
         <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
             {/* Logo Section */}
@@ -161,13 +237,23 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
               {/* Mobile Menu Button */}
               <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
                 <SheetTrigger asChild>
-                  <Button variant="ghost" size="icon" className="md:hidden">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="md:hidden text-white hover:bg-white/10"
+                  >
                     <Menu className="h-5 w-5" />
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="left" className="w-64">
+                <SheetContent
+                  side="left"
+                  className="w-64"
+                  style={{ backgroundColor: '#091a24', borderColor: 'rgba(255, 69, 56, 0.1)' }}
+                >
                   <SheetHeader>
-                    <SheetTitle className="text-left">{t('dashboard.navigation')}</SheetTitle>
+                    <SheetTitle className="text-left text-white">
+                      {t('dashboard.navigation')}
+                    </SheetTitle>
                   </SheetHeader>
                   <nav className="mt-6 space-y-2">
                     {allNavItems.map((item) => {
@@ -184,9 +270,16 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                           className={cn(
                             'flex items-center justify-between space-x-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors cursor-pointer',
                             pathname === item.href
-                              ? 'bg-primary text-primary-foreground'
-                              : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                              ? 'text-white'
+                              : 'text-white/70 hover:bg-white/10 hover:text-white'
                           )}
+                          style={
+                            pathname === item.href
+                              ? {
+                                  backgroundColor: '#ff4538',
+                                }
+                              : undefined
+                          }
                         >
                           <div className="flex items-center space-x-3">
                             <item.icon className="h-4 w-4" />
@@ -204,49 +297,60 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                       );
                     })}
                   </nav>
-                  <Separator className="my-4" />
+                  <Separator
+                    className="my-4"
+                    style={{ backgroundColor: 'rgba(255, 69, 56, 0.1)' }}
+                  />
                   <div className="space-y-3">
-                    <div className="flex items-center space-x-2 px-4">
+                    <div className="flex items-center space-x-2 px-4 text-white">
                       <LanguageSwitcher />
-                      <ThemeSwitcher />
                     </div>
                   </div>
                 </SheetContent>
               </Sheet>
 
               <Link href="/dashboard" className="flex items-center space-x-3 cursor-pointer">
-                <div className="relative flex items-center justify-center w-10 h-10 rounded-lg bg-white dark:bg-white p-1.5">
+                <div className="relative flex items-center justify-center w-12 h-12 rounded-lg bg-transparent dark:bg-white/10 dark:backdrop-blur-sm dark:border dark:border-white/20 p-1.5">
                   <Image
                     src="/images/app-logo.png"
                     alt="Patrick Travel Service"
-                    width={40}
-                    height={40}
+                    width={48}
+                    height={48}
                     className="object-contain"
                     priority
                   />
                 </div>
-                <span className="hidden font-bold sm:inline-block text-primary text-lg">
+                <span
+                  className="hidden font-bold sm:inline-block text-lg"
+                  style={{ color: '#ff4538' }}
+                >
                   Patrick Travel Service
                 </span>
               </Link>
             </div>
 
-            {/* Right Section - Theme, Language & User Info */}
+            {/* Right Section - Language & User Info */}
             <div className="flex items-center space-x-3 sm:space-x-4">
-              {/* Theme & Language Switchers */}
-              <div className="hidden sm:flex items-center space-x-2">
+              {/* Language Switcher */}
+              <div className="hidden sm:flex items-center space-x-2 text-white">
                 <LanguageSwitcher />
-                <ThemeSwitcher />
               </div>
 
               <Separator orientation="vertical" className="h-6 hidden sm:block" />
 
-              {/* User Profile Dropdown - Shows only initials */}
+              {/* User Profile Dropdown - Shows profile picture with initials fallback */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="h-auto p-1">
                     <Avatar className="h-9 w-9">
-                      <AvatarFallback className="text-sm font-medium">
+                      <AvatarImage
+                        src={user?.profilePicture || undefined}
+                        alt={`${user?.firstName} ${user?.lastName}`}
+                      />
+                      <AvatarFallback
+                        className="text-sm font-medium text-white"
+                        style={{ backgroundColor: '#091a24' }}
+                      >
                         {getInitials()}
                       </AvatarFallback>
                     </Avatar>
@@ -310,7 +414,10 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
 
       <div className="flex">
         {/* Sidebar */}
-        <aside className="w-64 border-r bg-background min-h-[calc(100vh-4rem)] hidden md:block">
+        <aside
+          className="w-64 border-r min-h-[calc(100vh-4rem)] hidden md:block"
+          style={{ backgroundColor: '#091a24', borderColor: '#ff4538' }}
+        >
           <div className="w-full max-w-7xl mx-auto">
             <nav className="p-4 space-y-2">
               {/* Role-Based Navigation */}
@@ -338,8 +445,11 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 bg-muted/10">
-          <div className="mx-auto max-w-7xl">{children}</div>
+        <main
+          className="flex-1 p-4 sm:p-6 lg:p-8 overflow-x-hidden"
+          style={{ backgroundColor: '#0a1f2e' }}
+        >
+          <div className="mx-auto max-w-7xl w-full text-white">{children}</div>
         </main>
       </div>
     </div>
@@ -365,10 +475,15 @@ const NavLink = memo(function NavLink({
       href={href}
       className={cn(
         'flex items-center justify-between space-x-3 px-4 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer',
-        isActive
-          ? 'bg-primary text-primary-foreground'
-          : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+        isActive ? 'text-white' : 'text-white/70 hover:bg-white/10 hover:text-white'
       )}
+      style={
+        isActive
+          ? {
+              backgroundColor: '#ff4538',
+            }
+          : undefined
+      }
     >
       <div className="flex items-center space-x-3">
         <Icon className="h-4 w-4" />

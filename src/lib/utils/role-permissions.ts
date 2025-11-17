@@ -117,7 +117,7 @@ export const navigationItems: NavItem[] = [
     title: 'FAQ',
     href: '/dashboard/faq',
     icon: HelpCircle,
-    roles: ['AGENT', 'ADMIN'],
+    roles: ['ADMIN'],
     description: 'Manage FAQ content',
   },
   {

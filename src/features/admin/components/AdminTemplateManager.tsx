@@ -196,7 +196,7 @@ export function AdminTemplateManager() {
         return old.map((template) => (template.id.startsWith('temp-') ? realTemplate : template));
       });
 
-      toast.success('Template created successfully');
+      toast.success(t('templates.admin.templateCreatedSuccessfully'));
       handleReset();
       setUploadDialogOpen(false);
     },
@@ -205,7 +205,7 @@ export function AdminTemplateManager() {
       if (context?.previousTemplates) {
         queryClient.setQueryData(['admin-templates'], context.previousTemplates);
       }
-      toast.error(error.response?.data?.error || 'Failed to create template');
+      toast.error(error.response?.data?.error || t('templates.admin.failedToCreateTemplate'));
     },
   });
 
@@ -240,7 +240,7 @@ export function AdminTemplateManager() {
         )
       );
 
-      toast.success('Template updated successfully');
+      toast.success(t('templates.admin.templateUpdatedSuccessfully'));
       handleReset();
       setEditDialogOpen(false);
       setEditingTemplate(null);
@@ -250,7 +250,7 @@ export function AdminTemplateManager() {
       if (context?.previousTemplates) {
         queryClient.setQueryData(['admin-templates'], context.previousTemplates);
       }
-      toast.error(error.response?.data?.error || 'Failed to update template');
+      toast.error(error.response?.data?.error || t('templates.admin.failedToUpdateTemplate'));
     },
   });
 
@@ -275,14 +275,14 @@ export function AdminTemplateManager() {
     onSuccess: () => {
       // Don't invalidate queries to preserve pagination state
       // The optimistic update already shows the correct state
-      toast.success('Template deleted');
+      toast.success(t('templates.admin.templateDeleted'));
     },
     onError: (error: any, id, context) => {
       // Revert optimistic update on error
       if (context?.previousTemplates) {
         queryClient.setQueryData(['admin-templates'], context.previousTemplates);
       }
-      toast.error('Failed to delete template');
+      toast.error(t('templates.admin.failedToDeleteTemplate'));
     },
   });
 
@@ -307,7 +307,7 @@ export function AdminTemplateManager() {
     onSuccess: () => {
       // Don't invalidate queries to preserve pagination state
       // The optimistic update already shows the correct state
-      toast.success('Templates deleted successfully');
+      toast.success(t('templates.admin.templatesDeletedSuccessfully'));
       setRowSelection({});
     },
     onError: (error: any, ids, context) => {
@@ -315,7 +315,7 @@ export function AdminTemplateManager() {
       if (context?.previousTemplates) {
         queryClient.setQueryData(['admin-templates'], context.previousTemplates);
       }
-      toast.error('Failed to delete templates');
+      toast.error(t('templates.admin.failedToDeleteTemplates'));
     },
   });
 
@@ -340,14 +340,14 @@ export function AdminTemplateManager() {
     onSuccess: () => {
       // Don't invalidate queries to preserve pagination state
       // The optimistic update already shows the correct state
-      toast.success('Template status updated');
+      toast.success(t('templates.admin.templateStatusUpdated'));
     },
     onError: (error: any, variables, context) => {
       // Revert optimistic update on error
       if (context?.previousTemplates) {
         queryClient.setQueryData(['admin-templates'], context.previousTemplates);
       }
-      toast.error('Failed to update template status');
+      toast.error(t('templates.admin.failedToUpdateStatus'));
     },
   });
 
@@ -407,14 +407,14 @@ export function AdminTemplateManager() {
         return old.map((template) => (template.id.startsWith('temp-') ? realTemplate : template));
       });
 
-      toast.success('Template duplicated successfully');
+      toast.success(t('templates.admin.templateDuplicatedSuccessfully'));
     },
     onError: (error: any, template, context) => {
       // Revert optimistic update on error
       if (context?.previousTemplates) {
         queryClient.setQueryData(['admin-templates'], context.previousTemplates);
       }
-      toast.error('Failed to duplicate template');
+      toast.error(t('templates.admin.failedToDuplicateTemplate'));
     },
   });
 
@@ -449,7 +449,7 @@ export function AdminTemplateManager() {
               onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
               className="h-8 px-2 lg:px-3"
             >
-              Name
+              {t('templates.admin.name')}
               {column.getIsSorted() === 'asc' ? (
                 <ArrowUp className="ml-2 h-4 w-4" />
               ) : column.getIsSorted() === 'desc' ? (
@@ -466,13 +466,13 @@ export function AdminTemplateManager() {
               {row.getValue('name')}
               {row.original.id.startsWith('temp-') && (
                 <Badge variant="outline" className="text-xs animate-pulse">
-                  Creating...
+                  {t('templates.admin.creating')}
                 </Badge>
               )}
             </div>
             {row.original.isRequired && (
               <Badge variant="destructive" className="mt-1 text-xs">
-                Required
+                {t('templates.admin.required')}
               </Badge>
             )}
             {row.original.version && (
@@ -483,7 +483,7 @@ export function AdminTemplateManager() {
       },
       {
         accessorKey: 'serviceType',
-        header: 'Service Type',
+        header: t('templates.admin.serviceType'),
         cell: ({ row }) => {
           const serviceType = row.getValue('serviceType') as string;
           return serviceType ? (
@@ -491,7 +491,7 @@ export function AdminTemplateManager() {
               {serviceType.replace('_', ' ')}
             </Badge>
           ) : (
-            <span className="text-muted-foreground text-sm">General</span>
+            <span className="text-muted-foreground text-sm">{t('templates.admin.general')}</span>
           );
         },
         filterFn: (row, id, value) => {
@@ -501,7 +501,7 @@ export function AdminTemplateManager() {
       },
       {
         accessorKey: 'category',
-        header: 'Category',
+        header: t('templates.admin.category'),
         cell: ({ row }) => (
           <Badge variant="secondary" className="text-xs">
             {row.getValue('category')}
@@ -513,7 +513,7 @@ export function AdminTemplateManager() {
       },
       {
         accessorKey: 'fileName',
-        header: 'File',
+        header: t('templates.admin.file'),
         cell: ({ row }) => {
           const template = row.original;
           return (
@@ -535,7 +535,7 @@ export function AdminTemplateManager() {
               onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
               className="h-8 px-2 lg:px-3"
             >
-              Downloads
+              {t('templates.admin.downloads')}
               {column.getIsSorted() === 'asc' ? (
                 <ArrowUp className="ml-2 h-4 w-4" />
               ) : column.getIsSorted() === 'desc' ? (
@@ -556,7 +556,7 @@ export function AdminTemplateManager() {
       },
       {
         accessorKey: 'isActive',
-        header: 'Status',
+        header: t('templates.admin.status'),
         cell: ({ row }) => {
           const isActive = row.getValue('isActive') as boolean;
           const isUpdating =
@@ -569,7 +569,7 @@ export function AdminTemplateManager() {
                 variant={isActive ? 'default' : 'secondary'}
                 className={`text-xs ${isUpdating ? 'opacity-50' : ''}`}
               >
-                {isActive ? 'Active' : 'Inactive'}
+                {isActive ? t('templates.admin.active') : t('templates.admin.inactive')}
               </Badge>
               <Button
                 variant="ghost"
@@ -608,7 +608,7 @@ export function AdminTemplateManager() {
               onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
               className="h-8 px-2 lg:px-3"
             >
-              Created
+              {t('templates.admin.created')}
               {column.getIsSorted() === 'asc' ? (
                 <ArrowUp className="ml-2 h-4 w-4" />
               ) : column.getIsSorted() === 'desc' ? (
@@ -650,7 +650,7 @@ export function AdminTemplateManager() {
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>Edit Template</p>
+                  <p>{t('templates.admin.editTemplate')}</p>
                 </TooltipContent>
               </Tooltip>
 
@@ -672,7 +672,7 @@ export function AdminTemplateManager() {
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>Duplicate Template</p>
+                  <p>{t('templates.admin.duplicateTemplate')}</p>
                 </TooltipContent>
               </Tooltip>
 
@@ -692,7 +692,7 @@ export function AdminTemplateManager() {
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>Download Template</p>
+                  <p>{t('templates.admin.downloadTemplate')}</p>
                 </TooltipContent>
               </Tooltip>
 
@@ -712,7 +712,7 @@ export function AdminTemplateManager() {
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>View Template</p>
+                  <p>{t('templates.admin.viewTemplate')}</p>
                 </TooltipContent>
               </Tooltip>
 
@@ -734,7 +734,7 @@ export function AdminTemplateManager() {
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>Delete Template</p>
+                  <p>{t('templates.admin.deleteTemplate')}</p>
                 </TooltipContent>
               </Tooltip>
             </div>
@@ -742,7 +742,7 @@ export function AdminTemplateManager() {
         },
       },
     ],
-    [deleteTemplate, toggleTemplateStatus, duplicateTemplate]
+    [deleteTemplate, toggleTemplateStatus, duplicateTemplate, t]
   );
 
   // Table configuration
@@ -800,7 +800,7 @@ export function AdminTemplateManager() {
 
     // Validate file size (max 16MB)
     if (file.size > 16 * 1024 * 1024) {
-      toast.error('File size must be less than 16MB');
+      toast.error(t('templates.admin.fileSizeMustBeLessThan16MB'));
       return;
     }
 
@@ -836,11 +836,11 @@ export function AdminTemplateManager() {
           size: uploaded[0].size,
           type: uploaded[0].type,
         });
-        toast.success('File uploaded successfully');
+        toast.success(t('templates.admin.fileUploadedSuccessfully'));
       }
     } catch (error) {
       logger.error('File upload error', error);
-      toast.error('Failed to upload file');
+      toast.error(t('templates.admin.failedToUploadFile'));
     } finally {
       setIsUploading(false);
       setUploadProgress(0);
@@ -869,7 +869,7 @@ export function AdminTemplateManager() {
 
   const handleSubmit = async () => {
     if (!name || !category) {
-      toast.error('Please fill all required fields');
+      toast.error(t('templates.admin.pleaseFillAllFields'));
       return;
     }
 
@@ -904,7 +904,7 @@ export function AdminTemplateManager() {
       } else {
         // Create new template
         if (!uploadedFile) {
-          toast.error('Please upload a file');
+          toast.error(t('templates.admin.pleaseUploadFile'));
           return;
         }
         await createTemplate.mutateAsync({
@@ -951,44 +951,68 @@ export function AdminTemplateManager() {
         {/* Header */}
         <div className="flex justify-between items-start">
           <div>
-            <h1 className="text-3xl font-bold">Template Management</h1>
-            <p className="text-muted-foreground mt-2">
-              Manage downloadable forms and guides for clients
-            </p>
+            <h1 className="text-3xl font-bold">{t('templates.admin.templateManagement')}</h1>
+            <p className="text-muted-foreground mt-2">{t('templates.admin.manageTemplates')}</p>
           </div>
           <div className="flex gap-2">
             <Button
               variant="outline"
               onClick={() => queryClient.invalidateQueries({ queryKey: ['admin-templates'] })}
               disabled={isLoading}
+              className="text-white"
+              style={{
+                backgroundColor: '#143240',
+                borderColor: 'rgba(255, 69, 56, 0.3)',
+                borderWidth: '1px',
+                borderStyle: 'solid',
+              }}
             >
               <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
-              Refresh
+              {t('templates.admin.refresh')}
             </Button>
-            <Button onClick={() => setUploadDialogOpen(true)}>
+            <Button
+              onClick={() => setUploadDialogOpen(true)}
+              className="text-white"
+              style={{
+                backgroundColor: '#361d22',
+                borderColor: '#ff4538',
+                borderWidth: '1px',
+                borderStyle: 'solid',
+              }}
+            >
               <Plus className="h-4 w-4 mr-2" />
-              Add Template
+              {t('templates.admin.addTemplate')}
             </Button>
           </div>
         </div>
 
         {/* Filters and Controls */}
-        <Card>
+        <Card style={{ borderColor: '#ff4538', borderWidth: '1px', borderStyle: 'solid' }}>
           <CardHeader>
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               <div>
-                <CardTitle>Document Templates ({templates.length})</CardTitle>
+                <CardTitle>
+                  {t('templates.admin.documentTemplates', { count: templates.length })}
+                </CardTitle>
                 {selectedRows.length > 0 && (
                   <div className="flex items-center gap-2 mt-2">
-                    <Badge variant="secondary">{selectedRows.length} selected</Badge>
+                    <Badge variant="secondary">
+                      {t('templates.admin.selected', { count: selectedRows.length })}
+                    </Badge>
                     <Button
-                      variant="destructive"
                       size="sm"
                       onClick={handleBulkDeleteClick}
                       disabled={bulkDeleteTemplates.isPending}
+                      className="text-white"
+                      style={{
+                        backgroundColor: '#361d22',
+                        borderColor: '#ff4538',
+                        borderWidth: '1px',
+                        borderStyle: 'solid',
+                      }}
                     >
                       <Trash className="h-4 w-4 mr-1" />
-                      Delete Selected
+                      {t('templates.admin.deleteSelected')}
                     </Button>
                   </div>
                 )}
@@ -999,7 +1023,7 @@ export function AdminTemplateManager() {
                 <div className="relative">
                   <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
                   <Input
-                    placeholder="Search templates..."
+                    placeholder={t('templates.admin.searchTemplates')}
                     value={globalFilter ?? ''}
                     onChange={(event) => setGlobalFilter(String(event.target.value))}
                     className="pl-8 w-full sm:w-[300px]"
@@ -1009,9 +1033,18 @@ export function AdminTemplateManager() {
                 {/* Column Visibility */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="outline" className="w-full sm:w-auto">
+                    <Button
+                      variant="outline"
+                      className="w-full sm:w-auto text-white"
+                      style={{
+                        backgroundColor: '#143240',
+                        borderColor: 'rgba(255, 69, 56, 0.3)',
+                        borderWidth: '1px',
+                        borderStyle: 'solid',
+                      }}
+                    >
                       <Settings2 className="h-4 w-4 mr-2" />
-                      Columns
+                      {t('templates.admin.columns')}
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
@@ -1039,13 +1072,13 @@ export function AdminTemplateManager() {
             {templates.length === 0 ? (
               <div className="text-center py-12">
                 <FileText className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-                <h3 className="text-lg font-semibold mb-2">No Templates Yet</h3>
-                <p className="text-muted-foreground mb-4">
-                  Get started by uploading your first template
-                </p>
+                <h3 className="text-lg font-semibold mb-2">
+                  {t('templates.admin.noTemplatesYet')}
+                </h3>
+                <p className="text-muted-foreground mb-4">{t('templates.admin.getStarted')}</p>
                 <Button onClick={() => setUploadDialogOpen(true)}>
                   <Plus className="h-4 w-4 mr-2" />
-                  Upload First Template
+                  {t('templates.admin.uploadFirstTemplate')}
                 </Button>
               </div>
             ) : (
@@ -1082,7 +1115,7 @@ export function AdminTemplateManager() {
                       ) : (
                         <TableRow>
                           <TableCell colSpan={columns.length} className="h-24 text-center">
-                            No results found.
+                            {t('templates.admin.noResultsFound')}
                           </TableCell>
                         </TableRow>
                       )}
@@ -1091,17 +1124,27 @@ export function AdminTemplateManager() {
                 </div>
 
                 {/* Pagination */}
-                <div className="flex items-center justify-between px-2">
-                  <div className="flex items-center space-x-6 lg:space-x-8">
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-0 mt-4 px-2">
+                  <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-6 order-2 sm:order-1 w-full sm:w-auto">
                     <div className="flex items-center space-x-2">
-                      <p className="text-sm font-medium">Rows per page</p>
+                      <p className="text-xs sm:text-sm font-medium">
+                        {t('templates.admin.rowsPerPage')}
+                      </p>
                       <Select
                         value={`${table.getState().pagination.pageSize}`}
                         onValueChange={(value) => {
                           table.setPageSize(Number(value));
                         }}
                       >
-                        <SelectTrigger className="h-8 w-[70px]">
+                        <SelectTrigger
+                          className="h-9 sm:h-8 w-[70px] text-white"
+                          style={{
+                            backgroundColor: '#143240',
+                            borderColor: 'rgba(255, 69, 56, 0.3)',
+                            borderWidth: '1px',
+                            borderStyle: 'solid',
+                          }}
+                        >
                           <SelectValue placeholder={table.getState().pagination.pageSize} />
                         </SelectTrigger>
                         <SelectContent side="top">
@@ -1113,46 +1156,48 @@ export function AdminTemplateManager() {
                         </SelectContent>
                       </Select>
                     </div>
-                    <div className="flex w-[100px] items-center justify-center text-sm font-medium">
-                      Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
-                    </div>
+                    <p className="text-xs sm:text-sm text-muted-foreground">
+                      {t('templates.admin.pageOfTotal', {
+                        current: table.getState().pagination.pageIndex + 1,
+                        total: table.getPageCount(),
+                      })}
+                    </p>
                   </div>
-                  <div className="flex items-center space-x-2">
+                  <div className="flex items-center gap-2 order-1 sm:order-2 w-full sm:w-auto justify-center sm:justify-end">
                     <Button
                       variant="outline"
-                      className="hidden h-8 w-8 p-0 lg:flex"
-                      onClick={() => table.setPageIndex(0)}
-                      disabled={!table.getCanPreviousPage()}
-                    >
-                      <span className="sr-only">Go to first page</span>
-                      <ChevronsLeft className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="outline"
-                      className="h-8 w-8 p-0"
+                      size="sm"
                       onClick={() => table.previousPage()}
                       disabled={!table.getCanPreviousPage()}
+                      className="text-white h-9 sm:h-8 px-3 sm:px-3"
+                      style={{
+                        backgroundColor: '#143240',
+                        borderColor: 'rgba(255, 69, 56, 0.3)',
+                        borderWidth: '1px',
+                        borderStyle: 'solid',
+                      }}
                     >
-                      <span className="sr-only">Go to previous page</span>
-                      <ChevronLeft className="h-4 w-4" />
+                      <ChevronLeft className="h-4 w-4 sm:mr-1" />
+                      <span className="hidden sm:inline">{t('common.previous')}</span>
                     </Button>
+                    <span className="text-xs sm:text-sm text-muted-foreground px-2 whitespace-nowrap">
+                      Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
+                    </span>
                     <Button
                       variant="outline"
-                      className="h-8 w-8 p-0"
+                      size="sm"
                       onClick={() => table.nextPage()}
                       disabled={!table.getCanNextPage()}
+                      className="text-white h-9 sm:h-8 px-3 sm:px-3"
+                      style={{
+                        backgroundColor: '#143240',
+                        borderColor: 'rgba(255, 69, 56, 0.3)',
+                        borderWidth: '1px',
+                        borderStyle: 'solid',
+                      }}
                     >
-                      <span className="sr-only">Go to next page</span>
-                      <ChevronRight className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="outline"
-                      className="hidden h-8 w-8 p-0 lg:flex"
-                      onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-                      disabled={!table.getCanNextPage()}
-                    >
-                      <span className="sr-only">Go to last page</span>
-                      <ChevronsRight className="h-4 w-4" />
+                      <span className="hidden sm:inline">{t('common.next')}</span>
+                      <ChevronRight className="h-4 w-4 sm:ml-1" />
                     </Button>
                   </div>
                 </div>
@@ -1165,64 +1210,94 @@ export function AdminTemplateManager() {
         <Dialog open={uploadDialogOpen} onOpenChange={setUploadDialogOpen}>
           <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle>Add New Template</DialogTitle>
-              <DialogDescription>
-                Upload a form, guide, or checklist for clients to download
-              </DialogDescription>
+              <DialogTitle>{t('templates.admin.addNewTemplate')}</DialogTitle>
+              <DialogDescription>{t('templates.admin.uploadDescription')}</DialogDescription>
             </DialogHeader>
 
             <div className="space-y-4 py-4">
               <div className="space-y-2">
-                <Label htmlFor="template-name">Template Name *</Label>
+                <Label htmlFor="template-name">{t('templates.admin.templateName')}</Label>
                 <Input
                   id="template-name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="e.g., Student Visa Application Form"
+                  placeholder={t('templates.admin.templateNamePlaceholder')}
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="description">Description</Label>
+                <Label htmlFor="description">{t('templates.admin.description')}</Label>
                 <Textarea
                   id="description"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Brief description of this template..."
+                  placeholder={t('templates.admin.descriptionPlaceholder')}
                   rows={3}
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="service-type">Service Type</Label>
+                  <Label htmlFor="service-type">{t('templates.admin.serviceTypeLabel')}</Label>
                   <Select value={serviceType} onValueChange={setServiceType}>
-                    <SelectTrigger id="service-type">
-                      <SelectValue placeholder="Select service (optional)" />
+                    <SelectTrigger
+                      id="service-type"
+                      className="text-white"
+                      style={{
+                        backgroundColor: '#361d22',
+                        borderColor: '#ff4538',
+                        borderWidth: '1px',
+                        borderStyle: 'solid',
+                      }}
+                    >
+                      <SelectValue placeholder={t('templates.admin.selectServiceOptional')} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">General (All Services)</SelectItem>
-                      <SelectItem value="STUDENT_VISA">Student Visa</SelectItem>
-                      <SelectItem value="WORK_PERMIT">Work Permit</SelectItem>
-                      <SelectItem value="FAMILY_REUNIFICATION">Family Reunification</SelectItem>
-                      <SelectItem value="TOURIST_VISA">Tourist Visa</SelectItem>
-                      <SelectItem value="BUSINESS_VISA">Business Visa</SelectItem>
-                      <SelectItem value="PERMANENT_RESIDENCY">Permanent Residency</SelectItem>
+                      <SelectItem value="all">{t('templates.admin.generalAllServices')}</SelectItem>
+                      <SelectItem value="STUDENT_VISA">
+                        {t('cases.serviceLabels.STUDENT_VISA')}
+                      </SelectItem>
+                      <SelectItem value="WORK_PERMIT">
+                        {t('cases.serviceLabels.WORK_PERMIT')}
+                      </SelectItem>
+                      <SelectItem value="FAMILY_REUNIFICATION">
+                        {t('cases.serviceLabels.FAMILY_REUNIFICATION')}
+                      </SelectItem>
+                      <SelectItem value="TOURIST_VISA">
+                        {t('cases.serviceLabels.TOURIST_VISA')}
+                      </SelectItem>
+                      <SelectItem value="BUSINESS_VISA">
+                        {t('cases.serviceLabels.BUSINESS_VISA')}
+                      </SelectItem>
+                      <SelectItem value="PERMANENT_RESIDENCY">
+                        {t('cases.serviceLabels.PERMANENT_RESIDENCY')}
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="category">Category *</Label>
+                  <Label htmlFor="category">{t('templates.admin.categoryLabel')}</Label>
                   <Select value={category} onValueChange={setCategory}>
-                    <SelectTrigger id="category">
+                    <SelectTrigger
+                      id="category"
+                      className="text-white"
+                      style={{
+                        backgroundColor: '#361d22',
+                        borderColor: '#ff4538',
+                        borderWidth: '1px',
+                        borderStyle: 'solid',
+                      }}
+                    >
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="FORM">Form</SelectItem>
-                      <SelectItem value="GUIDE">Guide</SelectItem>
-                      <SelectItem value="SAMPLE">Sample</SelectItem>
-                      <SelectItem value="CHECKLIST">Checklist</SelectItem>
+                      <SelectItem value="FORM">{t('templates.categories.FORM')}</SelectItem>
+                      <SelectItem value="GUIDE">{t('templates.categories.GUIDE')}</SelectItem>
+                      <SelectItem value="SAMPLE">{t('templates.categories.SAMPLE')}</SelectItem>
+                      <SelectItem value="CHECKLIST">
+                        {t('templates.categories.CHECKLIST')}
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -1230,12 +1305,12 @@ export function AdminTemplateManager() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="version">Version (optional)</Label>
+                  <Label htmlFor="version">{t('templates.admin.versionOptional')}</Label>
                   <Input
                     id="version"
                     value={version}
                     onChange={(e) => setVersion(e.target.value)}
-                    placeholder="e.g., 2.1"
+                    placeholder={t('templates.admin.versionPlaceholder')}
                   />
                 </div>
 
@@ -1248,13 +1323,13 @@ export function AdminTemplateManager() {
                     className="h-4 w-4"
                   />
                   <Label htmlFor="is-required" className="cursor-pointer">
-                    Required document
+                    {t('templates.admin.requiredDocument')}
                   </Label>
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label>Upload File *</Label>
+                <Label>{t('templates.admin.uploadFile')}</Label>
                 {uploadedFile ? (
                   <div className="flex items-center gap-2 p-3 bg-muted rounded-lg">
                     <FileText className="h-5 w-5 text-primary" />
@@ -1265,7 +1340,7 @@ export function AdminTemplateManager() {
                       </p>
                     </div>
                     <Button variant="ghost" size="sm" onClick={() => setUploadedFile(null)}>
-                      Remove
+                      {t('templates.admin.remove')}
                     </Button>
                   </div>
                 ) : (
@@ -1274,10 +1349,12 @@ export function AdminTemplateManager() {
                       <div className="space-y-3">
                         <Loader2 className="h-8 w-8 mx-auto animate-spin text-primary" />
                         <div className="space-y-2">
-                          <p className="text-sm font-medium">Uploading file...</p>
+                          <p className="text-sm font-medium">
+                            {t('templates.admin.uploadingFile')}
+                          </p>
                           <Progress value={uploadProgress} className="w-full max-w-xs mx-auto" />
                           <p className="text-xs text-muted-foreground">
-                            {uploadProgress}% complete
+                            {t('templates.admin.complete', { progress: uploadProgress })}
                           </p>
                         </div>
                       </div>
@@ -1292,7 +1369,7 @@ export function AdminTemplateManager() {
                           disabled={isUploading}
                         />
                         <p className="text-xs text-muted-foreground mt-2">
-                          PDF, DOC, DOCX, XLSX • Max 16MB
+                          {t('templates.admin.fileFormats')}
                         </p>
                       </>
                     )}
@@ -1309,8 +1386,15 @@ export function AdminTemplateManager() {
                   setUploadDialogOpen(false);
                 }}
                 disabled={createTemplate.isPending}
+                className="text-white"
+                style={{
+                  backgroundColor: '#361d22',
+                  borderColor: '#ff4538',
+                  borderWidth: '1px',
+                  borderStyle: 'solid',
+                }}
               >
-                Cancel
+                {t('templates.admin.cancel')}
               </Button>
               <Button
                 onClick={handleSubmit}
@@ -1322,25 +1406,31 @@ export function AdminTemplateManager() {
                   isUploading ||
                   isSubmitting
                 }
-                className="min-w-[140px]"
+                className="min-w-[140px] text-white"
+                style={{
+                  backgroundColor: '#361d22',
+                  borderColor: '#ff4538',
+                  borderWidth: '1px',
+                  borderStyle: 'solid',
+                }}
               >
                 {isSubmitting ? (
                   <>
                     <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    {isUploading ? 'Uploading...' : 'Creating...'}
+                    {isUploading ? t('templates.admin.uploading') : t('templates.admin.creating')}
                   </>
                 ) : createTemplate.isPending ? (
                   <>
                     <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    Creating...
+                    {t('templates.admin.creating')}
                   </>
                 ) : isUploading ? (
                   <>
                     <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    Uploading...
+                    {t('templates.admin.uploading')}
                   </>
                 ) : (
-                  'Create Template'
+                  t('templates.admin.createTemplate')
                 )}
               </Button>
             </DialogFooter>
@@ -1351,62 +1441,94 @@ export function AdminTemplateManager() {
         <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
           <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle>Edit Template</DialogTitle>
-              <DialogDescription>Update template information and upload new file</DialogDescription>
+              <DialogTitle>{t('templates.admin.editTemplateTitle')}</DialogTitle>
+              <DialogDescription>{t('templates.admin.editTemplateDescription')}</DialogDescription>
             </DialogHeader>
 
             <div className="space-y-4 py-4">
               <div className="space-y-2">
-                <Label htmlFor="edit-template-name">Template Name *</Label>
+                <Label htmlFor="edit-template-name">{t('templates.admin.templateName')}</Label>
                 <Input
                   id="edit-template-name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="e.g., Student Visa Application Form"
+                  placeholder={t('templates.admin.templateNamePlaceholder')}
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="edit-description">Description</Label>
+                <Label htmlFor="edit-description">{t('templates.admin.description')}</Label>
                 <Textarea
                   id="edit-description"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Brief description of this template..."
+                  placeholder={t('templates.admin.descriptionPlaceholder')}
                   rows={3}
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="edit-service-type">Service Type</Label>
+                  <Label htmlFor="edit-service-type">{t('templates.admin.serviceTypeLabel')}</Label>
                   <Select value={serviceType} onValueChange={setServiceType}>
-                    <SelectTrigger id="edit-service-type">
-                      <SelectValue placeholder="Select service (optional)" />
+                    <SelectTrigger
+                      id="edit-service-type"
+                      className="text-white"
+                      style={{
+                        backgroundColor: '#361d22',
+                        borderColor: '#ff4538',
+                        borderWidth: '1px',
+                        borderStyle: 'solid',
+                      }}
+                    >
+                      <SelectValue placeholder={t('templates.admin.selectServiceOptional')} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">General (All Services)</SelectItem>
-                      <SelectItem value="STUDENT_VISA">Student Visa</SelectItem>
-                      <SelectItem value="WORK_PERMIT">Work Permit</SelectItem>
-                      <SelectItem value="FAMILY_REUNIFICATION">Family Reunification</SelectItem>
-                      <SelectItem value="TOURIST_VISA">Tourist Visa</SelectItem>
-                      <SelectItem value="BUSINESS_VISA">Business Visa</SelectItem>
-                      <SelectItem value="PERMANENT_RESIDENCY">Permanent Residency</SelectItem>
+                      <SelectItem value="all">{t('templates.admin.generalAllServices')}</SelectItem>
+                      <SelectItem value="STUDENT_VISA">
+                        {t('cases.serviceLabels.STUDENT_VISA')}
+                      </SelectItem>
+                      <SelectItem value="WORK_PERMIT">
+                        {t('cases.serviceLabels.WORK_PERMIT')}
+                      </SelectItem>
+                      <SelectItem value="FAMILY_REUNIFICATION">
+                        {t('cases.serviceLabels.FAMILY_REUNIFICATION')}
+                      </SelectItem>
+                      <SelectItem value="TOURIST_VISA">
+                        {t('cases.serviceLabels.TOURIST_VISA')}
+                      </SelectItem>
+                      <SelectItem value="BUSINESS_VISA">
+                        {t('cases.serviceLabels.BUSINESS_VISA')}
+                      </SelectItem>
+                      <SelectItem value="PERMANENT_RESIDENCY">
+                        {t('cases.serviceLabels.PERMANENT_RESIDENCY')}
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="edit-category">Category *</Label>
+                  <Label htmlFor="edit-category">{t('templates.admin.categoryLabel')}</Label>
                   <Select value={category} onValueChange={setCategory}>
-                    <SelectTrigger id="edit-category">
+                    <SelectTrigger
+                      id="edit-category"
+                      className="text-white"
+                      style={{
+                        backgroundColor: '#361d22',
+                        borderColor: '#ff4538',
+                        borderWidth: '1px',
+                        borderStyle: 'solid',
+                      }}
+                    >
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="FORM">Form</SelectItem>
-                      <SelectItem value="GUIDE">Guide</SelectItem>
-                      <SelectItem value="SAMPLE">Sample</SelectItem>
-                      <SelectItem value="CHECKLIST">Checklist</SelectItem>
+                      <SelectItem value="FORM">{t('templates.categories.FORM')}</SelectItem>
+                      <SelectItem value="GUIDE">{t('templates.categories.GUIDE')}</SelectItem>
+                      <SelectItem value="SAMPLE">{t('templates.categories.SAMPLE')}</SelectItem>
+                      <SelectItem value="CHECKLIST">
+                        {t('templates.categories.CHECKLIST')}
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -1414,12 +1536,12 @@ export function AdminTemplateManager() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="edit-version">Version (optional)</Label>
+                  <Label htmlFor="edit-version">{t('templates.admin.versionOptional')}</Label>
                   <Input
                     id="edit-version"
                     value={version}
                     onChange={(e) => setVersion(e.target.value)}
-                    placeholder="e.g., 2.1"
+                    placeholder={t('templates.admin.versionPlaceholder')}
                   />
                 </div>
 
@@ -1432,13 +1554,13 @@ export function AdminTemplateManager() {
                     className="h-4 w-4"
                   />
                   <Label htmlFor="edit-is-required" className="cursor-pointer">
-                    Required document
+                    {t('templates.admin.requiredDocument')}
                   </Label>
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label>Upload New File (optional)</Label>
+                <Label>{t('templates.admin.uploadNewFileOptional')}</Label>
                 {uploadedFile ? (
                   <div className="flex items-center gap-2 p-3 bg-muted rounded-lg">
                     <FileText className="h-5 w-5 text-primary" />
@@ -1449,7 +1571,7 @@ export function AdminTemplateManager() {
                       </p>
                     </div>
                     <Button variant="ghost" size="sm" onClick={() => setUploadedFile(null)}>
-                      Remove
+                      {t('templates.admin.remove')}
                     </Button>
                   </div>
                 ) : (
@@ -1458,10 +1580,12 @@ export function AdminTemplateManager() {
                       <div className="space-y-3">
                         <Loader2 className="h-8 w-8 mx-auto animate-spin text-primary" />
                         <div className="space-y-2">
-                          <p className="text-sm font-medium">Uploading file...</p>
+                          <p className="text-sm font-medium">
+                            {t('templates.admin.uploadingFile')}
+                          </p>
                           <Progress value={uploadProgress} className="w-full max-w-xs mx-auto" />
                           <p className="text-xs text-muted-foreground">
-                            {uploadProgress}% complete
+                            {t('templates.admin.complete', { progress: uploadProgress })}
                           </p>
                         </div>
                       </div>
@@ -1476,12 +1600,14 @@ export function AdminTemplateManager() {
                           disabled={isUploading}
                         />
                         <p className="text-xs text-muted-foreground mt-2">
-                          PDF, DOC, DOCX, XLSX • Max 16MB
+                          {t('templates.admin.fileFormats')}
                         </p>
                         {editingTemplate?.fileUrl &&
                           !editingTemplate.fileUrl.startsWith('/templates/') && (
                             <p className="text-xs text-green-600 mt-2">
-                              Current file: {editingTemplate.fileName} (will be replaced)
+                              {t('templates.admin.currentFile', {
+                                fileName: editingTemplate.fileName,
+                              })}
                             </p>
                           )}
                       </>
@@ -1500,33 +1626,46 @@ export function AdminTemplateManager() {
                   setEditingTemplate(null);
                 }}
                 disabled={updateTemplate.isPending}
+                className="text-white"
+                style={{
+                  backgroundColor: '#361d22',
+                  borderColor: '#ff4538',
+                  borderWidth: '1px',
+                  borderStyle: 'solid',
+                }}
               >
-                Cancel
+                {t('templates.admin.cancel')}
               </Button>
               <Button
                 onClick={handleSubmit}
                 disabled={
                   !name || !category || updateTemplate.isPending || isUploading || isSubmitting
                 }
-                className="min-w-[140px]"
+                className="min-w-[140px] text-white"
+                style={{
+                  backgroundColor: '#361d22',
+                  borderColor: '#ff4538',
+                  borderWidth: '1px',
+                  borderStyle: 'solid',
+                }}
               >
                 {isSubmitting ? (
                   <>
                     <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    {isUploading ? 'Uploading...' : 'Updating...'}
+                    {isUploading ? t('templates.admin.uploading') : t('templates.admin.updating')}
                   </>
                 ) : updateTemplate.isPending ? (
                   <>
                     <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    Updating...
+                    {t('templates.admin.updating')}
                   </>
                 ) : isUploading ? (
                   <>
                     <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    Uploading...
+                    {t('templates.admin.uploading')}
                   </>
                 ) : (
-                  'Update Template'
+                  t('templates.admin.updateTemplate')
                 )}
               </Button>
             </DialogFooter>
@@ -1538,10 +1677,12 @@ export function AdminTemplateManager() {
           open={confirmDialogOpen}
           onOpenChange={setConfirmDialogOpen}
           onConfirm={handleConfirmDelete}
-          title="Delete Template"
-          description={`Are you sure you want to delete "${templateToDelete?.name}"? This action cannot be undone.`}
-          confirmText="Delete Template"
-          cancelText="Cancel"
+          title={t('templates.admin.deleteTemplateTitle')}
+          description={t('templates.admin.deleteTemplateDescription', {
+            name: templateToDelete?.name,
+          })}
+          confirmText={t('templates.admin.deleteTemplateConfirm')}
+          cancelText={t('templates.admin.cancel')}
           variant="destructive"
           isLoading={deleteTemplate.isPending}
         />
@@ -1550,10 +1691,12 @@ export function AdminTemplateManager() {
           open={bulkDeleteConfirmOpen}
           onOpenChange={setBulkDeleteConfirmOpen}
           onConfirm={handleConfirmBulkDelete}
-          title="Delete Selected Templates"
-          description={`Are you sure you want to delete ${table.getFilteredSelectedRowModel().rows.length} selected template(s)? This action cannot be undone.`}
-          confirmText="Delete Selected"
-          cancelText="Cancel"
+          title={t('templates.admin.deleteSelectedTemplates')}
+          description={t('templates.admin.deleteSelectedDescription', {
+            count: table.getFilteredSelectedRowModel().rows.length,
+          })}
+          confirmText={t('templates.admin.deleteSelectedConfirm')}
+          cancelText={t('templates.admin.cancel')}
           variant="destructive"
           isLoading={bulkDeleteTemplates.isPending}
         />

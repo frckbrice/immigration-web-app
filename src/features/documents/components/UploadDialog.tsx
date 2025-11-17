@@ -205,8 +205,18 @@ export function UploadDialog({ open, onOpenChange, onUpload, isUploading }: Uplo
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>
-        <Button>
-          <Upload className="mr-2 h-4 w-4" />
+        <Button
+          variant="outline"
+          style={{
+            backgroundColor: '#361d22',
+            borderColor: '#ff4538',
+            borderWidth: '1px',
+            borderStyle: 'solid',
+            color: 'white',
+          }}
+          className="hover:opacity-90"
+        >
+          <Upload className="mr-2 h-4 w-4" style={{ color: '#ff4538' }} />
           {t('documents.uploadBtn')}
         </Button>
       </DialogTrigger>

@@ -1,0 +1,3 @@
+-- Migration already applied to Neon database
+-- This migration file exists to maintain migration history consistency
+-- All changes have been synced via prisma db push

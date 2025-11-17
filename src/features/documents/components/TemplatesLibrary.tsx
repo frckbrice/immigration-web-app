@@ -259,21 +259,21 @@ export function TemplatesLibrary() {
                   const isDownloading = downloadingId === template.id;
 
                   return (
-                    <Card key={template.id} className="hover:shadow-md transition-shadow">
+                    <Card key={template.id} className="hover:shadow-md transition-shadow w-full">
                       <CardHeader>
-                        <div className="flex items-start gap-3">
-                          <div className="p-2 rounded-lg bg-primary/10">
-                            <Icon className="h-5 w-5 text-primary" />
+                        <div className="flex items-start gap-2 sm:gap-3">
+                          <div className="p-1.5 sm:p-2 rounded-lg bg-primary/10 flex-shrink-0">
+                            <Icon className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <CardTitle className="text-base truncate">
+                            <CardTitle className="text-sm sm:text-base break-words sm:truncate">
                               {template.name}
-                              {template.isRequired && (
-                                <span className="ml-2 text-xs text-destructive">
-                                  * {t('templates.required') || 'Required'}
-                                </span>
-                              )}
                             </CardTitle>
+                            {template.isRequired && (
+                              <span className="text-xs text-destructive block mt-1">
+                                * {t('templates.required') || 'Required'}
+                              </span>
+                            )}
                             <CardDescription className="text-xs mt-1">
                               {template.category} • {(template.fileSize / 1024).toFixed(0)} KB
                               {template.version && ` • v${template.version}`}
@@ -288,8 +288,9 @@ export function TemplatesLibrary() {
                         <Button
                           onClick={() => handleDownload(template)}
                           disabled={isDownloading}
-                          className="w-full"
+                          className="w-full text-white"
                           size="sm"
+                          style={{ backgroundColor: '#0a1f2e' }}
                         >
                           {isDownloading ? (
                             <>

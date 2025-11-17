@@ -44,16 +44,19 @@ export function Providers({ children }: { children: React.ReactNode }) {
             gcTime: 10 * 60 * 1000, // 10 minutes - keep in memory longer
 
             // MOBILE OPTIMIZATION: Reduce network requests
-            refetchOnWindowFocus: false, // Don't refetch when tab becomes active
-            refetchOnMount: false, // Use cached data on component mount
-            refetchOnReconnect: false, // Don't refetch when internet reconnects
+            refetchOnWindowFocus: process.env.NODE_ENV === 'development' ? true : false, // Don't refetch when tab becomes active
+            refetchOnMount: process.env.NODE_ENV === 'development' ? true : false, // Use cached data on component mount
+            refetchOnReconnect: process.env.NODE_ENV === 'development' ? true : false, // Don't refetch when internet reconnects
 
             // PERFORMANCE: Faster failures on mobile networks
             retry: 1, // Only retry once on failure
             retryDelay: 1000, // 1 second between retries
 
             // MOBILE: Use cache while revalidating in background
-            networkMode: 'offlineFirst' as const, // Prefer cache over network
+            networkMode:
+              process.env.NODE_ENV === 'development'
+                ? ('online' as const)
+                : ('offlineFirst' as const), // Prefer cache over network
           },
           mutations: {
             retry: 1,

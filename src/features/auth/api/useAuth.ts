@@ -86,42 +86,37 @@ export const useRegister = () => {
       router.push('/checkout');
     },
     onError: (error: ApiError) => {
-      // Handle errors from backend
-      let message = 'Registration failed. Please try again.';
+      // Log full error for debugging (includes backend details)
+      logger.error('Registration error', {
+        errors: error.response?.data?.errors,
+        backendError: error.response?.data?.error,
+        message: error.message,
+        code: error.code,
+      });
 
-      // Backend validation errors - show field-specific errors if available
+      // Handle validation errors - these are user-friendly and safe to show
       if (error.response?.data?.errors) {
         const errors = error.response.data.errors;
         const errorMessages = Object.entries(errors).map(([field, messages]) => {
           const fieldLabel =
             field.charAt(0).toUpperCase() + field.slice(1).replace(/([A-Z])/g, ' $1');
           const msg = Array.isArray(messages) ? messages[0] : String(messages);
-          return `${fieldLabel}: ${msg}`;
+          // Sanitize each validation message
+          return `${fieldLabel}: ${sanitizeMessage(msg)}`;
         });
         // Show first error, or combine all if there are multiple
         if (errorMessages.length === 1) {
-          message = errorMessages[0];
+          toast.error(errorMessages[0]);
         } else if (errorMessages.length > 1) {
-          message = `Validation errors: ${errorMessages.join('; ')}`;
+          toast.error(`Validation errors: ${errorMessages.join('; ')}`);
         } else {
-          message = error.response.data.error || message;
+          // Fallback to sanitized API error
+          toast.error(sanitizeApiError(error));
         }
-      } else if (error.response?.data?.error) {
-        message = error.response.data.error;
-      } else if (error.response?.data?.message) {
-        message = error.response.data.message;
-      } else if (error.message) {
-        message = error.message;
+      } else {
+        // For non-validation errors, use sanitized API error (maps backend errors to user-friendly messages)
+        toast.error(sanitizeApiError(error));
       }
-
-      // Log full error for debugging
-      logger.error('Registration error', {
-        error: error.response?.data,
-        message,
-      });
-
-      // Sanitize error message before displaying to user
-      toast.error(sanitizeApiError(error));
     },
   });
 };
@@ -213,21 +208,15 @@ export const useLogin = () => {
       router.push('/dashboard');
     },
     onError: (error: ApiError) => {
-      // Handle Firebase errors
-      const firebaseError = error.code;
-      let message = 'Login failed. Please check your credentials.';
-
-      if (firebaseError === 'auth/user-not-found' || firebaseError === 'auth/wrong-password') {
-        message = 'Invalid email or password.';
-      } else if (firebaseError === 'auth/too-many-requests') {
-        message = 'Too many failed login attempts. Please try again later.';
-      } else if (firebaseError === 'auth/user-disabled') {
-        message = 'This account has been disabled.';
-      } else if (error.response?.data?.error) {
-        message = error.response.data.error;
-      }
+      // Log full error for debugging (includes backend details)
+      logger.error('Login error', {
+        code: error.code,
+        backendError: error.response?.data?.error,
+        message: error.message,
+      });
 
       // Sanitize error message before displaying to user
+      // This will map backend errors to user-friendly messages
       toast.error(sanitizeApiError(error));
     },
   });

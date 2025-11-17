@@ -511,7 +511,7 @@ export function UsersListEnhanced() {
       </div>
 
       {/* Filters */}
-      <Card>
+      <Card style={{ borderColor: '#ff4538', borderWidth: '1px', borderStyle: 'solid' }}>
         <CardContent className="pt-6">
           <div className="flex flex-col md:flex-row gap-4">
             <div className="relative flex-1">
@@ -531,7 +531,19 @@ export function UsersListEnhanced() {
                 <TabsTrigger value="admin">{t('users.admins')}</TabsTrigger>
               </TabsList>
             </Tabs>
-            <Button variant="ghost" size="icon" onClick={() => refetch()} disabled={isLoading}>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => refetch()}
+              disabled={isLoading}
+              className="text-white"
+              style={{
+                backgroundColor: '#143240',
+                borderColor: 'rgba(255, 69, 56, 0.3)',
+                borderWidth: '1px',
+                borderStyle: 'solid',
+              }}
+            >
               <RefreshCw className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
             </Button>
           </div>
@@ -540,7 +552,7 @@ export function UsersListEnhanced() {
 
       {/* Users Table */}
       {users.length === 0 ? (
-        <Card>
+        <Card style={{ borderColor: '#ff4538', borderWidth: '1px', borderStyle: 'solid' }}>
           <CardContent className="py-12 text-center">
             <Users className="mx-auto h-12 w-12 text-muted-foreground mb-4 opacity-50" />
             <h3 className="text-lg font-semibold mb-2">
@@ -552,7 +564,7 @@ export function UsersListEnhanced() {
           </CardContent>
         </Card>
       ) : (
-        <Card>
+        <Card style={{ borderColor: '#ff4538', borderWidth: '1px', borderStyle: 'solid' }}>
           <CardHeader>
             <CardTitle className="flex items-center">
               <Users className="mr-2 h-5 w-5" />
@@ -595,53 +607,49 @@ export function UsersListEnhanced() {
           {/* Pagination */}
           {totalPages > 1 && (
             <CardContent className="border-t py-4">
-              <div className="flex items-center justify-between gap-4">
-                <div className="text-sm text-muted-foreground">
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-0 mt-4">
+                <p className="text-xs sm:text-sm text-muted-foreground order-2 sm:order-1">
                   {t('users.paginationSummary', {
                     currentPage,
                     totalPages,
                     totalUsers,
                   })}
-                </div>
-                <div className="flex items-center gap-2">
+                </p>
+                <div className="flex items-center gap-2 order-1 sm:order-2 w-full sm:w-auto justify-center sm:justify-end">
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                     disabled={currentPage === 1 || isLoading}
+                    className="text-white h-9 sm:h-8 px-3 sm:px-3"
+                    style={{
+                      backgroundColor: '#143240',
+                      borderColor: 'rgba(255, 69, 56, 0.3)',
+                      borderWidth: '1px',
+                      borderStyle: 'solid',
+                    }}
                   >
-                    <ChevronLeft className="h-4 w-4" />
-                    <span className="hidden sm:inline ml-1">{t('common.previous')}</span>
+                    <ChevronLeft className="h-4 w-4 sm:mr-1" />
+                    <span className="hidden sm:inline">{t('common.previous')}</span>
                   </Button>
-                  <div className="flex items-center gap-1">
-                    {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                      // Show pages around current page
-                      const page = i + 1;
-                      if (totalPages <= 5) return page;
-                      if (currentPage <= 3) return page;
-                      if (currentPage >= totalPages - 2) return totalPages - 4 + i;
-                      return currentPage - 2 + i;
-                    }).map((page) => (
-                      <Button
-                        key={page}
-                        variant={currentPage === page ? 'default' : 'outline'}
-                        size="sm"
-                        onClick={() => setCurrentPage(page)}
-                        className="w-9 h-9 p-0"
-                        disabled={isLoading}
-                      >
-                        {page}
-                      </Button>
-                    ))}
-                  </div>
+                  <span className="text-xs sm:text-sm text-muted-foreground px-2 whitespace-nowrap">
+                    Page {currentPage} of {totalPages}
+                  </span>
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
                     disabled={currentPage === totalPages || isLoading}
+                    className="text-white h-9 sm:h-8 px-3 sm:px-3"
+                    style={{
+                      backgroundColor: '#143240',
+                      borderColor: 'rgba(255, 69, 56, 0.3)',
+                      borderWidth: '1px',
+                      borderStyle: 'solid',
+                    }}
                   >
-                    <span className="hidden sm:inline mr-1">{t('common.next')}</span>
-                    <ChevronRight className="h-4 w-4" />
+                    <span className="hidden sm:inline">{t('common.next')}</span>
+                    <ChevronRight className="h-4 w-4 sm:ml-1" />
                   </Button>
                 </div>
               </div>
@@ -678,7 +686,16 @@ export function UsersListEnhanced() {
               <div className="space-y-2">
                 <Label htmlFor="edit-role">{t('users.editUserDialog.roleLabel')}</Label>
                 <Select value={editRole} onValueChange={setEditRole}>
-                  <SelectTrigger id="edit-role">
+                  <SelectTrigger
+                    id="edit-role"
+                    className="text-white"
+                    style={{
+                      backgroundColor: '#143240',
+                      borderColor: 'rgba(255, 69, 56, 0.3)',
+                      borderWidth: '1px',
+                      borderStyle: 'solid',
+                    }}
+                  >
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -694,7 +711,16 @@ export function UsersListEnhanced() {
                   value={editIsActive ? 'active' : 'inactive'}
                   onValueChange={(v) => setEditIsActive(v === 'active')}
                 >
-                  <SelectTrigger id="edit-status">
+                  <SelectTrigger
+                    id="edit-status"
+                    className="text-white"
+                    style={{
+                      backgroundColor: '#143240',
+                      borderColor: 'rgba(255, 69, 56, 0.3)',
+                      borderWidth: '1px',
+                      borderStyle: 'solid',
+                    }}
+                  >
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -706,10 +732,30 @@ export function UsersListEnhanced() {
             </div>
           )}
           <DialogFooter>
-            <Button variant="outline" onClick={() => setEditDialogOpen(false)}>
+            <Button
+              variant="outline"
+              onClick={() => setEditDialogOpen(false)}
+              className="text-white"
+              style={{
+                backgroundColor: '#143240',
+                borderColor: 'rgba(255, 69, 56, 0.3)',
+                borderWidth: '1px',
+                borderStyle: 'solid',
+              }}
+            >
               {t('common.cancel')}
             </Button>
-            <Button onClick={handleSaveEdit} disabled={updateUser.isPending}>
+            <Button
+              onClick={handleSaveEdit}
+              disabled={updateUser.isPending}
+              className="text-white"
+              style={{
+                backgroundColor: '#361d22',
+                borderColor: '#ff4538',
+                borderWidth: '1px',
+                borderStyle: 'solid',
+              }}
+            >
               {updateUser.isPending ? t('users.saving') : t('users.saveChanges')}
             </Button>
           </DialogFooter>

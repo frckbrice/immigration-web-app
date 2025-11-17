@@ -2,21 +2,14 @@
 
 import { Suspense } from 'react';
 import { useAuthStore } from '@/features/auth/store';
-import {
-  DocumentsList,
-  DocumentsListSkeleton,
-} from '@/features/documents/components/DocumentsListWithUpload';
-import { DocumentsTable } from '@/features/documents/components/DocumentsTable';
+import { DocumentsListSkeleton } from '@/features/documents/components/DocumentsListWithUpload';
+import { DocumentsByCaseTable } from '@/features/documents/components/DocumentsByCaseTable';
 
 export default function DocumentsPage() {
-  const { user } = useAuthStore();
-
-  // Show table view for AGENT/ADMIN, card view for CLIENT
-  const isClient = user?.role === 'CLIENT';
-
+  // Use case-grouped table view for all roles (CLIENT, AGENT, ADMIN) for better scalability
   return (
     <Suspense fallback={<DocumentsListSkeleton />}>
-      {isClient ? <DocumentsList /> : <DocumentsTable />}
+      <DocumentsByCaseTable />
     </Suspense>
   );
 }

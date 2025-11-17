@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ZegoUIKitPrebuilt, type ZegoCloudRoomConfig } from '@zegocloud/zego-uikit-prebuilt';
 import { useZegoKitToken } from '../hooks/useZegoKitToken';
 import { cn } from '@/lib/utils';
@@ -44,6 +45,7 @@ export function VideoCallContainer({
   kitToken: kitTokenProp,
   tokenRequestOptions,
 }: VideoCallContainerProps) {
+  const { t } = useTranslation();
   const containerRef = useRef<HTMLDivElement | null>(null);
   const instanceRef = useRef<ReturnType<typeof ZegoUIKitPrebuilt.create> | null>(null);
   const activeTokenRef = useRef<string | null>(null);
@@ -153,7 +155,7 @@ export function VideoCallContainer({
           className
         )}
       >
-        Connecting to secure video session…
+        {t('video.connecting') || 'Connecting to secure video session…'}
       </div>
     );
   }
@@ -167,10 +169,12 @@ export function VideoCallContainer({
         )}
       >
         <p>
-          {tokenError instanceof Error ? tokenError.message : 'Unable to start the video call.'}
+          {tokenError instanceof Error
+            ? tokenError.message
+            : t('video.unableToStart') || 'Unable to start the video call.'}
         </p>
         <Button size="sm" variant="outline" onClick={() => tokenQuery.refetch()}>
-          Try Again
+          {t('common.tryAgain') || 'Try Again'}
         </Button>
       </div>
     );
@@ -184,7 +188,8 @@ export function VideoCallContainer({
           className
         )}
       >
-        Video calling is not configured. Please verify your ZegoCloud credentials.
+        {t('video.notConfigured') ||
+          'Video calling is not configured. Please verify your ZegoCloud credentials.'}
       </div>
     );
   }

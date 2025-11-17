@@ -113,9 +113,11 @@ export function ConversationHistoryTableTanStack() {
     const now = new Date();
     const diffHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60));
 
-    if (diffHours < 1) return 'Just now';
-    if (diffHours < 24) return `${diffHours}h ago`;
-    if (diffHours < 48) return 'Yesterday';
+    if (diffHours < 1) return t('messages.justNow') || t('notifications.justNow') || 'Just now';
+    if (diffHours < 24)
+      return t('notifications.hoursAgo', { hours: diffHours }) || `${diffHours}h ago`;
+    if (diffHours < 48)
+      return t('messages.yesterday') || t('notifications.yesterday') || 'Yesterday';
     return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
   };
 
@@ -143,21 +145,21 @@ export function ConversationHistoryTableTanStack() {
         return (
           <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
             <Mail className="h-3 w-3 mr-1" />
-            Email
+            {t('messages.email') || 'Email'}
           </Badge>
         );
       case 'CHAT':
         return (
           <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
             <MessageSquare className="h-3 w-3 mr-1" />
-            Chat
+            {t('messages.chat') || 'Chat'}
           </Badge>
         );
       case 'MIXED':
         return (
           <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-200">
             <MessageCircle className="h-3 w-3 mr-1" />
-            Mixed
+            {t('messages.mixed') || 'Mixed'}
           </Badge>
         );
       default:
@@ -182,7 +184,7 @@ export function ConversationHistoryTableTanStack() {
         </div>
 
         {/* Table Skeleton */}
-        <Card>
+        <Card style={{ borderColor: '#ff4538', borderWidth: '1px', borderStyle: 'solid' }}>
           <CardContent className="pt-6">
             <div className="space-y-3">
               {[1, 2, 3, 4, 5].map((i) => (
@@ -197,10 +199,14 @@ export function ConversationHistoryTableTanStack() {
 
   if (error) {
     return (
-      <Card>
+      <Card style={{ borderColor: '#ff4538', borderWidth: '1px', borderStyle: 'solid' }}>
         <CardContent className="py-12 text-center">
-          <p className="text-red-600">Failed to load conversation history</p>
-          <p className="text-sm text-muted-foreground mt-2">Please try again later</p>
+          <p className="text-red-600">
+            {t('messages.failedToLoadHistory') || 'Failed to load conversation history'}
+          </p>
+          <p className="text-sm text-muted-foreground mt-2">
+            {t('common.tryAgainLater') || 'Please try again later'}
+          </p>
         </CardContent>
       </Card>
     );
@@ -209,9 +215,11 @@ export function ConversationHistoryTableTanStack() {
   return (
     <div className="space-y-6">
       {/* Filters */}
-      <Card>
+      <Card style={{ borderColor: '#ff4538', borderWidth: '1px', borderStyle: 'solid' }}>
         <CardHeader>
-          <CardTitle className="text-lg">Conversation History</CardTitle>
+          <CardTitle className="text-lg">
+            {t('messages.conversationHistory') || 'Conversation History'}
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex flex-col sm:flex-row gap-4">
@@ -219,7 +227,7 @@ export function ConversationHistoryTableTanStack() {
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Search conversations..."
+                placeholder={t('messages.searchConversations') || 'Search conversations...'}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-10"
@@ -228,22 +236,30 @@ export function ConversationHistoryTableTanStack() {
 
             {/* Type Filter */}
             <Select value={typeFilter} onValueChange={(value: any) => setTypeFilter(value)}>
-              <SelectTrigger className="w-full sm:w-[200px]">
+              <SelectTrigger
+                className="w-full sm:w-[200px] text-white"
+                style={{
+                  backgroundColor: '#143240',
+                  borderColor: 'rgba(255, 69, 56, 0.3)',
+                  borderWidth: '1px',
+                  borderStyle: 'solid',
+                }}
+              >
                 <Filter className="h-4 w-4 mr-2" />
-                <SelectValue placeholder="Filter by type" />
+                <SelectValue placeholder={t('messages.filterByType') || 'Filter by type'} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Types</SelectItem>
+                <SelectItem value="all">{t('messages.allTypes') || 'All Types'}</SelectItem>
                 <SelectItem value="EMAIL">
                   <div className="flex items-center gap-2">
                     <Mail className="h-4 w-4" />
-                    Email Only
+                    {t('messages.emailOnly') || 'Email Only'}
                   </div>
                 </SelectItem>
                 <SelectItem value="CHAT">
                   <div className="flex items-center gap-2">
                     <MessageSquare className="h-4 w-4" />
-                    Chat Only
+                    {t('messages.chatOnly') || 'Chat Only'}
                   </div>
                 </SelectItem>
               </SelectContent>
@@ -253,16 +269,19 @@ export function ConversationHistoryTableTanStack() {
       </Card>
 
       {/* Conversations Table */}
-      <Card>
+      <Card style={{ borderColor: '#ff4538', borderWidth: '1px', borderStyle: 'solid' }}>
         <CardContent className="p-0">
           {conversations.length === 0 ? (
             <div className="py-12 text-center">
               <MessageCircle className="mx-auto h-12 w-12 text-muted-foreground mb-4 opacity-50" />
-              <h3 className="text-lg font-semibold">No conversations found</h3>
+              <h3 className="text-lg font-semibold">
+                {t('messages.noConversationsFound') || 'No conversations found'}
+              </h3>
               <p className="text-sm text-muted-foreground mt-2">
                 {searchQuery
-                  ? 'Try adjusting your search or filters'
-                  : 'Start messaging with clients to see conversations here'}
+                  ? t('messages.tryAdjustingSearch') || 'Try adjusting your search or filters'
+                  : t('messages.startMessagingClients') ||
+                    'Start messaging with clients to see conversations here'}
               </p>
             </div>
           ) : (
@@ -270,14 +289,18 @@ export function ConversationHistoryTableTanStack() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Participant</TableHead>
-                    <TableHead>Type</TableHead>
-                    <TableHead>Last Message</TableHead>
-                    <TableHead>Case</TableHead>
-                    <TableHead className="text-center">Messages</TableHead>
-                    <TableHead className="text-center">Unread</TableHead>
-                    <TableHead>Last Activity</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
+                    <TableHead>{t('messages.participant') || 'Participant'}</TableHead>
+                    <TableHead>{t('messages.type') || 'Type'}</TableHead>
+                    <TableHead>{t('messages.lastMessage') || 'Last Message'}</TableHead>
+                    <TableHead>{t('cases.referenceNumber') || 'Case'}</TableHead>
+                    <TableHead className="text-center">
+                      {t('messages.messages') || 'Messages'}
+                    </TableHead>
+                    <TableHead className="text-center">
+                      {t('messages.unread') || 'Unread'}
+                    </TableHead>
+                    <TableHead>{t('messages.lastActivity') || 'Last Activity'}</TableHead>
+                    <TableHead className="text-right">{t('common.actions') || 'Actions'}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -377,7 +400,7 @@ export function ConversationHistoryTableTanStack() {
                             className="gap-1"
                           >
                             <MessageSquare className="h-3 w-3" />
-                            <span className="hidden sm:inline">Chat</span>
+                            <span className="hidden sm:inline">{t('messages.chat') || 'Chat'}</span>
                           </Button>
                           <Button
                             variant="ghost"
@@ -386,7 +409,9 @@ export function ConversationHistoryTableTanStack() {
                             className="gap-1"
                           >
                             <Send className="h-3 w-3" />
-                            <span className="hidden sm:inline">Email</span>
+                            <span className="hidden sm:inline">
+                              {t('messages.email') || 'Email'}
+                            </span>
                           </Button>
                         </div>
                       </TableCell>
@@ -401,49 +426,51 @@ export function ConversationHistoryTableTanStack() {
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="flex items-center justify-between">
-          <div className="text-sm text-muted-foreground">
-            Showing {(currentPage - 1) * pageSize + 1} to{' '}
-            {Math.min(currentPage * pageSize, data?.pagination.total || 0)} of{' '}
-            {data?.pagination.total || 0} conversations
-          </div>
-
-          <div className="flex items-center gap-2">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-0 mt-4">
+          <p className="text-xs sm:text-sm text-muted-foreground order-2 sm:order-1">
+            {t('messages.showingConversations', {
+              showing: (currentPage - 1) * pageSize + 1,
+              to: Math.min(currentPage * pageSize, data?.pagination.total || 0),
+              total: data?.pagination.total || 0,
+            }) ||
+              `Showing ${(currentPage - 1) * pageSize + 1} to ${Math.min(currentPage * pageSize, data?.pagination.total || 0)} of ${data?.pagination.total || 0} conversations`}
+          </p>
+          <div className="flex items-center gap-2 order-1 sm:order-2 w-full sm:w-auto justify-center sm:justify-end">
             <Button
               variant="outline"
               size="sm"
               onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
               disabled={currentPage === 1}
+              className="text-white h-9 sm:h-8 px-3 sm:px-3"
+              style={{
+                backgroundColor: '#143240',
+                borderColor: 'rgba(255, 69, 56, 0.3)',
+                borderWidth: '1px',
+                borderStyle: 'solid',
+              }}
             >
-              <ChevronLeft className="h-4 w-4" />
-              Previous
+              <ChevronLeft className="h-4 w-4 sm:mr-1" />
+              <span className="hidden sm:inline">{t('common.previous') || 'Previous'}</span>
             </Button>
-
-            <div className="flex items-center gap-1">
-              {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                const page = i + 1;
-                return (
-                  <Button
-                    key={page}
-                    variant={currentPage === page ? 'default' : 'outline'}
-                    size="sm"
-                    onClick={() => setCurrentPage(page)}
-                    className="w-8 h-8 p-0"
-                  >
-                    {page}
-                  </Button>
-                );
-              })}
-            </div>
-
+            <span className="text-xs sm:text-sm text-muted-foreground px-2 whitespace-nowrap">
+              {t('common.pageOf', { current: currentPage, total: totalPages }) ||
+                `Page ${currentPage} of ${totalPages}`}
+            </span>
             <Button
               variant="outline"
               size="sm"
               onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
               disabled={currentPage === totalPages}
+              className="text-white h-9 sm:h-8 px-3 sm:px-3"
+              style={{
+                backgroundColor: '#143240',
+                borderColor: 'rgba(255, 69, 56, 0.3)',
+                borderWidth: '1px',
+                borderStyle: 'solid',
+              }}
             >
-              Next
-              <ChevronRightIcon className="h-4 w-4" />
+              <span className="hidden sm:inline">{t('common.next') || 'Next'}</span>
+              <ChevronRightIcon className="h-4 w-4 sm:ml-1" />
             </Button>
           </div>
         </div>

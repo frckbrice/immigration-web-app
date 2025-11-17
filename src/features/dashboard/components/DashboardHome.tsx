@@ -1,6 +1,7 @@
 'use client';
 
 import { memo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
 import { useAuthStore } from '@/features/auth/store';
 import { useRealtimeChatRooms } from '@/features/messages/hooks/useRealtimeChat';
@@ -27,6 +28,7 @@ const TERMINAL_STATUSES = ['APPROVED', 'REJECTED', 'CLOSED'] as const;
 const CASE_STATUS_APPROVED = 'APPROVED' as const;
 
 export const DashboardHome = memo(function DashboardHome() {
+  const { t } = useTranslation();
   const { user } = useAuthStore();
 
   // PERFORMANCE: Fetch dashboard statistics from server (efficient COUNT queries)
@@ -44,6 +46,9 @@ export const DashboardHome = memo(function DashboardHome() {
 
   const isClient = user?.role === 'CLIENT';
 
+  // NOTE: The upcoming appointment API filters appointments to only show future appointments
+  // (scheduledAt >= now - 5 minutes). If an appointment date has already passed,
+  // it will not appear here. This is by design to only show truly "upcoming" appointments.
   const {
     data: upcomingAppointmentData,
     isLoading: isLoadingUpcoming,
@@ -81,96 +86,147 @@ export const DashboardHome = memo(function DashboardHome() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold">
-          Welcome back{user?.firstName ? `, ${user.firstName}` : ''}!
+        <h1 className="text-3xl font-bold text-white">
+          {t('dashboard.welcomeBack', {
+            firstName: user?.firstName ? `, ${user.firstName}` : '',
+          }) || `Welcome back${user?.firstName ? `, ${user.firstName}` : ''}!`}
         </h1>
-        <p className="text-muted-foreground mt-2">Here is an overview of your immigration cases</p>
+        <p className="text-white/70 mt-2">
+          {t('dashboard.overview') || 'Here is an overview of your immigration cases'}
+        </p>
       </div>
 
       {isClient && (
         <Card>
-          <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 pb-3">
             <div>
-              <CardTitle className="text-xl flex items-center gap-2">
-                <Calendar className="h-5 w-5 text-primary" />
-                Upcoming Appointment
+              <CardTitle className="text-lg sm:text-xl flex items-center gap-2">
+                <Calendar className="h-4 w-4 sm:h-5 sm:w-5" style={{ color: '#ff4538' }} />
+                {t('dashboard.upcomingAppointment') || 'Upcoming Appointment'}
               </CardTitle>
-              <CardDescription>Stay prepared for your next visit to our office</CardDescription>
+              <CardDescription className="text-xs sm:text-sm">
+                {t('dashboard.stayPrepared') || 'Stay prepared for your next visit to our office'}
+              </CardDescription>
             </div>
             {upcomingAppointment?.actionUrl && (
-              <Button asChild variant="outline" size="sm">
-                <Link href={upcomingAppointment.actionUrl}>View Details</Link>
+              <Button
+                asChild
+                variant="outline"
+                size="sm"
+                style={{
+                  backgroundColor: 'transparent',
+                  borderColor: 'rgba(255, 69, 56, 0.3)',
+                  borderWidth: '1px',
+                  borderStyle: 'solid',
+                  color: 'inherit',
+                }}
+                className="hover:border-[#ff4538]/50"
+              >
+                <Link href={upcomingAppointment.actionUrl}>
+                  {t('dashboard.viewDetails') || 'View Details'}
+                </Link>
               </Button>
             )}
           </CardHeader>
-          <CardContent>
+          <CardContent className="pt-0">
             {isLoadingUpcoming || isFetchingUpcoming ? (
-              <div className="space-y-3">
-                <SimpleSkeleton className="h-5 w-48 rounded" />
-                <SimpleSkeleton className="h-4 w-56 rounded" />
-                <SimpleSkeleton className="h-4 w-40 rounded" />
+              <div className="space-y-2">
+                <SimpleSkeleton className="h-4 w-48 rounded" />
+                <SimpleSkeleton className="h-3 w-56 rounded" />
+                <SimpleSkeleton className="h-3 w-40 rounded" />
               </div>
             ) : upcomingAppointment ? (
-              <div className="space-y-4">
-                <div className="space-y-1">
-                  <p className="text-sm text-muted-foreground">Case</p>
-                  <p className="text-lg font-semibold">
+              <div className="space-y-3">
+                <div className="space-y-0.5">
+                  <p className="text-xs text-muted-foreground">
+                    {t('cases.referenceNumber') || 'Case'}
+                  </p>
+                  <p className="text-base sm:text-lg font-semibold">
                     {upcomingAppointment.case.referenceNumber}
                   </p>
                 </div>
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <div className="flex items-start gap-3">
-                    <Calendar className="mt-1 h-4 w-4 text-muted-foreground" />
+                <div className="grid gap-2 sm:gap-3 sm:grid-cols-2">
+                  <div className="flex items-start gap-2">
+                    <Calendar
+                      className="mt-0.5 h-3.5 w-3.5 sm:h-4 sm:w-4"
+                      style={{ color: '#ff4538' }}
+                    />
                     <div>
-                      <p className="text-xs uppercase font-semibold text-muted-foreground">
-                        Date &amp; Time
+                      <p className="text-[10px] sm:text-xs uppercase font-semibold text-muted-foreground">
+                        {t('dashboard.dateTime') || 'Date & Time'}
                       </p>
-                      <p className="text-sm font-medium">
+                      <p className="text-xs sm:text-sm font-medium">
                         {formatDateTime(upcomingAppointment.scheduledAt)}
                       </p>
                     </div>
                   </div>
-                  <div className="flex items-start gap-3">
-                    <MapPin className="mt-1 h-4 w-4 text-muted-foreground" />
+                  <div className="flex items-start gap-2">
+                    <MapPin
+                      className="mt-0.5 h-3.5 w-3.5 sm:h-4 sm:w-4"
+                      style={{ color: '#ff4538' }}
+                    />
                     <div>
-                      <p className="text-xs uppercase font-semibold text-muted-foreground">
-                        Location
+                      <p className="text-[10px] sm:text-xs uppercase font-semibold text-muted-foreground">
+                        {t('dashboard.location') || 'Location'}
                       </p>
-                      <p className="text-sm font-medium leading-tight">
+                      <p className="text-xs sm:text-sm font-medium leading-tight">
                         {upcomingAppointment.location}
                       </p>
                     </div>
                   </div>
                 </div>
-                <div className="flex items-start gap-3">
-                  <Clock className="mt-1 h-4 w-4 text-muted-foreground" />
+                <div className="flex items-start gap-2">
+                  <Clock
+                    className="mt-0.5 h-3.5 w-3.5 sm:h-4 sm:w-4"
+                    style={{ color: '#ff4538' }}
+                  />
                   <div>
-                    <p className="text-xs uppercase font-semibold text-muted-foreground">Advisor</p>
-                    <p className="text-sm font-medium">
+                    <p className="text-[10px] sm:text-xs uppercase font-semibold text-muted-foreground">
+                      {t('dashboard.advisor') || 'Advisor'}
+                    </p>
+                    <p className="text-xs sm:text-sm font-medium">
                       {upcomingAppointment.assignedAgent
                         ? `${upcomingAppointment.assignedAgent.firstName ?? ''} ${upcomingAppointment.assignedAgent.lastName ?? ''}`.trim() ||
                           upcomingAppointment.assignedAgent.email
-                        : 'Advisor to be confirmed'}
+                        : t('dashboard.advisorToBeConfirmed') || 'Advisor to be confirmed'}
                     </p>
                   </div>
                 </div>
                 {upcomingAppointment.notes && (
-                  <div className="rounded-md border border-dashed border-muted p-3 text-sm text-muted-foreground">
-                    <p className="font-medium text-foreground mb-1">Notes</p>
+                  <div className="rounded-md border border-dashed border-muted p-2 sm:p-3 text-xs sm:text-sm text-muted-foreground">
+                    <p className="font-medium text-foreground mb-0.5 sm:mb-1">
+                      {t('dashboard.notes') || 'Notes'}
+                    </p>
                     {upcomingAppointment.notes}
                   </div>
                 )}
               </div>
             ) : (
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
-                  <p className="text-sm font-semibold">No appointment scheduled yet</p>
-                  <p className="text-sm text-muted-foreground">
-                    You will see your next office visit here once your advisor schedules it.
+                  <p className="text-xs sm:text-sm font-semibold">
+                    {t('dashboard.noAppointment') || 'No appointment scheduled yet'}
+                  </p>
+                  <p className="text-xs sm:text-sm text-muted-foreground">
+                    {t('dashboard.appointmentDescription') ||
+                      'You will see your next office visit here once your advisor schedules it.'}
                   </p>
                 </div>
-                <Button asChild variant="default">
-                  <Link href="/dashboard/messages">Message Advisor</Link>
+                <Button
+                  asChild
+                  variant="default"
+                  style={{
+                    backgroundColor: '#091a24',
+                    borderColor: '#ff4538',
+                    borderWidth: '1px',
+                    borderStyle: 'solid',
+                    color: 'white',
+                  }}
+                  className="hover:opacity-90"
+                >
+                  <Link href="/dashboard/messages">
+                    {t('dashboard.messageAdvisor') || 'Message Advisor'}
+                  </Link>
                 </Button>
               </div>
             )}
@@ -181,66 +237,93 @@ export const DashboardHome = memo(function DashboardHome() {
       <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
         {isLoading ? (
           <>
-            <StatCardPlaceholder title="Total Cases" icon={Briefcase} />
-            <StatCardPlaceholder title="Pending Documents" icon={FileText} />
-            <StatCardPlaceholder title="Unread Messages" icon={MessageSquare} />
             <StatCardPlaceholder
-              title={user?.role === 'CLIENT' ? 'Completed' : 'Assigned Cases'}
+              title={t('dashboard.totalCases') || 'Total Cases'}
+              icon={Briefcase}
+            />
+            <StatCardPlaceholder
+              title={t('dashboard.pendingDocuments') || 'Pending Documents'}
+              icon={FileText}
+            />
+            <StatCardPlaceholder
+              title={t('dashboard.unreadMessages') || 'Unread Messages'}
+              icon={MessageSquare}
+            />
+            <StatCardPlaceholder
+              title={
+                user?.role === 'CLIENT'
+                  ? t('dashboard.completed') || 'Completed'
+                  : t('dashboard.assignedCases') || 'Assigned Cases'
+              }
               icon={CheckCircle2}
             />
           </>
         ) : (
           <>
-            <Card className="p-4">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-medium text-muted-foreground">Total Cases</span>
-                <Briefcase className="h-3.5 w-3.5 text-muted-foreground" />
+            <Card className="p-2.5 sm:p-4">
+              <div className="flex items-center justify-between mb-1.5 sm:mb-2">
+                <span className="text-[10px] sm:text-xs font-medium text-muted-foreground">
+                  {t('dashboard.totalCases') || 'Total Cases'}
+                </span>
+                <Briefcase className="h-3 w-3 sm:h-3.5 sm:w-3.5" style={{ color: '#ff4538' }} />
               </div>
-              <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-bold">{stats.totalCases || 0}</span>
-                <span className="text-xs text-muted-foreground">
-                  {stats.activeCases || 0} active
+              <div className="flex items-baseline gap-1.5 sm:gap-2">
+                <span className="text-xl sm:text-2xl font-bold">{stats.totalCases || 0}</span>
+                <span className="text-[10px] sm:text-xs text-muted-foreground">
+                  {stats.activeCases || 0} {t('dashboard.active') || 'active'}
                 </span>
               </div>
             </Card>
 
-            <Card className="p-4">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-medium text-muted-foreground">Pending Documents</span>
-                <FileText className="h-3.5 w-3.5 text-muted-foreground" />
-              </div>
-              <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-bold">{stats.pendingDocuments || 0}</span>
-                <span className="text-xs text-muted-foreground">to upload</span>
-              </div>
-            </Card>
-
-            <Card className="p-4">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-medium text-muted-foreground">Unread Messages</span>
-                <MessageSquare className="h-3.5 w-3.5 text-muted-foreground" />
-              </div>
-              <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-bold">{unreadMessages}</span>
-                <span className="text-xs text-muted-foreground">from advisor</span>
-              </div>
-            </Card>
-
-            <Card className="p-4">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-medium text-muted-foreground">
-                  {user?.role === 'CLIENT' ? 'Completed' : 'Assigned Cases'}
+            <Card className="p-2.5 sm:p-4">
+              <div className="flex items-center justify-between mb-1.5 sm:mb-2">
+                <span className="text-[10px] sm:text-xs font-medium text-muted-foreground">
+                  {t('dashboard.pendingDocuments') || 'Pending Documents'}
                 </span>
-                <CheckCircle2 className="h-3.5 w-3.5 text-muted-foreground" />
+                <FileText className="h-3 w-3 sm:h-3.5 sm:w-3.5" style={{ color: '#ff4538' }} />
               </div>
-              <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-bold">
+              <div className="flex items-baseline gap-1.5 sm:gap-2">
+                <span className="text-xl sm:text-2xl font-bold">{stats.pendingDocuments || 0}</span>
+                <span className="text-[10px] sm:text-xs text-muted-foreground">
+                  {t('dashboard.toUpload') || 'to upload'}
+                </span>
+              </div>
+            </Card>
+
+            <Card className="p-2.5 sm:p-4">
+              <div className="flex items-center justify-between mb-1.5 sm:mb-2">
+                <span className="text-[10px] sm:text-xs font-medium text-muted-foreground">
+                  {t('dashboard.unreadMessages') || 'Unread Messages'}
+                </span>
+                <MessageSquare className="h-3 w-3 sm:h-3.5 sm:w-3.5" style={{ color: '#ff4538' }} />
+              </div>
+              <div className="flex items-baseline gap-1.5 sm:gap-2">
+                <span className="text-xl sm:text-2xl font-bold">{unreadMessages}</span>
+                <span className="text-[10px] sm:text-xs text-muted-foreground">
+                  {t('dashboard.fromAdvisor') || 'from advisor'}
+                </span>
+              </div>
+            </Card>
+
+            <Card className="p-2.5 sm:p-4">
+              <div className="flex items-center justify-between mb-1.5 sm:mb-2">
+                <span className="text-[10px] sm:text-xs font-medium text-muted-foreground">
+                  {user?.role === 'CLIENT'
+                    ? t('dashboard.completed') || 'Completed'
+                    : t('dashboard.assignedCases') || 'Assigned Cases'}
+                </span>
+                <CheckCircle2 className="h-3 w-3 sm:h-3.5 sm:w-3.5" style={{ color: '#ff4538' }} />
+              </div>
+              <div className="flex items-baseline gap-1.5 sm:gap-2">
+                <span className="text-xl sm:text-2xl font-bold">
                   {user?.role === 'CLIENT'
                     ? stats.completedCases || 0
                     : ((stats as any)?.assignedCases ?? 0)}
                 </span>
-                <span className="text-xs text-muted-foreground">
-                  {user?.role === 'CLIENT' ? 'successful' : 'cases'}
+                <span className="text-[10px] sm:text-xs text-muted-foreground">
+                  {user?.role === 'CLIENT'
+                    ? t('dashboard.successful') || 'successful'
+                    : t('dashboard.cases') || 'cases'}
                 </span>
               </div>
             </Card>
@@ -248,55 +331,149 @@ export const DashboardHome = memo(function DashboardHome() {
         )}
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-        <Card className="col-span-4">
-          <CardHeader>
-            <CardTitle>Quick Actions</CardTitle>
+      <div className="grid gap-3 sm:gap-4 md:grid-cols-2 lg:grid-cols-7">
+        <Card className="col-span-full md:col-span-4 lg:col-span-4">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base sm:text-lg">
+              {t('dashboard.quickActions') || 'Quick Actions'}
+            </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-2">
+          <CardContent className="space-y-1.5 sm:space-y-2 pt-0">
             {/* PERFORMANCE: Dynamic routing based on user role */}
-            <Button asChild className="w-full justify-start" variant="outline">
+            <Button
+              asChild
+              className="w-full justify-start"
+              variant="outline"
+              style={{
+                backgroundColor: 'transparent',
+                borderColor: 'rgba(255, 69, 56, 0.3)',
+                borderWidth: '1px',
+                borderStyle: 'solid',
+                color: 'inherit',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = 'rgba(255, 69, 56, 0.5)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = 'rgba(255, 69, 56, 0.3)';
+              }}
+            >
               <Link href={user?.role === 'CLIENT' ? '/dashboard/my-cases' : '/dashboard/cases'}>
-                <Briefcase className="mr-2 h-4 w-4" />
-                {user?.role === 'CLIENT' ? 'View My Cases' : 'Manage Cases'}
+                <Briefcase className="mr-2 h-4 w-4" style={{ color: '#ff4538' }} />
+                {user?.role === 'CLIENT'
+                  ? t('dashboard.viewMyCases') || 'View My Cases'
+                  : t('dashboard.manageCases') || 'Manage Cases'}
               </Link>
             </Button>
-            <Button asChild className="w-full justify-start" variant="outline">
+            <Button
+              asChild
+              className="w-full justify-start"
+              variant="outline"
+              style={{
+                backgroundColor: 'transparent',
+                borderColor: 'rgba(255, 69, 56, 0.3)',
+                borderWidth: '1px',
+                borderStyle: 'solid',
+                color: 'inherit',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = 'rgba(255, 69, 56, 0.5)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = 'rgba(255, 69, 56, 0.3)';
+              }}
+            >
               <Link href="/dashboard/documents">
-                <FileText className="mr-2 h-4 w-4" />
-                {user?.role === 'CLIENT' ? 'Upload Documents' : 'Manage Documents'}
+                <FileText className="mr-2 h-4 w-4" style={{ color: '#ff4538' }} />
+                {user?.role === 'CLIENT'
+                  ? t('dashboard.uploadDocuments') || 'Upload Documents'
+                  : t('dashboard.manageDocuments') || 'Manage Documents'}
               </Link>
             </Button>
-            <Button asChild className="w-full justify-start" variant="outline">
+            <Button
+              asChild
+              className="w-full justify-start"
+              variant="outline"
+              style={{
+                backgroundColor: 'transparent',
+                borderColor: 'rgba(255, 69, 56, 0.3)',
+                borderWidth: '1px',
+                borderStyle: 'solid',
+                color: 'inherit',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = 'rgba(255, 69, 56, 0.5)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = 'rgba(255, 69, 56, 0.3)';
+              }}
+            >
               <Link href="/dashboard/messages">
-                <MessageSquare className="mr-2 h-4 w-4" />
-                {user?.role === 'CLIENT' ? 'Message Advisor' : 'Messages'}
+                <MessageSquare className="mr-2 h-4 w-4" style={{ color: '#ff4538' }} />
+                {user?.role === 'CLIENT'
+                  ? t('dashboard.messageAdvisor') || 'Message Advisor'
+                  : t('messages.title') || 'Messages'}
               </Link>
             </Button>
-            <Button asChild className="w-full justify-start" variant="outline">
+            <Button
+              asChild
+              className="w-full justify-start"
+              variant="outline"
+              style={{
+                backgroundColor: 'transparent',
+                borderColor: 'rgba(255, 69, 56, 0.3)',
+                borderWidth: '1px',
+                borderStyle: 'solid',
+                color: 'inherit',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = 'rgba(255, 69, 56, 0.5)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = 'rgba(255, 69, 56, 0.3)';
+              }}
+            >
               <Link href="/dashboard/notifications">
-                <AlertCircle className="mr-2 h-4 w-4" />
-                View Notifications
+                <AlertCircle className="mr-2 h-4 w-4" style={{ color: '#ff4538' }} />
+                {t('dashboard.viewNotifications') || 'View Notifications'}
               </Link>
             </Button>
           </CardContent>
         </Card>
-        <Card className="col-span-3">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <AlertCircle className="h-5 w-5" />
-              Need Help?
+        <Card className="col-span-full md:col-span-2 lg:col-span-3">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base sm:text-lg flex items-center gap-2">
+              <AlertCircle className="h-4 w-4 sm:h-5 sm:w-5" style={{ color: '#ff4538' }} />
+              {t('dashboard.needHelp') || 'Need Help?'}
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <p className="text-sm text-muted-foreground mb-4">
+          <CardContent className="pt-0">
+            <p className="text-xs sm:text-sm text-muted-foreground mb-3 sm:mb-4">
               {user?.role === 'CLIENT'
-                ? 'Have questions? We are here to help!'
-                : 'Quick access to support resources'}
+                ? t('dashboard.haveQuestions') || 'Have questions? We are here to help!'
+                : t('dashboard.quickAccess') || 'Quick access to support resources'}
             </p>
-            <Button asChild className="w-full">
+            <Button
+              asChild
+              className="w-full"
+              style={{
+                backgroundColor: '#091a24',
+                borderColor: '#ff4538',
+                borderWidth: '1px',
+                borderStyle: 'solid',
+                color: 'white',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.opacity = '0.9';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.opacity = '1';
+              }}
+            >
               <Link href="/dashboard/messages">
-                {user?.role === 'CLIENT' ? 'Contact Advisor' : 'View Messages'}
+                {user?.role === 'CLIENT'
+                  ? t('dashboard.contactAdvisor') || 'Contact Advisor'
+                  : t('dashboard.viewMessages') || 'View Messages'}
               </Link>
             </Button>
           </CardContent>

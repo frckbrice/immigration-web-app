@@ -118,9 +118,9 @@ export function ProfileView() {
 
   const getRoleBadgeColor = () => {
     const colors: Record<string, string> = {
-      ADMIN: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300',
-      AGENT: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
-      CLIENT: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300',
+      ADMIN: 'bg-purple-100 text-purple-800',
+      AGENT: 'bg-green-100 text-green-800',
+      CLIENT: 'bg-blue-100 text-blue-800',
     };
     return colors[user?.role || ''] || '';
   };
@@ -184,11 +184,22 @@ export function ProfileView() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Profile</h1>
-          <p className="text-muted-foreground mt-2">Manage your personal information</p>
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Profile</h1>
+          <p className="text-xs sm:text-sm text-muted-foreground mt-1 sm:mt-2">
+            Manage your personal information
+          </p>
         </div>
         {!isEditing && (
-          <Button onClick={() => setIsEditing(true)}>
+          <Button
+            onClick={() => setIsEditing(true)}
+            className="text-white hover:opacity-90 transition-opacity"
+            style={{
+              backgroundColor: '#361d22',
+              borderColor: '#ff4538',
+              borderWidth: '1px',
+              borderStyle: 'solid',
+            }}
+          >
             <Edit2 className="mr-2 h-4 w-4" />
             Edit Profile
           </Button>
@@ -197,15 +208,18 @@ export function ProfileView() {
 
       <div className="grid gap-6 md:grid-cols-3">
         {/* Profile Card */}
-        <Card>
-          <CardHeader className="text-center pb-4">
-            <div className="flex justify-center mb-4 relative">
-              <Avatar className="h-24 w-24">
+        <Card style={{ borderColor: '#ff4538', borderWidth: '1px', borderStyle: 'solid' }}>
+          <CardHeader className="text-center pb-3 sm:pb-4">
+            <div className="flex justify-center mb-3 sm:mb-4 relative">
+              <Avatar className="h-20 w-20 sm:h-24 sm:w-24">
                 <AvatarImage
                   src={avatarPreview || user?.profilePicture || undefined}
                   alt={`${user?.firstName} ${user?.lastName}`}
                 />
-                <AvatarFallback className="text-2xl bg-primary text-primary-foreground">
+                <AvatarFallback
+                  className="text-xl sm:text-2xl text-white"
+                  style={{ backgroundColor: '#091a24' }}
+                >
                   {getInitials()}
                 </AvatarFallback>
               </Avatar>
@@ -214,10 +228,16 @@ export function ProfileView() {
                   <Button
                     size="icon"
                     variant="secondary"
-                    className="absolute bottom-0 right-0 rounded-full h-8 w-8"
+                    className="absolute bottom-0 right-0 rounded-full h-8 w-8 text-white hover:border-white/30 transition-colors"
                     onClick={handleAvatarClick}
                     type="button"
                     disabled={uploadAvatarMutation.isPending}
+                    style={{
+                      backgroundColor: 'transparent',
+                      borderColor: 'rgba(255, 255, 255, 0.1)',
+                      borderWidth: '1px',
+                      borderStyle: 'solid',
+                    }}
                   >
                     {uploadAvatarMutation.isPending ? (
                       <Loader2 className="h-4 w-4 animate-spin" />
@@ -237,30 +257,30 @@ export function ProfileView() {
                 </>
               )}
             </div>
-            <CardTitle>
+            <CardTitle className="text-base sm:text-lg">
               {user?.firstName} {user?.lastName}
             </CardTitle>
-            <CardDescription className="flex items-center justify-center mt-2">
-              <Mail className="h-3 w-3 mr-1" />
+            <CardDescription className="flex items-center justify-center mt-1 sm:mt-2 text-xs sm:text-sm">
+              <Mail className="h-3 w-3 sm:h-3.5 sm:w-3.5 mr-1" style={{ color: '#ff4538' }} />
               {user?.email}
             </CardDescription>
           </CardHeader>
           <Separator />
-          <CardContent className="pt-4">
-            <div className="space-y-3">
+          <CardContent className="pt-3 sm:pt-4">
+            <div className="space-y-2 sm:space-y-3">
               <div className="flex justify-center">
                 <span
                   className={cn(
-                    'px-3 py-1 rounded-full text-sm font-medium flex items-center gap-1',
+                    'px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium flex items-center gap-1',
                     getRoleBadgeColor()
                   )}
                 >
-                  <Shield className="h-3 w-3" />
+                  <Shield className="h-3 w-3" style={{ color: '#ff4538' }} />
                   {getRoleDisplayName()}
                 </span>
               </div>
-              <Separator />
-              <div className="grid grid-cols-2 gap-2">
+              <Separator style={{ backgroundColor: 'rgba(255, 69, 56, 0.2)' }} />
+              <div className="grid grid-cols-2 gap-1.5 sm:gap-2">
                 <ProfileStatusBadge
                   label="Status"
                   value={user?.isActive ? 'Active' : 'Inactive'}
@@ -277,25 +297,35 @@ export function ProfileView() {
         </Card>
 
         {/* Profile Details */}
-        <Card className="md:col-span-2">
-          <CardHeader>
-            <CardTitle>Personal Information</CardTitle>
-            <CardDescription>
+        <Card
+          className="md:col-span-2"
+          style={{ borderColor: '#ff4538', borderWidth: '1px', borderStyle: 'solid' }}
+        >
+          <CardHeader className="pb-3 sm:pb-6">
+            <CardTitle className="text-base sm:text-lg flex items-center gap-2">
+              <User className="h-4 w-4 sm:h-5 sm:w-5" style={{ color: '#ff4538' }} />
+              Personal Information
+            </CardTitle>
+            <CardDescription className="text-xs sm:text-sm mt-1">
               {isEditing ? 'Edit your account details' : 'Your account details and information'}
             </CardDescription>
           </CardHeader>
           <CardContent>
             {isEditing ? (
               <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3 sm:space-y-4">
                   <FormField
                     control={form.control}
                     name="firstName"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>First Name</FormLabel>
+                        <FormLabel className="text-xs sm:text-sm">First Name</FormLabel>
                         <FormControl>
-                          <Input placeholder="John" {...field} />
+                          <Input
+                            placeholder="John"
+                            {...field}
+                            className="h-10 sm:h-11 text-sm sm:text-base"
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -306,9 +336,13 @@ export function ProfileView() {
                     name="lastName"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Last Name</FormLabel>
+                        <FormLabel className="text-xs sm:text-sm">Last Name</FormLabel>
                         <FormControl>
-                          <Input placeholder="Doe" {...field} />
+                          <Input
+                            placeholder="Doe"
+                            {...field}
+                            className="h-10 sm:h-11 text-sm sm:text-base"
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -319,9 +353,16 @@ export function ProfileView() {
                     name="phone"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Phone</FormLabel>
+                        <FormLabel className="text-xs sm:text-sm flex items-center gap-1.5">
+                          <Phone className="h-3.5 w-3.5" style={{ color: '#ff4538' }} />
+                          Phone
+                        </FormLabel>
                         <FormControl>
-                          <Input placeholder="+1234567890" {...field} />
+                          <Input
+                            placeholder="+1234567890"
+                            {...field}
+                            className="h-10 sm:h-11 text-sm sm:text-base"
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -332,9 +373,16 @@ export function ProfileView() {
                     name="street"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Street address</FormLabel>
+                        <FormLabel className="text-xs sm:text-sm flex items-center gap-1.5">
+                          <MapPin className="h-3.5 w-3.5" style={{ color: '#ff4538' }} />
+                          Street address
+                        </FormLabel>
                         <FormControl>
-                          <Input placeholder="123 Main St" {...field} />
+                          <Input
+                            placeholder="123 Main St"
+                            {...field}
+                            className="h-10 sm:h-11 text-sm sm:text-base"
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -345,9 +393,16 @@ export function ProfileView() {
                     name="city"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>City</FormLabel>
+                        <FormLabel className="text-xs sm:text-sm flex items-center gap-1.5">
+                          <MapPin className="h-3.5 w-3.5" style={{ color: '#ff4538' }} />
+                          City
+                        </FormLabel>
                         <FormControl>
-                          <Input placeholder="Paris" {...field} />
+                          <Input
+                            placeholder="Paris"
+                            {...field}
+                            className="h-10 sm:h-11 text-sm sm:text-base"
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -358,18 +413,32 @@ export function ProfileView() {
                     name="country"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Country</FormLabel>
+                        <FormLabel className="text-xs sm:text-sm flex items-center gap-1.5">
+                          <Globe className="h-3.5 w-3.5" style={{ color: '#ff4538' }} />
+                          Country
+                        </FormLabel>
                         <FormControl>
-                          <Input placeholder="France" {...field} />
+                          <Input
+                            placeholder="France"
+                            {...field}
+                            className="h-10 sm:h-11 text-sm sm:text-base"
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
-                  <div className="flex items-center gap-2 pt-4">
+                  <div className="flex items-center gap-2 pt-3 sm:pt-4">
                     <Button
                       type="submit"
                       disabled={form.formState.isSubmitting || updateProfileMutation.isPending}
+                      className="text-white hover:opacity-90 transition-opacity disabled:opacity-50 h-10 sm:h-11"
+                      style={{
+                        backgroundColor: '#361d22',
+                        borderColor: '#ff4538',
+                        borderWidth: '1px',
+                        borderStyle: 'solid',
+                      }}
                     >
                       <Save className="mr-2 h-4 w-4" />
                       {updateProfileMutation.isPending ? 'Saving...' : 'Save Changes'}
@@ -382,6 +451,13 @@ export function ProfileView() {
                         setIsEditing(false);
                       }}
                       disabled={updateProfileMutation.isPending}
+                      className="text-white hover:border-white/30 transition-colors disabled:opacity-50 h-10 sm:h-11"
+                      style={{
+                        backgroundColor: 'transparent',
+                        borderColor: 'rgba(255, 255, 255, 0.1)',
+                        borderWidth: '1px',
+                        borderStyle: 'solid',
+                      }}
                     >
                       <X className="mr-2 h-4 w-4" />
                       Cancel
@@ -390,7 +466,7 @@ export function ProfileView() {
                 </form>
               </Form>
             ) : (
-              <div className="space-y-4">
+              <div className="space-y-2 sm:space-y-3">
                 <ProfileField icon={User} label="First Name" value={user?.firstName || ''} />
                 <ProfileField icon={User} label="Last Name" value={user?.lastName || ''} />
                 <ProfileField icon={Mail} label="Email" value={user?.email || ''} />
@@ -413,12 +489,12 @@ export function ProfileView() {
 
 function ProfileField({ icon: Icon, label, value }: { icon: any; label: string; value: string }) {
   return (
-    <div className="flex items-center justify-between py-2">
-      <div className="flex items-center space-x-2">
-        <Icon className="h-4 w-4 text-muted-foreground" />
-        <span className="text-sm font-medium text-muted-foreground">{label}</span>
+    <div className="flex items-center justify-between py-1.5 sm:py-2">
+      <div className="flex items-center space-x-1.5 sm:space-x-2">
+        <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4" style={{ color: '#ff4538' }} />
+        <span className="text-xs sm:text-sm font-medium text-muted-foreground">{label}</span>
       </div>
-      <span className="text-sm font-medium">{value}</span>
+      <span className="text-xs sm:text-sm font-medium">{value}</span>
     </div>
   );
 }
@@ -433,10 +509,33 @@ function ProfileStatusBadge({
   isActive?: boolean;
 }) {
   return (
-    <div className="flex flex-col items-center space-y-1 p-2">
-      <span className="text-xs text-muted-foreground">{label}</span>
-      <Badge variant={isActive ? 'default' : 'secondary'} className="w-fit">
-        {isActive ? <CheckCircle className="h-3 w-3 mr-1" /> : <XCircle className="h-3 w-3 mr-1" />}
+    <div className="flex flex-col items-center space-y-0.5 sm:space-y-1 p-1.5 sm:p-2">
+      <span className="text-[10px] sm:text-xs text-muted-foreground">{label}</span>
+      <Badge
+        className="w-fit text-[10px] sm:text-xs h-4 sm:h-5 px-1.5 sm:px-2 border"
+        style={
+          isActive
+            ? {
+                backgroundColor: '#091a24',
+                borderColor: '#ff4538',
+                borderWidth: '1px',
+                borderStyle: 'solid',
+                color: '#ffffff',
+              }
+            : {
+                backgroundColor: '#091a24',
+                borderColor: '#ff4538',
+                borderWidth: '1px',
+                borderStyle: 'solid',
+                color: '#ffffff',
+              }
+        }
+      >
+        {isActive ? (
+          <CheckCircle className="h-2.5 w-2.5 sm:h-3 sm:w-3 mr-1" />
+        ) : (
+          <XCircle className="h-2.5 w-2.5 sm:h-3 sm:w-3 mr-1" />
+        )}
         {value}
       </Badge>
     </div>

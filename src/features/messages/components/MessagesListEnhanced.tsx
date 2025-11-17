@@ -212,7 +212,7 @@ export function MessagesList({
       if (!presence) {
         return {
           status: 'offline' as const,
-          label: isMounted ? 'Offline' : '',
+          label: isMounted ? t('messages.offline') : '',
           lastSeen: null,
         };
       }
@@ -227,7 +227,7 @@ export function MessagesList({
       if (presence.status === 'online') {
         return {
           status: 'online' as const,
-          label: 'Online now',
+          label: t('messages.onlineNow'),
           lastSeen,
         };
       }
@@ -235,7 +235,11 @@ export function MessagesList({
       const relative = formatRelativeTime(lastSeen);
       return {
         status: 'offline' as const,
-        label: relative ? `Last seen ${relative}` : isMounted ? 'Offline' : '',
+        label: relative
+          ? t('messages.lastSeen', { time: relative })
+          : isMounted
+            ? t('messages.offline')
+            : '',
         lastSeen,
       };
     },
@@ -254,10 +258,18 @@ export function MessagesList({
 
   const typingLabel = useMemo(() => {
     if (!isParticipantTyping) return '';
-    if (typingNames.length === 0) return 'Someone is typing…';
-    if (typingNames.length === 1) return `${typingNames[0]} is typing…`;
-    if (typingNames.length === 2) return `${typingNames[0]} and ${typingNames[1]} are typing…`;
-    return `${typingNames[0]}, ${typingNames[1]} and others are typing…`;
+    if (typingNames.length === 0) return t('messages.someoneTyping') || 'Someone is typing…';
+    if (typingNames.length === 1)
+      return t('messages.personTyping', { name: typingNames[0] }) || `${typingNames[0]} is typing…`;
+    if (typingNames.length === 2)
+      return (
+        t('messages.twoPeopleTyping', { name1: typingNames[0], name2: typingNames[1] }) ||
+        `${typingNames[0]} and ${typingNames[1]} are typing…`
+      );
+    return (
+      t('messages.multiplePeopleTyping', { name1: typingNames[0], name2: typingNames[1] }) ||
+      `${typingNames[0]}, ${typingNames[1]} and others are typing…`
+    );
   }, [isParticipantTyping, typingNames]);
 
   // Transform ChatRoom to Conversation format for UI (fully memoized)
@@ -286,9 +298,11 @@ export function MessagesList({
           );
 
           const participantName =
-            participantInfo?.fullName || existingConversation?.participantName || 'Unknown User';
+            participantInfo?.fullName ||
+            existingConversation?.participantName ||
+            t('messages.unknownUser');
           const participantRole =
-            participantInfo?.role || existingConversation?.participantRole || 'User';
+            participantInfo?.role || existingConversation?.participantRole || t('users.user');
           const participantEmail = participantInfo?.email || existingConversation?.participantEmail;
 
           return {
@@ -326,7 +340,7 @@ export function MessagesList({
           participantName: preselectedClientName,
           participantEmail: preselectedEmail,
           participantRole: 'CLIENT',
-          lastMessage: 'Ready to start conversation',
+          lastMessage: t('messages.readyToStartConversation'),
           lastMessageTime: new Date().toISOString(),
           unreadCount: 0,
           caseId: caseReference,
@@ -422,7 +436,7 @@ export function MessagesList({
 
   const headerStatusLabel = isParticipantTyping
     ? typingLabel
-    : selectedPresence?.label || (isMounted ? 'Offline' : '');
+    : selectedPresence?.label || (isMounted ? t('messages.offline') : '');
 
   const headerStatusClass = isParticipantTyping
     ? 'text-primary font-medium'
@@ -565,7 +579,7 @@ export function MessagesList({
 
         setOptimisticMessages((prev) => prev.filter((m) => m.id !== msg.id));
       } catch (error: any) {
-        toast.error(error?.message || 'Failed to retry message');
+        toast.error(error?.message || t('messages.failedToRetry') || 'Failed to retry message');
       }
     },
     [selected, user, sendMessageMutation, selectedConversation, getUserInfo]
@@ -651,7 +665,11 @@ export function MessagesList({
         );
         setInput(messageContent);
         setAttachments(messageAttachments);
-        toast.error(error?.message || 'Failed to send message. Click the failed message to retry.');
+        toast.error(
+          error?.message ||
+            t('messages.failedToSend') ||
+            'Failed to send message. Click the failed message to retry.'
+        );
 
         // Don't schedule cleanup for failed messages - let them stay in UI
         // This way user can retry by clicking on the failed message
@@ -674,7 +692,7 @@ export function MessagesList({
 
     // Validate file count (max 3)
     if (attachments.length + files.length > 3) {
-      toast.error('Maximum 3 attachments allowed per message');
+      toast.error(t('messages.maxAttachments') || 'Maximum 3 attachments allowed per message');
       return;
     }
 
@@ -692,7 +710,7 @@ export function MessagesList({
       });
 
       if (!uploadedFiles || uploadedFiles.length === 0) {
-        throw new Error('Upload failed: No result returned');
+        throw new Error(t('messages.uploadFailed') || 'Upload failed: No result returned');
       }
 
       // Convert to MessageAttachment format
@@ -708,7 +726,7 @@ export function MessagesList({
       toast.success(`${uploadedFiles.length} file(s) attached`);
     } catch (error) {
       logger.error('File upload error:', error);
-      toast.error('Failed to upload file(s)');
+      toast.error(t('messages.uploadError') || 'Failed to upload file(s)');
     } finally {
       setIsUploading(false);
       // Reset file input
@@ -735,21 +753,27 @@ export function MessagesList({
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
         <div className="flex-1">
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Messages</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">{t('messages.title')}</h1>
           <p className="text-sm sm:text-base text-muted-foreground mt-2">
             {user?.role === 'CLIENT'
-              ? 'Communicate with your immigration advisor'
-              : 'Manage conversations with your clients'}
+              ? t('messages.communicateWithAdvisor')
+              : t('messages.manageConversations')}
           </p>
         </div>
         <Button
-          variant="outline"
           onClick={() => setEmailComposerOpen(true)}
-          className="gap-2 w-full sm:w-auto"
+          className="gap-2 w-full sm:w-auto !text-white hover:opacity-90 transition-opacity"
+          style={{
+            backgroundColor: '#361d22 !important',
+            borderColor: '#ff4538 !important',
+            borderWidth: '1px',
+            borderStyle: 'solid',
+            color: 'white !important',
+          }}
         >
-          <Mail className="h-4 w-4" />
-          <span className="hidden sm:inline">Send Email</span>
-          <span className="sm:hidden">Email</span>
+          <Mail className="h-4 w-4 !text-white" />
+          <span className="hidden sm:inline !text-white">{t('messages.sendEmail')}</span>
+          <span className="sm:hidden !text-white">{t('messages.email')}</span>
         </Button>
       </div>
 
@@ -767,13 +791,13 @@ export function MessagesList({
         {/* Conversations - Hidden on mobile */}
         <Card className="hidden lg:flex lg:col-span-1 overflow-hidden flex-col">
           <CardHeader className="border-b">
-            <CardTitle className="text-base">Conversations</CardTitle>
+            <CardTitle className="text-base">{t('messages.conversations')}</CardTitle>
             <div className="relative mt-2">
               <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Search..."
+                placeholder={t('messages.searchPlaceholder')}
                 className="pl-8"
-                aria-label="Search conversations"
+                aria-label={t('messages.searchConversations')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 disabled={isFirstLoad}
@@ -799,7 +823,9 @@ export function MessagesList({
                 <div className="text-center">
                   <MessageSquare className="mx-auto h-12 w-12 text-muted-foreground mb-3 opacity-50" />
                   <p className="text-sm text-muted-foreground">
-                    {searchQuery ? 'No conversations found' : 'No conversations yet'}
+                    {searchQuery
+                      ? t('messages.noConversationsFound')
+                      : t('messages.noConversationsYet')}
                   </p>
                 </div>
               </div>
@@ -808,8 +834,8 @@ export function MessagesList({
                 const presenceDetails = getPresenceDetails(conv.participantId);
                 const presenceLabel =
                   presenceDetails.status === 'online'
-                    ? 'Online now'
-                    : presenceDetails.label || (isMounted ? 'Offline' : '');
+                    ? t('messages.onlineNow')
+                    : presenceDetails.label || (isMounted ? t('messages.offline') : '');
 
                 return (
                   <button
@@ -817,16 +843,27 @@ export function MessagesList({
                     onClick={() => setSelected(conv.id)}
                     role="option"
                     aria-selected={selected === conv.id}
-                    aria-label={`Conversation with ${conv.participantName}`}
+                    aria-label={t('messages.conversationWith', { name: conv.participantName })}
                     className={cn(
-                      'w-full p-4 text-left hover:bg-muted/50 transition border-b',
+                      'w-full p-3 sm:p-4 text-left hover:bg-muted/50 transition border-b',
                       selected === conv.id && 'bg-muted'
                     )}
+                    style={
+                      selected === conv.id
+                        ? {
+                            borderColor: '#ff4538',
+                            borderWidth: '0 0 0 2px',
+                            borderStyle: 'solid',
+                          }
+                        : undefined
+                    }
                   >
-                    <div className="flex gap-3">
+                    <div className="flex gap-2 sm:gap-3">
                       <div className="relative">
-                        <Avatar className="h-10 w-10">
-                          <AvatarFallback>{getInitials(conv.participantName)}</AvatarFallback>
+                        <Avatar className="h-9 w-9 sm:h-10 sm:w-10">
+                          <AvatarFallback className="text-[10px] sm:text-xs">
+                            {getInitials(conv.participantName)}
+                          </AvatarFallback>
                         </Avatar>
                         <div
                           className={cn(
@@ -838,22 +875,30 @@ export function MessagesList({
                         />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <div className="flex justify-between mb-1">
-                          <h4 className="text-sm font-semibold truncate">{conv.participantName}</h4>
+                        <div className="flex justify-between mb-0.5 sm:mb-1">
+                          <h4 className="text-xs sm:text-sm font-semibold truncate">
+                            {conv.participantName}
+                          </h4>
                           {conv.unreadCount > 0 && (
-                            <Badge variant="default" className="ml-2">
+                            <Badge
+                              variant="default"
+                              className="ml-2 text-[10px] sm:text-xs h-4 sm:h-5 px-1 sm:px-1.5"
+                              style={{ backgroundColor: '#ff4538' }}
+                            >
                               {conv.unreadCount}
                             </Badge>
                           )}
                         </div>
-                        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mb-1">
-                          <span className="text-xs text-muted-foreground">
+                        <div className="flex flex-wrap items-center gap-x-1.5 sm:gap-x-2 gap-y-0.5 sm:gap-y-1 mb-0.5 sm:mb-1">
+                          <span className="text-[10px] sm:text-xs text-muted-foreground">
                             {conv.participantRole}
                           </span>
-                          <span className="hidden sm:inline text-xs text-muted-foreground">•</span>
+                          <span className="hidden sm:inline text-[10px] sm:text-xs text-muted-foreground">
+                            •
+                          </span>
                           <span
                             className={cn(
-                              'text-xs',
+                              'text-[10px] sm:text-xs',
                               presenceDetails.status === 'online'
                                 ? 'text-emerald-600 font-medium'
                                 : 'text-muted-foreground'
@@ -863,11 +908,16 @@ export function MessagesList({
                             {presenceLabel}
                           </span>
                         </div>
-                        <p className="text-xs text-muted-foreground truncate">{conv.lastMessage}</p>
+                        <p className="text-[10px] sm:text-xs text-muted-foreground truncate">
+                          {conv.lastMessage}
+                        </p>
                         {isMounted && (
-                          <div className="flex items-center gap-1 mt-1">
-                            <Clock className="h-3 w-3" />
-                            <span className="text-xs" suppressHydrationWarning>
+                          <div className="flex items-center gap-1 mt-0.5 sm:mt-1">
+                            <Clock
+                              className="h-2.5 w-2.5 sm:h-3 sm:w-3"
+                              style={{ color: '#ff4538' }}
+                            />
+                            <span className="text-[10px] sm:text-xs" suppressHydrationWarning>
                               {formatTime(conv.lastMessageTime)}
                             </span>
                           </div>
@@ -882,14 +932,20 @@ export function MessagesList({
         </Card>
 
         {/* Chat */}
-        <Card className="col-span-1 lg:col-span-2 overflow-hidden flex flex-col">
+        <Card
+          className="col-span-1 lg:col-span-2 overflow-hidden flex flex-col"
+          style={{ borderColor: '#ff4538', borderWidth: '1px', borderStyle: 'solid' }}
+        >
           {selected && selectedConversation ? (
             <>
-              <CardHeader className="border-b">
-                <div className="flex gap-3">
+              <CardHeader
+                className="border-b pb-3 sm:pb-4"
+                style={{ borderColor: 'rgba(255, 69, 56, 0.2)' }}
+              >
+                <div className="flex gap-2 sm:gap-3">
                   <div className="relative">
-                    <Avatar>
-                      <AvatarFallback>
+                    <Avatar className="h-9 w-9 sm:h-10 sm:w-10">
+                      <AvatarFallback className="text-[10px] sm:text-xs">
                         {getInitials(selectedConversation.participantName)}
                       </AvatarFallback>
                     </Avatar>
@@ -903,29 +959,49 @@ export function MessagesList({
                     />
                   </div>
                   <div>
-                    <div className="flex flex-wrap items-center gap-2">
-                      <h3 className="font-semibold">{selectedConversation.participantName}</h3>
+                    <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                      <h3 className="text-sm sm:text-base font-semibold">
+                        {selectedConversation.participantName}
+                      </h3>
                       {isParticipantTyping ? (
                         <Badge
                           variant="outline"
-                          className="text-xs border-primary text-primary bg-primary/10"
+                          className="text-[10px] sm:text-xs h-4 sm:h-5 px-1 sm:px-1.5"
+                          style={{
+                            borderColor: '#ff4538',
+                            backgroundColor: 'rgba(255, 69, 56, 0.1)',
+                            color: '#ff4538',
+                          }}
                         >
                           Typing…
                         </Badge>
                       ) : (
                         selectedPresence?.status === 'online' && (
-                          <Badge variant="outline" className="text-xs">
+                          <Badge
+                            variant="outline"
+                            className="text-[10px] sm:text-xs h-4 sm:h-5 px-1 sm:px-1.5"
+                            style={{
+                              borderColor: 'rgba(16, 185, 129, 0.3)',
+                              backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                              color: '#10b981',
+                            }}
+                          >
                             Online
                           </Badge>
                         )
                       )}
                     </div>
-                    <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mt-1">
-                      <span className="text-xs text-muted-foreground">
+                    <div className="flex flex-wrap items-center gap-x-1.5 sm:gap-x-2 gap-y-0.5 sm:gap-y-1 mt-0.5 sm:mt-1">
+                      <span className="text-[10px] sm:text-xs text-muted-foreground">
                         {selectedConversation.participantRole}
                       </span>
-                      <span className="hidden sm:inline text-xs text-muted-foreground">•</span>
-                      <span className={cn('text-xs', headerStatusClass)} suppressHydrationWarning>
+                      <span className="hidden sm:inline text-[10px] sm:text-xs text-muted-foreground">
+                        •
+                      </span>
+                      <span
+                        className={cn('text-[10px] sm:text-xs', headerStatusClass)}
+                        suppressHydrationWarning
+                      >
                         {headerStatusLabel}
                       </span>
                     </div>
@@ -975,16 +1051,26 @@ export function MessagesList({
                             isOwn ? 'flex-row-reverse' : 'flex-row'
                           )}
                         >
-                          <Avatar className="h-8 w-8 flex-shrink-0">
-                            <AvatarFallback className="text-xs">
+                          <Avatar className="h-7 w-7 sm:h-8 sm:w-8 flex-shrink-0">
+                            <AvatarFallback className="text-[10px] sm:text-xs">
                               {getInitials(msg.senderName)}
                             </AvatarFallback>
                           </Avatar>
                           <div
                             className={cn(
-                              'relative max-w-[70%] rounded-lg p-3 space-y-2',
-                              isOwn ? 'bg-primary text-primary-foreground' : 'bg-muted'
+                              'relative max-w-[70%] rounded-lg p-2.5 sm:p-3 space-y-1.5 sm:space-y-2',
+                              isOwn ? 'text-white' : 'bg-muted'
                             )}
+                            style={
+                              isOwn
+                                ? {
+                                    backgroundColor: '#361d22',
+                                    borderColor: '#ff4538',
+                                    borderWidth: '1px',
+                                    borderStyle: 'solid',
+                                  }
+                                : undefined
+                            }
                           >
                             {/* Bubble Tail */}
                             <span
@@ -992,12 +1078,19 @@ export function MessagesList({
                               className={cn(
                                 'absolute bottom-2 w-0 h-0',
                                 isOwn
-                                  ? '-right-2 border-y-8 border-y-transparent border-l-8 border-l-primary'
+                                  ? '-right-2 border-y-8 border-y-transparent border-l-8'
                                   : '-left-2 border-y-8 border-y-transparent border-r-8 border-r-muted'
                               )}
+                              style={
+                                isOwn
+                                  ? {
+                                      borderLeftColor: '#361d22',
+                                    }
+                                  : undefined
+                              }
                             />
                             {msg.content && (
-                              <p className="text-sm whitespace-pre-wrap break-words">
+                              <p className="text-xs sm:text-sm whitespace-pre-wrap break-words">
                                 {msg.content}
                               </p>
                             )}
@@ -1158,7 +1251,9 @@ export function MessagesList({
                       <div className="flex gap-2 items-start">
                         <Avatar className="h-8 w-8">
                           <AvatarFallback className="text-xs">
-                            {getInitials(typingUsers[0]?.userName || 'Typing')}
+                            {getInitials(
+                              typingUsers[0]?.userName || t('messages.typing') || 'Typing'
+                            )}
                           </AvatarFallback>
                         </Avatar>
                         <div className="bg-muted rounded-lg px-3 py-2">
@@ -1166,7 +1261,7 @@ export function MessagesList({
                             className="text-xs text-muted-foreground mb-1"
                             suppressHydrationWarning
                           >
-                            {typingLabel || 'Typing…'}
+                            {typingLabel || t('messages.typing') || 'Typing…'}
                           </p>
                           <div className="flex gap-1 text-muted-foreground">
                             <Circle
@@ -1234,14 +1329,14 @@ export function MessagesList({
                     size="icon"
                     onClick={handleAttachmentClick}
                     disabled={isUploading || attachments.length >= 3}
-                    title={isUploading ? 'Uploading...' : 'Attach file'}
+                    title={isUploading ? t('messages.uploading') : t('messages.attachFile')}
                     className="flex-shrink-0 h-9 w-9"
                   >
                     <Paperclip className={cn('h-4 w-4', isUploading && 'animate-pulse')} />
                   </Button>
 
                   <Input
-                    placeholder="Type a message..."
+                    placeholder={t('messages.typeMessage')}
                     value={input}
                     onChange={(e) => {
                       setInput(e.target.value);
@@ -1260,8 +1355,14 @@ export function MessagesList({
                   <Button
                     onClick={handleSend}
                     disabled={(!input.trim() && attachments.length === 0) || isUploading}
-                    title="Send message"
-                    className="flex-shrink-0 h-9 w-9"
+                    title={t('messages.sendMessageButton')}
+                    className="flex-shrink-0 h-9 w-9 text-white"
+                    style={{
+                      backgroundColor: '#361d22',
+                      borderColor: '#ff4538',
+                      borderWidth: '1px',
+                      borderStyle: 'solid',
+                    }}
                   >
                     <Send className="h-4 w-4" />
                   </Button>

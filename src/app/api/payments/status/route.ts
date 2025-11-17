@@ -12,6 +12,7 @@ import { successResponse } from '@/lib/utils/api-response';
 import { withCorsMiddleware } from '@/lib/middleware/cors';
 import { withRateLimit, RateLimitPresets } from '@/lib/middleware/rate-limit';
 import { shouldBypassPayment } from '@/lib/utils/payment';
+import { logger } from '@/lib/utils/logger';
 
 // GET /api/payments/status - Get user payment status
 const getHandler = asyncHandler(async (request: NextRequest) => {
@@ -23,6 +24,10 @@ const getHandler = asyncHandler(async (request: NextRequest) => {
 
   // Check if user should bypass payment
   if (shouldBypassPayment(req.user.role)) {
+    logger.info('[PaymentStatus] User bypasses payment check', {
+      userId: req.user.userId,
+      role: req.user.role,
+    });
     return successResponse(
       {
         hasPaid: true,
@@ -34,7 +39,7 @@ const getHandler = asyncHandler(async (request: NextRequest) => {
     );
   }
 
-  // Get user payment status
+  // Get user payment status from User table
   const user = await prisma.user.findUnique({
     where: { id: req.user.userId },
     select: {
@@ -46,8 +51,19 @@ const getHandler = asyncHandler(async (request: NextRequest) => {
   });
 
   if (!user) {
+    logger.error('[PaymentStatus] User not found in database', {
+      userId: req.user.userId,
+    });
     throw new ApiError('User not found', HttpStatus.NOT_FOUND);
   }
+
+  logger.info('[PaymentStatus] User payment status retrieved from User table', {
+    userId: req.user.userId,
+    role: req.user.role,
+    hasPaid: user.hasPaid,
+    subscriptionTier: user.subscriptionTier,
+    paymentDate: user.paymentDate?.toISOString() || null,
+  });
 
   return successResponse(
     {

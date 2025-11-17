@@ -367,11 +367,21 @@ export function NotificationsTable({ onMarkAsRead, onMarkAllAsRead }: Notificati
 
   if (error) {
     return (
-      <Card>
+      <Card style={{ borderColor: '#ff4538', borderWidth: '1px', borderStyle: 'solid' }}>
         <CardContent className="py-12 text-center">
           <AlertCircle className="mx-auto h-12 w-12 text-red-500 mb-4" />
           <h3 className="text-lg font-semibold mb-2">{t('notifications.errorLoading')}</h3>
-          <Button onClick={() => refetch()} variant="outline" className="mt-4">
+          <Button
+            onClick={() => refetch()}
+            variant="outline"
+            className="mt-4 text-white"
+            style={{
+              backgroundColor: '#143240',
+              borderColor: 'rgba(255, 69, 56, 0.3)',
+              borderWidth: '1px',
+              borderStyle: 'solid',
+            }}
+          >
             {t('common.tryAgain')}
           </Button>
         </CardContent>
@@ -399,6 +409,13 @@ export function NotificationsTable({ onMarkAsRead, onMarkAllAsRead }: Notificati
             variant="outline"
             onClick={handleMarkAllAsRead}
             disabled={markAllAsReadMutation.isPending}
+            className="text-white"
+            style={{
+              backgroundColor: '#143240',
+              borderColor: 'rgba(255, 69, 56, 0.3)',
+              borderWidth: '1px',
+              borderStyle: 'solid',
+            }}
           >
             <CheckCheck className="mr-2 h-4 w-4" />
             {t('notifications.markAllAsRead')}
@@ -407,7 +424,7 @@ export function NotificationsTable({ onMarkAsRead, onMarkAllAsRead }: Notificati
       </div>
 
       {/* Filters */}
-      <Card>
+      <Card style={{ borderColor: '#ff4538', borderWidth: '1px', borderStyle: 'solid' }}>
         <CardContent className="pt-6">
           <div className="flex flex-col sm:flex-row gap-4">
             {/* Search */}
@@ -423,7 +440,15 @@ export function NotificationsTable({ onMarkAsRead, onMarkAllAsRead }: Notificati
 
             {/* Type filter */}
             <Select value={typeFilter} onValueChange={setTypeFilter}>
-              <SelectTrigger className="w-full sm:w-[220px]">
+              <SelectTrigger
+                className="w-full sm:w-[220px] text-white"
+                style={{
+                  backgroundColor: '#143240',
+                  borderColor: 'rgba(255, 69, 56, 0.3)',
+                  borderWidth: '1px',
+                  borderStyle: 'solid',
+                }}
+              >
                 <SelectValue placeholder={t('notifications.table.filterType')} />
               </SelectTrigger>
               <SelectContent>
@@ -453,7 +478,15 @@ export function NotificationsTable({ onMarkAsRead, onMarkAllAsRead }: Notificati
 
             {/* Status filter */}
             <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-full sm:w-[180px]">
+              <SelectTrigger
+                className="w-full sm:w-[180px] text-white"
+                style={{
+                  backgroundColor: '#143240',
+                  borderColor: 'rgba(255, 69, 56, 0.3)',
+                  borderWidth: '1px',
+                  borderStyle: 'solid',
+                }}
+              >
                 <SelectValue placeholder={t('notifications.table.filterStatus')} />
               </SelectTrigger>
               <SelectContent>
@@ -467,7 +500,7 @@ export function NotificationsTable({ onMarkAsRead, onMarkAllAsRead }: Notificati
       </Card>
 
       {/* Table */}
-      <Card>
+      <Card style={{ borderColor: '#ff4538', borderWidth: '1px', borderStyle: 'solid' }}>
         <CardContent className="pt-6">
           {isLoading ? (
             <NotificationsTableSkeleton />
@@ -520,25 +553,32 @@ export function NotificationsTable({ onMarkAsRead, onMarkAllAsRead }: Notificati
               </div>
 
               {/* Pagination */}
-              <div className="flex items-center justify-between mt-4">
-                <p className="text-sm text-muted-foreground">
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-0 mt-4">
+                <p className="text-xs sm:text-sm text-muted-foreground order-2 sm:order-1">
                   {t('notifications.table.showing', {
                     from: (pagination.page - 1) * pagination.limit + 1,
                     to: Math.min(pagination.page * pagination.limit, pagination.total),
                     total: pagination.total,
                   })}
                 </p>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 order-1 sm:order-2 w-full sm:w-auto justify-center sm:justify-end">
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={() => setPage((p) => Math.max(1, p - 1))}
                     disabled={pagination.page <= 1}
+                    className="text-white h-9 sm:h-8 px-3 sm:px-3"
+                    style={{
+                      backgroundColor: '#143240',
+                      borderColor: 'rgba(255, 69, 56, 0.3)',
+                      borderWidth: '1px',
+                      borderStyle: 'solid',
+                    }}
                   >
-                    <ChevronLeft className="h-4 w-4 mr-1" />
-                    {t('common.previous')}
+                    <ChevronLeft className="h-4 w-4 sm:mr-1" />
+                    <span className="hidden sm:inline">{t('common.previous')}</span>
                   </Button>
-                  <span className="text-sm text-muted-foreground">
+                  <span className="text-xs sm:text-sm text-muted-foreground px-2 whitespace-nowrap">
                     {t('notifications.table.page', {
                       current: pagination.page,
                       total: pagination.totalPages,
@@ -549,9 +589,16 @@ export function NotificationsTable({ onMarkAsRead, onMarkAllAsRead }: Notificati
                     size="sm"
                     onClick={() => setPage((p) => p + 1)}
                     disabled={pagination.page >= pagination.totalPages}
+                    className="text-white h-9 sm:h-8 px-3 sm:px-3"
+                    style={{
+                      backgroundColor: '#143240',
+                      borderColor: 'rgba(255, 69, 56, 0.3)',
+                      borderWidth: '1px',
+                      borderStyle: 'solid',
+                    }}
                   >
-                    {t('common.next')}
-                    <ChevronRight className="h-4 w-4 ml-1" />
+                    <span className="hidden sm:inline">{t('common.next')}</span>
+                    <ChevronRight className="h-4 w-4 sm:ml-1" />
                   </Button>
                 </div>
               </div>

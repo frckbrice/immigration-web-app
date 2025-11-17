@@ -501,8 +501,8 @@ export function DocumentsTable() {
 
       {/* Client Documents Dialog */}
       <Dialog open={clientDialogOpen} onOpenChange={setClientDialogOpen}>
-        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
-          <DialogHeader>
+        <DialogContent className="max-w-4xl max-h-[90vh] flex flex-col p-0">
+          <DialogHeader className="px-6 pt-6 pb-4 flex-shrink-0">
             <DialogTitle className="flex items-center gap-2">
               <User className="h-5 w-5" />
               {t('documents.clientDocuments', { name: selectedClient?.clientName })}
@@ -526,95 +526,101 @@ export function DocumentsTable() {
             </DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-3">
-            {selectedClient?.documents.map((doc) => {
-              const StatusIcon = statusConfig[doc.status]?.icon || Clock;
-              return (
-                <Card key={doc.id} className="hover:shadow-md transition-shadow">
-                  <CardContent className="pt-4">
-                    <div className="flex justify-between items-start gap-4">
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-2">
-                          <FileText className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-                          <h4 className="font-medium truncate">{doc.originalName}</h4>
-                          <Badge
-                            className={cn(
-                              'flex items-center gap-1',
-                              statusConfig[doc.status]?.className
-                            )}
-                          >
-                            <StatusIcon className="h-3 w-3" />
-                            {statusConfig[doc.status]?.label}
-                          </Badge>
+          <div className="px-6 pb-6 overflow-y-auto flex-1 min-h-0">
+            <div className="space-y-3">
+              {selectedClient?.documents.map((doc) => {
+                const StatusIcon = statusConfig[doc.status]?.icon || Clock;
+                return (
+                  <Card key={doc.id} className="hover:shadow-md transition-shadow">
+                    <CardContent className="pt-4">
+                      <div className="flex justify-between items-start gap-4">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-2">
+                            <FileText className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                            <h4 className="font-medium truncate">{doc.originalName}</h4>
+                            <Badge
+                              className={cn(
+                                'flex items-center gap-1',
+                                statusConfig[doc.status]?.className
+                              )}
+                            >
+                              <StatusIcon className="h-3 w-3" />
+                              {statusConfig[doc.status]?.label}
+                            </Badge>
+                          </div>
+
+                          {doc.case && (
+                            <div className="flex items-center gap-2 mb-1">
+                              <Briefcase className="h-3.5 w-3.5 text-muted-foreground" />
+                              <span className="text-sm font-medium text-primary">
+                                {doc.case.referenceNumber}
+                              </span>
+                            </div>
+                          )}
+
+                          <p className="text-xs text-muted-foreground">
+                            {docTypeLabels[doc.documentType]} • {formatFileSize(doc.fileSize)} •{' '}
+                            {new Date(doc.uploadDate).toLocaleDateString()}
+                          </p>
+
+                          {doc.status === 'APPROVED' && doc.verifiedBy && (
+                            <p className="text-xs text-green-600 mt-1">
+                              ✓ {t('documents.verifiedBy')} {doc.verifiedBy}
+                            </p>
+                          )}
+
+                          {doc.status === 'REJECTED' && doc.rejectionReason && (
+                            <div className="flex gap-2 mt-2 p-2 bg-red-50 dark:bg-red-950/20 rounded">
+                              <AlertCircle className="h-4 w-4 text-red-600 flex-shrink-0" />
+                              <p className="text-xs text-red-600">{doc.rejectionReason}</p>
+                            </div>
+                          )}
                         </div>
 
-                        {doc.case && (
-                          <div className="flex items-center gap-2 mb-1">
-                            <Briefcase className="h-3.5 w-3.5 text-muted-foreground" />
-                            <span className="text-sm font-medium text-primary">
-                              {doc.case.referenceNumber}
-                            </span>
-                          </div>
-                        )}
+                        <div className="flex flex-col gap-2">
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button variant="outline" size="sm" onClick={() => handleView(doc)}>
+                                <Eye className="h-4 w-4 mr-1" />
+                                {t('documents.view')}
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Open document in new tab</p>
+                            </TooltipContent>
+                          </Tooltip>
 
-                        <p className="text-xs text-muted-foreground">
-                          {docTypeLabels[doc.documentType]} • {formatFileSize(doc.fileSize)} •{' '}
-                          {new Date(doc.uploadDate).toLocaleDateString()}
-                        </p>
-
-                        {doc.status === 'APPROVED' && doc.verifiedBy && (
-                          <p className="text-xs text-green-600 mt-1">
-                            ✓ {t('documents.verifiedBy')} {doc.verifiedBy}
-                          </p>
-                        )}
-
-                        {doc.status === 'REJECTED' && doc.rejectionReason && (
-                          <div className="flex gap-2 mt-2 p-2 bg-red-50 dark:bg-red-950/20 rounded">
-                            <AlertCircle className="h-4 w-4 text-red-600 flex-shrink-0" />
-                            <p className="text-xs text-red-600">{doc.rejectionReason}</p>
-                          </div>
-                        )}
-                      </div>
-
-                      <div className="flex flex-col gap-2">
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Button variant="outline" size="sm" onClick={() => handleView(doc)}>
-                              <Eye className="h-4 w-4 mr-1" />
-                              {t('documents.view')}
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => handleDownload(doc)}
+                              >
+                                <Download className="h-4 w-4 mr-1" />
+                                {t('documents.download')}
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Download document to your device</p>
+                            </TooltipContent>
+                          </Tooltip>
+                          {/* Go to case to approve/reject - single source of truth */}
+                          {doc.case && (
+                            <Button variant="default" size="sm" asChild>
+                              <Link href={`/dashboard/cases/${doc.caseId}`}>
+                                <Briefcase className="h-4 w-4 mr-1" />
+                                {t('documents.viewCase')}
+                              </Link>
                             </Button>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p>Open document in new tab</p>
-                          </TooltipContent>
-                        </Tooltip>
-
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Button variant="outline" size="sm" onClick={() => handleDownload(doc)}>
-                              <Download className="h-4 w-4 mr-1" />
-                              {t('documents.download')}
-                            </Button>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p>Download document to your device</p>
-                          </TooltipContent>
-                        </Tooltip>
-                        {/* Go to case to approve/reject - single source of truth */}
-                        {doc.case && (
-                          <Button variant="default" size="sm" asChild>
-                            <Link href={`/dashboard/cases/${doc.caseId}`}>
-                              <Briefcase className="h-4 w-4 mr-1" />
-                              {t('documents.viewCase')}
-                            </Link>
-                          </Button>
-                        )}
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              );
-            })}
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
           </div>
         </DialogContent>
       </Dialog>
