@@ -248,7 +248,7 @@ export function LoginForm() {
                             placeholder="••••••••"
                             {...field}
                             style={{
-                              backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                              backgroundColor: '#153341',
                               borderColor: 'rgba(255, 255, 255, 0.2)',
                               color: '#ffffff',
                             }}
@@ -264,7 +264,16 @@ export function LoginForm() {
                             variant="ghost"
                             size="sm"
                             className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                            style={{ color: 'rgba(255, 255, 255, 0.7)' }}
+                            style={{
+                              color: '#ffffff',
+                              backgroundColor: 'transparent',
+                            }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.color = '#ff4538';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.color = '#ffffff';
+                            }}
                             onClick={() => setShowPassword(!showPassword)}
                           >
                             {showPassword ? (

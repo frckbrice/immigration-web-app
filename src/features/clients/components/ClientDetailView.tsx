@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 import { useAuthStore } from '@/features/auth/store';
 import { useClient, useClientCases } from '../api';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -44,6 +45,7 @@ const statusConfig = {
 };
 
 export function ClientDetailView({ clientId }: ClientDetailViewProps) {
+  const { t } = useTranslation();
   const router = useRouter();
   const { user } = useAuthStore();
   const { data: client, isLoading: isLoadingClient, error: clientError } = useClient(clientId);
@@ -66,18 +68,28 @@ export function ClientDetailView({ clientId }: ClientDetailViewProps) {
         {isForbidden ? (
           <>
             <div>
-              <p className="text-red-600 font-semibold">Access Denied</p>
+              <p className="text-red-600 font-semibold">{t('clients.accessDenied')}</p>
               <p className="text-sm text-muted-foreground mt-2 max-w-md mx-auto">
-                You can only view profiles of clients with cases assigned to you.
+                {t('clients.accessDeniedDescription')}
               </p>
             </div>
           </>
         ) : (
-          <p className="text-red-600">Client not found</p>
+          <p className="text-red-600">{t('clients.clientNotFound')}</p>
         )}
-        <Button variant="outline" onClick={() => router.back()}>
+        <Button
+          variant="outline"
+          onClick={() => router.back()}
+          className="text-white"
+          style={{
+            backgroundColor: '#143240',
+            borderColor: 'rgba(255, 69, 56, 0.3)',
+            borderWidth: '1px',
+            borderStyle: 'solid',
+          }}
+        >
           <ArrowLeft className="h-4 w-4 mr-2" />
-          Go Back
+          {t('common.goBack')}
         </Button>
       </div>
     );
@@ -88,25 +100,43 @@ export function ClientDetailView({ clientId }: ClientDetailViewProps) {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-start justify-between">
-        <div className="space-y-1">
-          <div className="flex items-center gap-3">
-            <Button variant="outline" size="icon" onClick={() => router.back()}>
-              <ArrowLeft className="h-4 w-4" />
-            </Button>
-            <div>
-              <h1 className="text-3xl font-bold tracking-tight">{fullName}</h1>
-              <p className="text-muted-foreground">Client Profile</p>
-            </div>
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
+        <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => router.back()}
+            className="text-white shrink-0"
+            style={{
+              backgroundColor: '#143240',
+              borderColor: 'rgba(255, 69, 56, 0.3)',
+              borderWidth: '1px',
+              borderStyle: 'solid',
+            }}
+          >
+            <ArrowLeft className="h-4 w-4" />
+          </Button>
+          <div className="flex-1 min-w-0">
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight truncate">
+              {fullName}
+            </h1>
+            <p className="text-xs sm:text-sm text-muted-foreground">{t('clients.clientProfile')}</p>
           </div>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 w-full sm:w-auto">
           <Button
             variant="outline"
             onClick={() => router.push(`/dashboard/messages?client=${clientId}`)}
+            className="text-white flex-1 sm:flex-initial text-sm sm:text-base"
+            style={{
+              backgroundColor: '#143240',
+              borderColor: 'rgba(255, 69, 56, 0.3)',
+              borderWidth: '1px',
+              borderStyle: 'solid',
+            }}
           >
-            <MessageSquare className="h-4 w-4 mr-2" />
-            Message
+            <MessageSquare className="h-4 w-4 mr-1.5 sm:mr-2 shrink-0" />
+            <span className="truncate">{t('messages.sendMessage')}</span>
           </Button>
         </div>
       </div>
@@ -116,16 +146,37 @@ export function ClientDetailView({ clientId }: ClientDetailViewProps) {
         {/* Status Card */}
         <Card className="p-4">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-medium text-muted-foreground">Status</span>
-            <CheckCircle className="h-3.5 w-3.5 text-muted-foreground" />
+            <span className="text-xs font-medium text-muted-foreground">{t('clients.status')}</span>
+            <CheckCircle className="h-3.5 w-3.5" style={{ color: '#ff4538' }} />
           </div>
           <div className="flex items-center gap-2">
-            <Badge variant={client.isActive ? 'default' : 'secondary'}>
-              {client.isActive ? 'Active' : 'Inactive'}
+            <Badge
+              variant={client.isActive ? 'default' : 'secondary'}
+              className={client.isActive ? 'text-white' : 'text-muted-foreground'}
+              style={
+                client.isActive
+                  ? {
+                      backgroundColor: '#ff4538',
+                      borderColor: '#ff4538',
+                    }
+                  : {
+                      backgroundColor: '#f3f4f6',
+                      borderColor: 'rgba(255, 69, 56, 0.3)',
+                    }
+              }
+            >
+              {client.isActive ? t('clients.active') : t('clients.inactive')}
             </Badge>
             {client.isVerified && (
-              <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
-                Verified
+              <Badge
+                variant="outline"
+                className="text-white"
+                style={{
+                  backgroundColor: '#143240',
+                  borderColor: 'rgba(255, 69, 56, 0.3)',
+                }}
+              >
+                {t('clients.verified')}
               </Badge>
             )}
           </div>
@@ -134,13 +185,15 @@ export function ClientDetailView({ clientId }: ClientDetailViewProps) {
         {/* Cases Card */}
         <Card className="p-4">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-medium text-muted-foreground">Total Cases</span>
-            <Briefcase className="h-3.5 w-3.5 text-muted-foreground" />
+            <span className="text-xs font-medium text-muted-foreground">
+              {t('clients.totalCases')}
+            </span>
+            <Briefcase className="h-3.5 w-3.5" style={{ color: '#ff4538' }} />
           </div>
           <div className="flex items-baseline gap-2">
             <span className="text-2xl font-bold">{cases?.length || 0}</span>
             <span className="text-xs text-muted-foreground">
-              {cases?.filter((c) => c.status === 'APPROVED').length || 0} approved
+              {cases?.filter((c) => c.status === 'APPROVED').length || 0} {t('clients.approved')}
             </span>
           </div>
         </Card>
@@ -148,15 +201,18 @@ export function ClientDetailView({ clientId }: ClientDetailViewProps) {
         {/* Member Since Card */}
         <Card className="p-4">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-medium text-muted-foreground">Member Since</span>
-            <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
+            <span className="text-xs font-medium text-muted-foreground">
+              {t('clients.memberSince')}
+            </span>
+            <Calendar className="h-3.5 w-3.5" style={{ color: '#ff4538' }} />
           </div>
           <div className="flex items-baseline gap-2">
             <span className="text-2xl font-bold">
               {format(new Date(client.createdAt), 'MMM yyyy')}
             </span>
             <span className="text-xs text-muted-foreground">
-              Last: {client.lastLogin ? format(new Date(client.lastLogin), 'MMM dd') : 'Never'}
+              {t('clients.last')}:{' '}
+              {client.lastLogin ? format(new Date(client.lastLogin), 'MMM dd') : t('clients.never')}
             </span>
           </div>
         </Card>
@@ -165,31 +221,37 @@ export function ClientDetailView({ clientId }: ClientDetailViewProps) {
       {/* Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="grid w-full grid-cols-2 lg:w-[400px]">
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="cases">Cases ({cases?.length || 0})</TabsTrigger>
+          <TabsTrigger value="overview">{t('clients.overview')}</TabsTrigger>
+          <TabsTrigger value="cases">
+            {t('cases.title')} ({cases?.length || 0})
+          </TabsTrigger>
         </TabsList>
 
         {/* Overview Tab */}
         <TabsContent value="overview" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>Contact Information</CardTitle>
-              <CardDescription>Client&apos;s contact details</CardDescription>
+              <CardTitle>{t('clients.contactInformation')}</CardTitle>
+              <CardDescription>{t('clients.contactDetails')}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center gap-3">
-                <Mail className="h-5 w-5 text-muted-foreground" />
+                <Mail className="h-5 w-5" style={{ color: '#ff4538' }} />
                 <div>
-                  <p className="text-sm font-medium">Email</p>
-                  <p className="text-sm text-muted-foreground">{client.email || 'N/A'}</p>
+                  <p className="text-sm font-medium">{t('common.email')}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {client.email || t('common.notAvailable')}
+                  </p>
                 </div>
               </div>
               <Separator />
               <div className="flex items-center gap-3">
-                <Phone className="h-5 w-5 text-muted-foreground" />
+                <Phone className="h-5 w-5" style={{ color: '#ff4538' }} />
                 <div>
-                  <p className="text-sm font-medium">Phone</p>
-                  <p className="text-sm text-muted-foreground">{client.phone || 'N/A'}</p>
+                  <p className="text-sm font-medium">{t('clients.phone')}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {client.phone || t('common.notAvailable')}
+                  </p>
                 </div>
               </div>
             </CardContent>
@@ -197,36 +259,45 @@ export function ClientDetailView({ clientId }: ClientDetailViewProps) {
 
           <Card>
             <CardHeader>
-              <CardTitle>Account Details</CardTitle>
-              <CardDescription>Account information and timestamps</CardDescription>
+              <CardTitle>{t('clients.accountDetails')}</CardTitle>
+              <CardDescription>{t('clients.accountDetailsDescription')}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="flex items-center gap-3">
-                  <UserIcon className="h-5 w-5 text-muted-foreground" />
+                  <UserIcon className="h-5 w-5" style={{ color: '#ff4538' }} />
                   <div>
-                    <p className="text-sm font-medium">User ID</p>
+                    <p className="text-sm font-medium">{t('clients.userId')}</p>
                     <p className="text-sm text-muted-foreground font-mono">{client.id}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <CheckCircle className="h-5 w-5 text-muted-foreground" />
+                  <CheckCircle className="h-5 w-5" style={{ color: '#ff4538' }} />
                   <div>
-                    <p className="text-sm font-medium">Role</p>
-                    <Badge variant="outline">{client.role}</Badge>
+                    <p className="text-sm font-medium">{t('clients.role')}</p>
+                    <Badge
+                      variant="outline"
+                      className="text-white"
+                      style={{
+                        backgroundColor: '#143240',
+                        borderColor: 'rgba(255, 69, 56, 0.3)',
+                      }}
+                    >
+                      {client.role}
+                    </Badge>
                   </div>
                 </div>
               </div>
               <Separator />
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
-                  <p className="text-sm font-medium">Created At</p>
+                  <p className="text-sm font-medium">{t('clients.createdAt')}</p>
                   <p className="text-sm text-muted-foreground">
                     {format(new Date(client.createdAt), 'PPpp')}
                   </p>
                 </div>
                 <div>
-                  <p className="text-sm font-medium">Last Updated</p>
+                  <p className="text-sm font-medium">{t('clients.lastUpdated')}</p>
                   <p className="text-sm text-muted-foreground">
                     {format(new Date(client.updatedAt), 'PPpp')}
                   </p>
@@ -248,9 +319,9 @@ export function ClientDetailView({ clientId }: ClientDetailViewProps) {
             <Card>
               <CardContent className="flex flex-col items-center justify-center py-12">
                 <Briefcase className="h-12 w-12 text-muted-foreground mb-4 opacity-50" />
-                <p className="text-lg font-semibold mb-2">No Cases Yet</p>
+                <p className="text-lg font-semibold mb-2">{t('clients.noCasesYet')}</p>
                 <p className="text-sm text-muted-foreground text-center max-w-sm">
-                  This client hasn&apos;t submitted any cases yet.
+                  {t('clients.noCasesDescription')}
                 </p>
               </CardContent>
             </Card>
@@ -265,7 +336,7 @@ export function ClientDetailView({ clientId }: ClientDetailViewProps) {
                       <div className="flex items-start justify-between">
                         <div className="space-y-2 flex-1">
                           <div className="flex items-center gap-3">
-                            <StatusIcon className="h-5 w-5 text-muted-foreground" />
+                            <StatusIcon className="h-5 w-5" style={{ color: '#ff4538' }} />
                             <div>
                               <Link
                                 href={`/dashboard/cases/${caseItem.id}`}
@@ -281,29 +352,54 @@ export function ClientDetailView({ clientId }: ClientDetailViewProps) {
                           <div className="flex flex-wrap gap-2 mt-2">
                             <Badge
                               variant="secondary"
-                              className={cn(
-                                statusConfig[caseItem.status as keyof typeof statusConfig]?.color
-                              )}
+                              className="text-white"
+                              style={{
+                                backgroundColor: '#143240',
+                                borderColor: 'rgba(255, 69, 56, 0.3)',
+                              }}
                             >
                               {caseItem.status.replace(/_/g, ' ')}
                             </Badge>
-                            <Badge variant="outline">{caseItem.priority}</Badge>
+                            <Badge
+                              variant="outline"
+                              className="text-white"
+                              style={{
+                                backgroundColor: '#143240',
+                                borderColor: 'rgba(255, 69, 56, 0.3)',
+                              }}
+                            >
+                              {caseItem.priority}
+                            </Badge>
                           </div>
                           <div className="flex items-center gap-4 text-sm text-muted-foreground mt-3">
                             <div className="flex items-center gap-1">
-                              <Calendar className="h-4 w-4" />
+                              <Calendar className="h-4 w-4" style={{ color: '#ff4538' }} />
                               {format(new Date(caseItem.submissionDate), 'MMM dd, yyyy')}
                             </div>
                             {caseItem.lastUpdated && (
                               <div className="flex items-center gap-1">
-                                <Clock className="h-4 w-4" />
-                                Updated {format(new Date(caseItem.lastUpdated), 'MMM dd, yyyy')}
+                                <Clock className="h-4 w-4" style={{ color: '#ff4538' }} />
+                                {t('clients.updated')}{' '}
+                                {format(new Date(caseItem.lastUpdated), 'MMM dd, yyyy')}
                               </div>
                             )}
                           </div>
                         </div>
-                        <Button asChild variant="outline" size="sm">
-                          <Link href={`/dashboard/cases/${caseItem.id}`}>View Details</Link>
+                        <Button
+                          asChild
+                          variant="outline"
+                          size="sm"
+                          className="text-white"
+                          style={{
+                            backgroundColor: '#143240',
+                            borderColor: 'rgba(255, 69, 56, 0.3)',
+                            borderWidth: '1px',
+                            borderStyle: 'solid',
+                          }}
+                        >
+                          <Link href={`/dashboard/cases/${caseItem.id}`}>
+                            {t('clients.viewDetails')}
+                          </Link>
                         </Button>
                       </div>
                     </CardContent>

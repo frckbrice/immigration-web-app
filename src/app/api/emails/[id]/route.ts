@@ -53,7 +53,7 @@ const getHandler = asyncHandler(async (request: NextRequest, context: RouteConte
             email: true,
           },
         },
-        Case: {
+        case: {
           select: {
             id: true,
             referenceNumber: true,

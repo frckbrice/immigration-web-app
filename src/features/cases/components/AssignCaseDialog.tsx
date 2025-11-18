@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useUsers } from '@/features/users/api';
 import { useCases } from '@/features/cases/api';
 import { useAssignCase } from '../api/mutations';
@@ -46,6 +47,7 @@ export function AssignCaseDialog({
   onOpenChange,
   onSuccess,
 }: AssignCaseDialogProps) {
+  const { t } = useTranslation();
   const { user, isLoading: isAuthLoading, accessToken } = useAuthStore();
   const [selectedAgentId, setSelectedAgentId] = useState<string>('');
 
@@ -124,7 +126,7 @@ export function AssignCaseDialog({
 
   const handleAssign = async () => {
     if (!selectedAgentId) {
-      toast.error('Please select an agent');
+      toast.error(t('cases.dialogs.assignCase.pleaseSelectAgent'));
       return;
     }
 
@@ -134,7 +136,7 @@ export function AssignCaseDialog({
         agentId: selectedAgentId,
       });
 
-      toast.success('Case assigned successfully');
+      toast.success(t('cases.dialogs.assignCase.assignedSuccessfully'));
       setSelectedAgentId('');
       onOpenChange(false);
       onSuccess?.();
@@ -152,32 +154,35 @@ export function AssignCaseDialog({
 
   const getAvailabilityBadge = (agent: any) => {
     if (!agent.metrics.isAvailable) {
-      return <Badge variant="destructive">At Capacity</Badge>;
+      return <Badge variant="destructive">{t('cases.dialogs.assignCase.atCapacity')}</Badge>;
     }
     if (agent.metrics.utilizationRate >= 80) {
-      return <Badge variant="secondary">Limited</Badge>;
+      return <Badge variant="secondary">{t('cases.dialogs.assignCase.limited')}</Badge>;
     }
-    return <Badge variant="default">Available</Badge>;
+    return <Badge variant="default">{t('cases.dialogs.assignCase.availableBadge')}</Badge>;
   };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto sm:max-h-[80vh]">
         <DialogHeader>
-          <DialogTitle>Assign Case to Agent</DialogTitle>
-          <DialogDescription>Select an immigration agent to handle this case</DialogDescription>
+          <DialogTitle>{t('cases.dialogs.assignCase.title')}</DialogTitle>
+          <DialogDescription>{t('cases.dialogs.assignCase.description')}</DialogDescription>
         </DialogHeader>
 
         {/* Current Case Info */}
         <div className="rounded-lg border p-4 bg-muted/50">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-sm font-medium">Case: {caseData.referenceNumber}</p>
-              <p className="text-sm text-muted-foreground">
-                Client: {caseData.client?.firstName} {caseData.client?.lastName}
+              <p className="text-sm font-medium">
+                {t('cases.dialogs.assignCase.case')}: {caseData.referenceNumber}
               </p>
               <p className="text-sm text-muted-foreground">
-                Service: {caseData.serviceType.replace(/_/g, ' ')}
+                {t('cases.dialogs.assignCase.client')}: {caseData.client?.firstName}{' '}
+                {caseData.client?.lastName}
+              </p>
+              <p className="text-sm text-muted-foreground">
+                {t('cases.dialogs.assignCase.service')}: {caseData.serviceType.replace(/_/g, ' ')}
               </p>
             </div>
             <Badge variant="outline">{caseData.status}</Badge>
@@ -187,7 +192,7 @@ export function AssignCaseDialog({
         {/* Agent Selection */}
         <div className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="agent-select">Select Agent *</Label>
+            <Label htmlFor="agent-select">{t('cases.dialogs.assignCase.selectAgent')}</Label>
             {isLoadingUsers || isLoadingCases ? (
               <div className="space-y-2">
                 <Skeleton className="h-10 w-full" />
@@ -197,12 +202,12 @@ export function AssignCaseDialog({
               <>
                 <Select value={selectedAgentId} onValueChange={setSelectedAgentId}>
                   <SelectTrigger id="agent-select">
-                    <SelectValue placeholder="Choose an agent..." />
+                    <SelectValue placeholder={t('cases.dialogs.assignCase.chooseAgent')} />
                   </SelectTrigger>
                   <SelectContent>
                     {sortedAgents.length === 0 ? (
                       <div className="p-4 text-center text-sm text-muted-foreground">
-                        No agents available
+                        {t('cases.dialogs.assignCase.noAgentsAvailable')}
                       </div>
                     ) : (
                       sortedAgents.map((agent) => (
@@ -246,28 +251,36 @@ export function AssignCaseDialog({
                     {/* Metrics Grid */}
                     <div className="grid grid-cols-3 gap-4 pt-2">
                       <div className="space-y-1">
-                        <p className="text-xs text-muted-foreground">Workload</p>
+                        <p className="text-xs text-muted-foreground">
+                          {t('cases.dialogs.assignCase.workload')}
+                        </p>
                         <p
                           className={`text-lg font-bold ${getUtilizationColor(selectedAgent.metrics.utilizationRate)}`}
                         >
                           {selectedAgent.metrics.utilizationRate.toFixed(0)}%
                         </p>
                         <p className="text-xs text-muted-foreground">
-                          {selectedAgent.metrics.activeCases} active
+                          {selectedAgent.metrics.activeCases} {t('cases.dialogs.assignCase.active')}
                         </p>
                       </div>
                       <div className="space-y-1">
-                        <p className="text-xs text-muted-foreground">Available</p>
+                        <p className="text-xs text-muted-foreground">
+                          {t('cases.dialogs.assignCase.available')}
+                        </p>
                         <p className="text-lg font-bold">
                           {selectedAgent.metrics.availableCapacity}
                         </p>
-                        <p className="text-xs text-muted-foreground">slots open</p>
+                        <p className="text-xs text-muted-foreground">
+                          {t('cases.dialogs.assignCase.slotsOpen')}
+                        </p>
                       </div>
                       <div className="space-y-1">
-                        <p className="text-xs text-muted-foreground">Success Rate</p>
+                        <p className="text-xs text-muted-foreground">
+                          {t('cases.dialogs.assignCase.successRate')}
+                        </p>
                         <p className="text-lg font-bold">{selectedAgent.metrics.approvalRate}%</p>
                         <p className="text-xs text-muted-foreground">
-                          {selectedAgent.metrics.totalCases} total
+                          {selectedAgent.metrics.totalCases} {t('cases.dialogs.assignCase.total')}
                         </p>
                       </div>
                     </div>
@@ -278,10 +291,13 @@ export function AssignCaseDialog({
                         <>
                           <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
                           <div className="text-sm">
-                            <p className="font-medium">Agent is available</p>
+                            <p className="font-medium">
+                              {t('cases.dialogs.assignCase.agentAvailable')}
+                            </p>
                             <p className="text-muted-foreground">
-                              Can handle {selectedAgent.metrics.availableCapacity} more case
-                              {selectedAgent.metrics.availableCapacity !== 1 ? 's' : ''}
+                              {t('cases.dialogs.assignCase.canHandle', {
+                                count: selectedAgent.metrics.availableCapacity,
+                              })}
                             </p>
                           </div>
                         </>
@@ -289,9 +305,13 @@ export function AssignCaseDialog({
                         <>
                           <AlertCircle className="h-4 w-4 text-orange-600 mt-0.5 flex-shrink-0" />
                           <div className="text-sm">
-                            <p className="font-medium">Agent at capacity</p>
+                            <p className="font-medium">
+                              {t('cases.dialogs.assignCase.agentAtCapacity')}
+                            </p>
                             <p className="text-muted-foreground">
-                              Currently handling {selectedAgent.metrics.activeCases} active cases
+                              {t('cases.dialogs.assignCase.currentlyHandling', {
+                                count: selectedAgent.metrics.activeCases,
+                              })}
                             </p>
                           </div>
                         </>
@@ -309,10 +329,10 @@ export function AssignCaseDialog({
               <TrendingUp className="h-4 w-4 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
               <div>
                 <p className="font-medium text-blue-900 dark:text-blue-100">
-                  Smart Sorting Enabled
+                  {t('cases.dialogs.assignCase.smartSortingEnabled')}
                 </p>
                 <p className="text-blue-700 dark:text-blue-300">
-                  Agents are sorted by availability, workload, and success rate
+                  {t('cases.dialogs.assignCase.smartSortingDescription')}
                 </p>
               </div>
             </div>
@@ -328,7 +348,7 @@ export function AssignCaseDialog({
             }}
             disabled={assignCase.isPending}
           >
-            Cancel
+            {t('cases.dialogs.assignCase.cancel')}
           </Button>
           <Button
             onClick={handleAssign}
@@ -339,12 +359,12 @@ export function AssignCaseDialog({
             {assignCase.isPending ? (
               <>
                 <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
-                Assigning...
+                {t('cases.dialogs.assignCase.assigning')}
               </>
             ) : (
               <>
                 <UserCheck className="mr-2 h-4 w-4" />
-                Assign Case
+                {t('cases.dialogs.assignCase.assignCase')}
               </>
             )}
           </Button>

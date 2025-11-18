@@ -52,7 +52,7 @@ const nextConfig: NextConfig = {
   experimental: {
     serverActions: {
       bodySizeLimit: '10mb',
-      allowedOrigins: ['localhost:3000'],
+      allowedOrigins: ['localhost:3000', '172.20.10.10:3000'],
     },
     // PERFORMANCE: Optimize package imports to reduce bundle size
     optimizePackageImports: [

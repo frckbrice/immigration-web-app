@@ -104,28 +104,28 @@ export function AnalyticsView() {
 
   const stats = [
     {
-      label: 'Total Cases',
+      label: t('analytics.totalCases'),
       value: totalCases.toString(),
       icon: BarChart3,
-      description: 'All time cases',
+      description: t('analytics.totalCasesDescription'),
     },
     {
-      label: 'Active Cases',
+      label: t('analytics.activeCases'),
       value: activeCases.toString(),
       icon: TrendingUp,
-      description: 'Currently processing',
+      description: t('analytics.activeCasesDescription'),
     },
     {
-      label: 'Approved Cases',
+      label: t('analytics.approvedCases'),
       value: approvedCases.toString(),
       icon: FileCheck,
-      description: 'Successfully approved',
+      description: t('analytics.approvedCasesDescription'),
     },
     {
-      label: 'Success Rate',
+      label: t('analytics.successRate'),
       value: `${successRate}%`,
       icon: Target,
-      description: 'Approval percentage',
+      description: t('analytics.successRateDescription'),
     },
   ];
 
@@ -133,26 +133,34 @@ export function AnalyticsView() {
   const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff7c7c', '#8dd1e1', '#d084d0'];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Analytics</h1>
-        <p className="text-muted-foreground mt-2">Track performance and case statistics</p>
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">{t('analytics.title')}</h1>
+        <p className="text-sm sm:text-base text-muted-foreground mt-1 sm:mt-2">
+          {t('analytics.description')}
+        </p>
       </div>
 
       {/* Stats Grid */}
-      <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-2 sm:gap-3 md:grid-cols-2 lg:grid-cols-4">
         {stats.map((stat) => {
           const Icon = stat.icon;
           return (
-            <Card key={stat.label} className="p-4">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-medium text-muted-foreground">{stat.label}</span>
-                <Icon className="h-3.5 w-3.5 text-muted-foreground" />
+            <Card
+              key={stat.label}
+              className="p-3 sm:p-4"
+              style={{ borderColor: '#ff4538', borderWidth: '1px', borderStyle: 'solid' }}
+            >
+              <div className="flex items-center justify-between mb-1.5 sm:mb-2">
+                <span className="text-xs font-medium text-muted-foreground truncate flex-1 pr-1">
+                  {stat.label}
+                </span>
+                <Icon className="h-3 w-3 sm:h-3.5 sm:w-3.5 shrink-0" style={{ color: '#ff4538' }} />
               </div>
-              <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-bold">{stat.value}</span>
-                <span className="text-xs text-muted-foreground">{stat.description}</span>
+              <div className="flex items-baseline gap-1.5 sm:gap-2 flex-wrap">
+                <span className="text-xl sm:text-2xl font-bold">{stat.value}</span>
+                <span className="text-xs text-muted-foreground truncate">{stat.description}</span>
               </div>
             </Card>
           );
@@ -160,22 +168,57 @@ export function AnalyticsView() {
       </div>
 
       {/* Charts */}
-      <Tabs defaultValue="status" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="status">By Status</TabsTrigger>
-          <TabsTrigger value="trends">Monthly Trends</TabsTrigger>
-          <TabsTrigger value="types">Case Types</TabsTrigger>
+      <Tabs defaultValue="status" className="space-y-3 sm:space-y-4">
+        <TabsList className="w-full sm:w-auto bg-transparent p-0 gap-2 h-auto border-0">
+          <TabsTrigger
+            value="status"
+            className="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm rounded-md transition-all text-muted-foreground border hover:border-white/20 data-[state=active]:!bg-[#361d22] data-[state=active]:!text-white data-[state=active]:!border-[#ff4538] data-[state=active]:hover:border-[#ff4538]"
+            style={{
+              backgroundColor: 'transparent',
+              borderColor: 'rgba(255, 255, 255, 0.1)',
+              borderWidth: '1px',
+              borderStyle: 'solid',
+            }}
+          >
+            {t('analytics.byStatus')}
+          </TabsTrigger>
+          <TabsTrigger
+            value="trends"
+            className="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm rounded-md transition-all text-muted-foreground border hover:border-white/20 data-[state=active]:!bg-[#361d22] data-[state=active]:!text-white data-[state=active]:!border-[#ff4538] data-[state=active]:hover:border-[#ff4538]"
+            style={{
+              backgroundColor: 'transparent',
+              borderColor: 'rgba(255, 255, 255, 0.1)',
+              borderWidth: '1px',
+              borderStyle: 'solid',
+            }}
+          >
+            {t('analytics.monthlyTrends')}
+          </TabsTrigger>
+          <TabsTrigger
+            value="types"
+            className="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm rounded-md transition-all text-muted-foreground border hover:border-white/20 data-[state=active]:!bg-[#361d22] data-[state=active]:!text-white data-[state=active]:!border-[#ff4538] data-[state=active]:hover:border-[#ff4538]"
+            style={{
+              backgroundColor: 'transparent',
+              borderColor: 'rgba(255, 255, 255, 0.1)',
+              borderWidth: '1px',
+              borderStyle: 'solid',
+            }}
+          >
+            {t('analytics.caseTypes')}
+          </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="status" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Cases by Status</CardTitle>
-              <CardDescription>Distribution of cases across different statuses</CardDescription>
+        <TabsContent value="status" className="space-y-3 sm:space-y-4">
+          <Card style={{ borderColor: '#ff4538', borderWidth: '1px', borderStyle: 'solid' }}>
+            <CardHeader className="pb-3 sm:pb-6">
+              <CardTitle className="text-base sm:text-lg">{t('analytics.casesByStatus')}</CardTitle>
+              <CardDescription className="text-xs sm:text-sm">
+                {t('analytics.casesByStatusDescription')}
+              </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="pt-0">
               {statusData.length > 0 ? (
-                <ResponsiveContainer width="100%" height={300}>
+                <ResponsiveContainer width="100%" height={250}>
                   <BarChart data={statusData}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="name" />
@@ -186,23 +229,27 @@ export function AnalyticsView() {
                   </BarChart>
                 </ResponsiveContainer>
               ) : (
-                <div className="h-64 flex items-center justify-center text-muted-foreground">
-                  <p>No data available</p>
+                <div className="h-48 sm:h-64 flex items-center justify-center text-muted-foreground">
+                  <p className="text-sm">{t('analytics.noDataAvailable')}</p>
                 </div>
               )}
             </CardContent>
           </Card>
         </TabsContent>
 
-        <TabsContent value="trends" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Monthly Trends</CardTitle>
-              <CardDescription>Case volume and approval trends over time</CardDescription>
+        <TabsContent value="trends" className="space-y-3 sm:space-y-4">
+          <Card style={{ borderColor: '#ff4538', borderWidth: '1px', borderStyle: 'solid' }}>
+            <CardHeader className="pb-3 sm:pb-6">
+              <CardTitle className="text-base sm:text-lg">
+                {t('analytics.monthlyTrendsTitle')}
+              </CardTitle>
+              <CardDescription className="text-xs sm:text-sm">
+                {t('analytics.monthlyTrendsDescription')}
+              </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="pt-0">
               {monthlyTrends.length > 0 ? (
-                <ResponsiveContainer width="100%" height={300}>
+                <ResponsiveContainer width="100%" height={250}>
                   <BarChart data={monthlyTrends}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="month" />
@@ -213,23 +260,27 @@ export function AnalyticsView() {
                   </BarChart>
                 </ResponsiveContainer>
               ) : (
-                <div className="h-64 flex items-center justify-center text-muted-foreground">
-                  <p>No data available</p>
+                <div className="h-48 sm:h-64 flex items-center justify-center text-muted-foreground">
+                  <p className="text-sm">{t('analytics.noDataAvailable')}</p>
                 </div>
               )}
             </CardContent>
           </Card>
         </TabsContent>
 
-        <TabsContent value="types" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Case Types Distribution</CardTitle>
-              <CardDescription>Breakdown by visa type</CardDescription>
+        <TabsContent value="types" className="space-y-3 sm:space-y-4">
+          <Card style={{ borderColor: '#ff4538', borderWidth: '1px', borderStyle: 'solid' }}>
+            <CardHeader className="pb-3 sm:pb-6">
+              <CardTitle className="text-base sm:text-lg">
+                {t('analytics.caseTypesDistribution')}
+              </CardTitle>
+              <CardDescription className="text-xs sm:text-sm">
+                {t('analytics.caseTypesDescription')}
+              </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="pt-0">
               {serviceTypeData.length > 0 ? (
-                <ResponsiveContainer width="100%" height={300}>
+                <ResponsiveContainer width="100%" height={250}>
                   <PieChart>
                     <Pie
                       data={serviceTypeData}
@@ -252,8 +303,8 @@ export function AnalyticsView() {
                   </PieChart>
                 </ResponsiveContainer>
               ) : (
-                <div className="h-64 flex items-center justify-center text-muted-foreground">
-                  <p>No data available</p>
+                <div className="h-48 sm:h-64 flex items-center justify-center text-muted-foreground">
+                  <p className="text-sm">{t('analytics.noDataAvailable')}</p>
                 </div>
               )}
             </CardContent>

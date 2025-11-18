@@ -66,13 +66,13 @@ export function InviteCodeManagerEnhanced() {
   // Copy to clipboard helper
   const copyToClipboard = (code: string) => {
     if (!navigator.clipboard) {
-      toast.error('Clipboard API not available');
+      toast.error(t('inviteCodes.clipboardNotAvailable'));
       return;
     }
     navigator.clipboard
       .writeText(code)
       .then(() => toast.success(t('inviteCodes.copiedToClipboard')))
-      .catch(() => toast.error('Failed to copy to clipboard'));
+      .catch(() => toast.error(t('inviteCodes.copyFailed')));
   };
 
   // Generate invite code mutation
@@ -187,7 +187,16 @@ export function InviteCodeManagerEnhanced() {
               <div className="space-y-2">
                 <Label htmlFor="role">{t('inviteCodes.generateDialog.roleLabel')}</Label>
                 <Select value={role} onValueChange={(v) => setRole(v as 'AGENT' | 'ADMIN')}>
-                  <SelectTrigger id="role">
+                  <SelectTrigger
+                    id="role"
+                    className="text-white"
+                    style={{
+                      backgroundColor: '#143240',
+                      borderColor: 'rgba(255, 69, 56, 0.3)',
+                      borderWidth: '1px',
+                      borderStyle: 'solid',
+                    }}
+                  >
                     <SelectValue placeholder={t('inviteCodes.generateDialog.selectRole')} />
                   </SelectTrigger>
                   <SelectContent>
@@ -246,7 +255,13 @@ export function InviteCodeManagerEnhanced() {
             <Button
               onClick={() => generateMutation.mutate()}
               disabled={generateMutation.isPending}
-              className="w-full"
+              className="w-full text-white"
+              style={{
+                backgroundColor: '#361d22',
+                borderColor: '#ff4538',
+                borderWidth: '1px',
+                borderStyle: 'solid',
+              }}
             >
               {generateMutation.isPending
                 ? t('inviteCodes.generateDialog.generating')

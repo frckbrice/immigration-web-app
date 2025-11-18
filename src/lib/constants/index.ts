@@ -11,9 +11,13 @@ export const API_CONFIG = {
   // 1) NEXT_PUBLIC_APP_URL (same-origin API on the app domain)
   // 2) NEXT_PUBLIC_API_URL (explicit override to a different host)
   // 3) NEXT_PUBLIC_VERCEL_URL (CI/preview fallback; normalized with https://)
-  // Dev falls back to localhost.
+  // Dev: Uses current origin (works for localhost and network IP like 172.20.10.10)
   BASE_URL:
-    process.env.NODE_ENV === 'production' ? appUrl || apiUrl || vercelUrl : 'http://localhost:3000',
+    process.env.NODE_ENV === 'production'
+      ? appUrl || apiUrl || vercelUrl
+      : typeof window !== 'undefined'
+        ? window.location.origin // Use current origin in browser (supports network access)
+        : 'http://localhost:3000', // Fallback for server-side rendering
   TIMEOUT: 30000,
   RETRY_ATTEMPTS: 3,
 };

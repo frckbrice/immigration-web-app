@@ -11,7 +11,11 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
-export function LanguageSwitcher() {
+interface LanguageSwitcherProps {
+  variant?: 'light' | 'dark';
+}
+
+export function LanguageSwitcher({ variant = 'light' }: LanguageSwitcherProps) {
   const { i18n } = useTranslation();
   const [mounted, setMounted] = useState(false);
 
@@ -38,29 +42,37 @@ export function LanguageSwitcher() {
     }
   };
 
+  // Determine text color based on variant
+  const textColor = variant === 'light' ? 'rgba(255, 255, 255, 0.8)' : 'rgba(0, 0, 0, 0.8)';
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
           size="sm"
-          className="gap-2 transition-all duration-200"
+          className="gap-2 transition-all duration-200 border hover:border-[#ff4538]/50"
           style={{
-            color: 'rgba(255, 255, 255, 0.8)',
             backgroundColor: 'transparent',
+            borderColor: 'rgba(255, 69, 56, 0.3)',
+            borderWidth: '1px',
+            borderStyle: 'solid',
+            color: textColor,
           }}
           onMouseEnter={(e) => {
+            e.currentTarget.style.borderColor = 'rgba(255, 69, 56, 0.5)';
             e.currentTarget.style.color = '#ff4538';
-            e.currentTarget.style.backgroundColor = 'rgba(255, 69, 56, 0.1)';
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.color = 'rgba(255, 255, 255, 0.8)';
-            e.currentTarget.style.backgroundColor = 'transparent';
+            e.currentTarget.style.borderColor = 'rgba(255, 69, 56, 0.3)';
+            e.currentTarget.style.color = textColor;
           }}
         >
-          <Globe className="h-4 w-4" />
+          <Globe className="h-4 w-4 shrink-0" style={{ color: '#ff4538' }} />
           {mounted && (
-            <span className="text-sm font-medium">{currentLanguage.code.toUpperCase()}</span>
+            <span className="text-sm font-medium whitespace-nowrap" style={{ color: textColor }}>
+              {currentLanguage.code.toUpperCase()}
+            </span>
           )}
         </Button>
       </DropdownMenuTrigger>

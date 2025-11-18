@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   useReactTable,
   getCoreRowModel,
@@ -59,6 +60,7 @@ export function ClientsTable({
   searchQuery,
   onSearchChange,
 }: ClientsTableProps) {
+  const { t } = useTranslation();
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
@@ -67,7 +69,7 @@ export function ClientsTable({
     () => [
       {
         accessorKey: 'client',
-        header: 'Client',
+        header: t('clients.client'),
         cell: ({ row }) => {
           const client = row.original;
           return (
@@ -92,7 +94,7 @@ export function ClientsTable({
       },
       {
         accessorKey: 'phone',
-        header: 'Phone',
+        header: t('clients.phone'),
         cell: ({ row }) => {
           const phone = row.original.phone;
           if (!phone) return <span className="text-muted-foreground text-sm">—</span>;
@@ -106,12 +108,12 @@ export function ClientsTable({
       },
       {
         accessorKey: 'isActive',
-        header: 'Status',
+        header: t('clients.status'),
         cell: ({ row }) => {
           const isActive = row.original.isActive;
           return (
             <Badge variant={isActive ? 'default' : 'secondary'}>
-              {isActive ? 'Active' : 'Inactive'}
+              {isActive ? t('clients.active') : t('clients.inactive')}
             </Badge>
           );
         },
@@ -129,7 +131,7 @@ export function ClientsTable({
               className="h-8 data-[state=open]:bg-accent"
               onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
             >
-              Total Cases
+              {t('clients.totalCases')}
               <ArrowUpDown className="ml-2 h-4 w-4" />
             </Button>
           );
@@ -149,7 +151,7 @@ export function ClientsTable({
               className="h-8 data-[state=open]:bg-accent"
               onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
             >
-              Active Cases
+              {t('clients.activeCases')}
               <ArrowUpDown className="ml-2 h-4 w-4" />
             </Button>
           );
@@ -173,7 +175,7 @@ export function ClientsTable({
               className="h-8 data-[state=open]:bg-accent"
               onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
             >
-              Joined Date
+              {t('clients.joinedDate')}
               <ArrowUpDown className="ml-2 h-4 w-4" />
             </Button>
           );
@@ -185,20 +187,20 @@ export function ClientsTable({
       },
       {
         id: 'actions',
-        header: 'Actions',
+        header: t('common.actions'),
         cell: ({ row }) => {
           return (
             <Button asChild variant="outline" size="sm">
               <Link href={`/dashboard/clients/${row.original.id}`}>
                 <Eye className="h-4 w-4 mr-1" />
-                View
+                {t('common.view')}
               </Link>
             </Button>
           );
         },
       },
     ],
-    []
+    [t]
   );
 
   // Table instance
@@ -222,26 +224,26 @@ export function ClientsTable({
   return (
     <div className="space-y-4">
       {/* Search and Filters */}
-      <Card>
+      <Card style={{ borderColor: '#ff4538', borderWidth: '1px', borderStyle: 'solid' }}>
         <CardContent className="pt-6">
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="flex-1">
               <Input
-                placeholder="Search by name or email..."
+                placeholder={t('clients.searchPlaceholder')}
                 value={searchQuery}
                 onChange={(e) => onSearchChange(e.target.value)}
                 className="max-w-sm"
               />
             </div>
             <div className="text-sm text-muted-foreground flex items-center">
-              Showing {data.length} of {totalItems} clients
+              {t('clients.showing', { count: data.length, total: totalItems })}
             </div>
           </div>
         </CardContent>
       </Card>
 
       {/* Table */}
-      <Card>
+      <Card style={{ borderColor: '#ff4538', borderWidth: '1px', borderStyle: 'solid' }}>
         <CardContent className="p-0">
           <div className="rounded-md border-0">
             <Table>
@@ -272,7 +274,7 @@ export function ClientsTable({
                 ) : (
                   <TableRow>
                     <TableCell colSpan={columns.length} className="h-24 text-center">
-                      No clients found.
+                      {t('clients.noClientsFound')}
                     </TableCell>
                   </TableRow>
                 )}
@@ -284,54 +286,51 @@ export function ClientsTable({
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <Card>
+        <Card style={{ borderColor: '#ff4538', borderWidth: '1px', borderStyle: 'solid' }}>
           <CardContent className="py-4">
-            <div className="flex items-center justify-between gap-4">
-              <div className="text-sm text-muted-foreground">
-                Page {currentPage} of {totalPages}
-              </div>
-              <div className="flex items-center gap-2">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-0 mt-4">
+              <p className="text-xs sm:text-sm text-muted-foreground order-2 sm:order-1">
+                {t('clients.pagination.showing', {
+                  from: (currentPage - 1) * Math.ceil(totalItems / totalPages) + 1,
+                  to: Math.min(currentPage * Math.ceil(totalItems / totalPages), totalItems),
+                  total: totalItems,
+                })}
+              </p>
+              <div className="flex items-center gap-2 order-1 sm:order-2 w-full sm:w-auto justify-center sm:justify-end">
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={() => onPageChange(Math.max(1, currentPage - 1))}
                   disabled={currentPage === 1}
+                  className="text-white h-9 sm:h-8 px-3 sm:px-3"
+                  style={{
+                    backgroundColor: '#143240',
+                    borderColor: 'rgba(255, 69, 56, 0.3)',
+                    borderWidth: '1px',
+                    borderStyle: 'solid',
+                  }}
                 >
-                  <ChevronLeft className="h-4 w-4" />
-                  <span className="hidden sm:inline ml-1">Previous</span>
+                  <ChevronLeft className="h-4 w-4 sm:mr-1" />
+                  <span className="hidden sm:inline">{t('common.previous')}</span>
                 </Button>
-
-                {/* Page numbers */}
-                <div className="hidden sm:flex items-center gap-1">
-                  {Array.from({ length: totalPages }, (_, i) => i + 1)
-                    .filter((page) => {
-                      return page === 1 || page === totalPages || Math.abs(page - currentPage) <= 1;
-                    })
-                    .map((page, index, array) => (
-                      <div key={page} className="flex items-center">
-                        {index > 0 && array[index - 1] !== page - 1 && (
-                          <span className="px-2 text-muted-foreground">...</span>
-                        )}
-                        <Button
-                          variant={currentPage === page ? 'default' : 'ghost'}
-                          size="sm"
-                          onClick={() => onPageChange(page)}
-                          className="h-8 w-8 p-0"
-                        >
-                          {page}
-                        </Button>
-                      </div>
-                    ))}
-                </div>
-
+                <span className="text-xs sm:text-sm text-muted-foreground px-2 whitespace-nowrap">
+                  {t('common.pageOf', { current: currentPage, total: totalPages })}
+                </span>
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
                   disabled={currentPage === totalPages}
+                  className="text-white h-9 sm:h-8 px-3 sm:px-3"
+                  style={{
+                    backgroundColor: '#143240',
+                    borderColor: 'rgba(255, 69, 56, 0.3)',
+                    borderWidth: '1px',
+                    borderStyle: 'solid',
+                  }}
                 >
-                  <span className="hidden sm:inline mr-1">Next</span>
-                  <ChevronRight className="h-4 w-4" />
+                  <span className="hidden sm:inline">{t('common.next')}</span>
+                  <ChevronRight className="h-4 w-4 sm:ml-1" />
                 </Button>
               </div>
             </div>

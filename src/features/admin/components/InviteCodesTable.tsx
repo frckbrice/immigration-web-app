@@ -159,7 +159,7 @@ export function InviteCodesTable({ onRefresh }: InviteCodesTableProps) {
     navigator.clipboard
       .writeText(code)
       .then(() => toast.success(t('inviteCodes.copiedToClipboard')))
-      .catch(() => toast.error('Failed to copy'));
+      .catch(() => toast.error(t('inviteCodes.copyFailed')));
   };
 
   // Calculate status
@@ -325,7 +325,10 @@ export function InviteCodesTable({ onRefresh }: InviteCodesTableProps) {
             <span className="text-sm">{new Date(row.original.createdAt).toLocaleDateString()}</span>
             {row.original.createdByUser && (
               <span className="text-xs text-muted-foreground">
-                by {row.original.createdByUser.firstName} {row.original.createdByUser.lastName}
+                {t('inviteCodes.table.createdBy', {
+                  firstName: row.original.createdByUser.firstName,
+                  lastName: row.original.createdByUser.lastName,
+                })}
               </span>
             )}
           </div>
@@ -378,7 +381,10 @@ export function InviteCodesTable({ onRefresh }: InviteCodesTableProps) {
               </span>
               {row.original.lastUsedByUser && (
                 <span className="text-xs text-muted-foreground">
-                  by {row.original.lastUsedByUser.firstName} {row.original.lastUsedByUser.lastName}
+                  {t('inviteCodes.table.lastUsedBy', {
+                    firstName: row.original.lastUsedByUser.firstName,
+                    lastName: row.original.lastUsedByUser.lastName,
+                  })}
                 </span>
               )}
             </div>
@@ -407,10 +413,19 @@ export function InviteCodesTable({ onRefresh }: InviteCodesTableProps) {
 
   if (error) {
     return (
-      <Card>
+      <Card style={{ borderColor: '#ff4538', borderWidth: '1px', borderStyle: 'solid' }}>
         <CardContent className="py-12 text-center">
-          <p className="text-destructive">Failed to load invite codes. Please try again.</p>
-          <Button className="mt-4" onClick={() => refetch()}>
+          <p className="text-destructive">{t('inviteCodes.failedToLoad')}</p>
+          <Button
+            className="mt-4 text-white"
+            onClick={() => refetch()}
+            style={{
+              backgroundColor: '#361d22',
+              borderColor: '#ff4538',
+              borderWidth: '1px',
+              borderStyle: 'solid',
+            }}
+          >
             {t('common.tryAgain')}
           </Button>
         </CardContent>
@@ -432,7 +447,15 @@ export function InviteCodesTable({ onRefresh }: InviteCodesTableProps) {
           />
         </div>
         <Select value={roleFilter} onValueChange={setRoleFilter}>
-          <SelectTrigger className="w-full sm:w-[180px]">
+          <SelectTrigger
+            className="w-full sm:w-[180px] text-white"
+            style={{
+              backgroundColor: '#143240',
+              borderColor: 'rgba(255, 69, 56, 0.3)',
+              borderWidth: '1px',
+              borderStyle: 'solid',
+            }}
+          >
             <SelectValue placeholder={t('inviteCodes.table.filterRole')} />
           </SelectTrigger>
           <SelectContent>
@@ -452,7 +475,15 @@ export function InviteCodesTable({ onRefresh }: InviteCodesTableProps) {
           </SelectContent>
         </Select>
         <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-full sm:w-[180px]">
+          <SelectTrigger
+            className="w-full sm:w-[180px] text-white"
+            style={{
+              backgroundColor: '#143240',
+              borderColor: 'rgba(255, 69, 56, 0.3)',
+              borderWidth: '1px',
+              borderStyle: 'solid',
+            }}
+          >
             <SelectValue placeholder={t('inviteCodes.table.filterStatus')} />
           </SelectTrigger>
           <SelectContent>
@@ -480,7 +511,7 @@ export function InviteCodesTable({ onRefresh }: InviteCodesTableProps) {
       </div>
 
       {/* Table */}
-      <Card>
+      <Card style={{ borderColor: '#ff4538', borderWidth: '1px', borderStyle: 'solid' }}>
         <CardContent className="p-0">
           <div className="rounded-md border">
             <Table>

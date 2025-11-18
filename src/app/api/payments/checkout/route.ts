@@ -55,6 +55,56 @@ const postHandler = asyncHandler(async (request: NextRequest) => {
     throw new ApiError('User has already paid for a subscription', HttpStatus.BAD_REQUEST);
   }
 
+  // Check for existing pending/completed payment intents for this user and tier (idempotency)
+  const existingPayment = await prisma.payment.findFirst({
+    where: {
+      userId: req.user.userId,
+      status: {
+        in: ['PENDING', 'PROCESSING', 'COMPLETED'],
+      },
+      metadata: {
+        path: ['tier'],
+        equals: tier,
+      },
+    },
+    orderBy: {
+      createdAt: 'desc',
+    },
+  });
+
+  if (existingPayment) {
+    // If payment is completed, user should have hasPaid set
+    if (existingPayment.status === 'COMPLETED') {
+      logger.warn('User already has completed payment for this tier', {
+        userId: req.user.userId,
+        tier,
+        paymentId: existingPayment.id,
+        stripeIntentId: existingPayment.stripeIntentId,
+      });
+      throw new ApiError('User has already paid for a subscription', HttpStatus.BAD_REQUEST);
+    }
+
+    // If payment is pending or processing, return existing payment intent
+    logger.info('Returning existing payment intent', {
+      userId: req.user.userId,
+      tier,
+      paymentId: existingPayment.id,
+      stripeIntentId: existingPayment.stripeIntentId,
+      status: existingPayment.status,
+    });
+
+    return successResponse(
+      {
+        clientSecret: existingPayment.clientSecret,
+        paymentIntentId: existingPayment.id,
+        amount: Number(existingPayment.amount),
+        currency: existingPayment.currency,
+        tier: tier,
+      },
+      'Existing payment intent found'
+    );
+  }
+
   const tierPrice = getTierPrice(tier as SubscriptionTier);
   const tierName = getTierName(tier as SubscriptionTier);
 

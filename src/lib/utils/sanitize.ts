@@ -93,8 +93,92 @@ export function sanitizeErrorMessage(error: unknown): string {
 }
 
 /**
+ * Map backend error messages to user-friendly messages
+ * Prevents exposing backend implementation details
+ */
+function mapBackendErrorToUserMessage(errorMessage: string): string {
+  if (!errorMessage || typeof errorMessage !== 'string') {
+    return 'An error occurred. Please try again.';
+  }
+
+  const lowerMessage = errorMessage.toLowerCase();
+
+  // Firebase Auth errors - handle various formats
+  // Match patterns like "Firebase auth(invalid credentials)" or "auth/invalid-credential"
+  if (lowerMessage.includes('firebase auth') || lowerMessage.includes('auth/')) {
+    // Extract error code from patterns like "Firebase auth(invalid credentials)" or "auth/invalid-credential"
+    const authErrorMatch = lowerMessage.match(/auth[\/\(]?([^\)]+)/);
+    const authErrorCode = authErrorMatch ? authErrorMatch[1].trim() : '';
+
+    if (
+      authErrorCode.includes('invalid credential') ||
+      authErrorCode.includes('wrong-password') ||
+      authErrorCode.includes('user-not-found') ||
+      lowerMessage.includes('invalid credential') ||
+      lowerMessage.includes('wrong-password') ||
+      lowerMessage.includes('user-not-found')
+    ) {
+      return 'Invalid email or password. Please check your credentials and try again.';
+    }
+    if (
+      lowerMessage.includes('email-already-exists') ||
+      lowerMessage.includes('email-already-in-use')
+    ) {
+      return 'This email address is already registered. Please use a different email or try logging in.';
+    }
+    if (lowerMessage.includes('invalid-email')) {
+      return 'Please enter a valid email address.';
+    }
+    if (lowerMessage.includes('weak-password')) {
+      return 'Password is too weak. Please use a stronger password.';
+    }
+    if (lowerMessage.includes('too-many-requests')) {
+      return 'Too many failed attempts. Please try again later.';
+    }
+    if (lowerMessage.includes('user-disabled')) {
+      return 'This account has been disabled. Please contact support.';
+    }
+    if (lowerMessage.includes('network-request-failed') || lowerMessage.includes('network error')) {
+      return 'Network error. Please check your internet connection and try again.';
+    }
+    // Generic Firebase auth error
+    return 'Authentication failed. Please check your credentials and try again.';
+  }
+
+  // Backend API errors
+  if (lowerMessage.includes('unauthorized') || lowerMessage.includes('authentication')) {
+    return 'Authentication failed. Please log in again.';
+  }
+  if (lowerMessage.includes('forbidden') || lowerMessage.includes('permission')) {
+    return 'You do not have permission to perform this action.';
+  }
+  if (lowerMessage.includes('not found') || lowerMessage.includes('does not exist')) {
+    return 'The requested resource was not found.';
+  }
+  if (lowerMessage.includes('validation') || lowerMessage.includes('invalid')) {
+    return 'Please check your input and try again.';
+  }
+  if (lowerMessage.includes('server error') || lowerMessage.includes('internal error')) {
+    return 'A server error occurred. Please try again later.';
+  }
+  if (lowerMessage.includes('timeout') || lowerMessage.includes('request timeout')) {
+    return 'Request timed out. Please try again.';
+  }
+
+  // Return sanitized original message if no mapping found
+  // But remove any backend-specific prefixes
+  let cleaned = errorMessage;
+  cleaned = cleaned.replace(/^firebase\s+auth\s*\(/i, '');
+  cleaned = cleaned.replace(/^auth\/[^:]+:\s*/i, '');
+  cleaned = cleaned.replace(/^\[.*?\]\s*/i, ''); // Remove [Backend] prefixes
+
+  return sanitizeMessage(cleaned);
+}
+
+/**
  * Sanitize API error response
  * Extracts and sanitizes error messages from API responses
+ * Maps backend errors to user-friendly messages
  */
 export function sanitizeApiError(error: any): string {
   const defaultMessage = 'An error occurred. Please try again.';
@@ -106,7 +190,10 @@ export function sanitizeApiError(error: any): string {
   // Try to extract error message from various response formats
   let message: string | undefined;
 
-  if (error.response?.data?.error) {
+  // Check Firebase error code first (most specific)
+  if (error.code && typeof error.code === 'string') {
+    message = error.code;
+  } else if (error.response?.data?.error) {
     message = error.response.data.error;
   } else if (error.response?.data?.message) {
     message = error.response.data.message;
@@ -118,5 +205,6 @@ export function sanitizeApiError(error: any): string {
     return defaultMessage;
   }
 
-  return sanitizeMessage(message);
+  // Map backend error to user-friendly message
+  return mapBackendErrorToUserMessage(message);
 }

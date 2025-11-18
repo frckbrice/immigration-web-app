@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useAuthStore } from '@/features/auth/store';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 import { useUsers } from '@/features/users/api';
 import { Users } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
@@ -13,6 +14,7 @@ import { ClientsTable } from './ClientsTable';
 export function ClientsList() {
   const { user, isLoading: isAuthLoading, accessToken } = useAuthStore();
   const router = useRouter();
+  const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 20; // Table can show more items efficiently than cards
@@ -56,13 +58,11 @@ export function ClientsList() {
   // Handle errors from data fetching
   if (usersError) {
     return (
-      <Card>
+      <Card style={{ borderColor: '#ff4538', borderWidth: '1px', borderStyle: 'solid' }}>
         <CardContent className="py-12 text-center">
           <Users className="mx-auto h-12 w-12 text-destructive mb-4 opacity-50" />
-          <h3 className="text-lg font-semibold mb-2">Failed to load clients</h3>
-          <p className="text-muted-foreground">
-            Unable to load client data. Please try refreshing the page.
-          </p>
+          <h3 className="text-lg font-semibold mb-2">{t('clients.failedToLoad')}</h3>
+          <p className="text-muted-foreground">{t('clients.failedToLoadDescription')}</p>
         </CardContent>
       </Card>
     );
@@ -82,31 +82,29 @@ export function ClientsList() {
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">
-            {user?.role === 'AGENT' ? 'My Clients' : 'All Clients'}
+            {user?.role === 'AGENT' ? t('clients.myClients') : t('clients.allClients')}
           </h1>
           <p className="text-muted-foreground mt-2">
             {user?.role === 'AGENT'
-              ? 'Clients with cases assigned to you'
-              : 'Manage all client accounts and information'}
+              ? t('clients.myClientsDescription')
+              : t('clients.allClientsDescription')}
           </p>
         </div>
         <Badge variant="secondary" className="text-base px-4 py-2">
-          {pagination?.total || 0} {pagination?.total === 1 ? 'Client' : 'Clients'}
+          {t('clients.clientCount', { count: pagination?.total || 0 })}
         </Badge>
       </div>
 
       {/* Clients Table */}
       {clientsWithCases.length === 0 ? (
-        <Card>
+        <Card style={{ borderColor: '#ff4538', borderWidth: '1px', borderStyle: 'solid' }}>
           <CardContent className="py-12 text-center">
             <Users className="mx-auto h-12 w-12 text-muted-foreground mb-4 opacity-50" />
             <h3 className="text-lg font-semibold mb-2">
-              {searchQuery ? 'No clients found' : 'No clients yet'}
+              {searchQuery ? t('clients.noClientsFound') : t('clients.noClientsYet')}
             </h3>
             <p className="text-muted-foreground">
-              {searchQuery
-                ? 'Try adjusting your search'
-                : 'Clients will appear here when they register'}
+              {searchQuery ? t('clients.adjustFilters') : t('clients.clientsWillAppear')}
             </p>
           </CardContent>
         </Card>

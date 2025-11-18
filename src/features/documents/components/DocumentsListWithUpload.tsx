@@ -386,7 +386,7 @@ export function DocumentsList() {
               onDelete={() => handleDelete(document)}
               showDelete={isClient && document.status !== 'APPROVED'}
               isDeleting={deleteDocument.isPending}
-              showCaseInfo={!isClient}
+              showCaseInfo={!isClient} // Show client info and case button for agents/admins
             />
           ))}
         </div>

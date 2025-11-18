@@ -50,6 +50,7 @@ const getHandler = asyncHandler(async (request: NextRequest) => {
         description: true,
         caseNumber: true,
         status: true,
+        stripeIntentId: true,
         createdAt: true,
       },
     });
@@ -72,6 +73,7 @@ const getHandler = asyncHandler(async (request: NextRequest) => {
               : payment.status === 'REFUNDED'
                 ? 'refunded'
                 : 'pending',
+      stripeIntentId: payment.stripeIntentId || undefined,
     }));
 
     logger.info('Payment history retrieved', {

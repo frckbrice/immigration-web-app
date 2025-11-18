@@ -96,69 +96,82 @@ export function DocumentCard({
     <TooltipProvider>
       <Card>
         <CardContent className="pt-6">
-          <div className="flex justify-between">
-            <div className="flex gap-4 flex-1">
-              <div className="p-3 rounded-lg bg-muted">
+          <div className="flex flex-col sm:flex-row sm:justify-between gap-4">
+            <div className="flex gap-3 sm:gap-4 flex-1 min-w-0">
+              <div className="p-3 rounded-lg bg-muted flex-shrink-0">
                 <FIcon className="h-6 w-6 text-primary" />
               </div>
-              <div className="flex-1">
-                <div className="flex gap-2 mb-1">
-                  <h3 className="font-semibold truncate">{document.originalName}</h3>
+              <div className="flex-1 min-w-0">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-1">
+                  <h3 className="font-semibold truncate text-sm sm:text-base">
+                    {document.originalName}
+                  </h3>
                   <Badge
                     className={cn(
-                      'flex items-center gap-1',
+                      'flex items-center gap-1 w-fit text-xs',
                       statusConfig[document.status]?.className || ''
                     )}
                   >
-                    <StatusIcon className="h-3 w-3" />
-                    {statusConfig[document.status]?.label || document.status}
+                    <StatusIcon className="h-3 w-3 flex-shrink-0" />
+                    <span className="whitespace-nowrap">
+                      {statusConfig[document.status]?.label || document.status}
+                    </span>
                   </Badge>
                 </div>
 
-                {/* Case and Client Info for AGENT/ADMIN */}
-                {showCaseInfo && document.case && (
-                  <div className="flex flex-wrap items-center gap-3 mb-2">
-                    <div className="flex items-center gap-1.5 text-sm">
-                      <Briefcase className="h-3.5 w-3.5 text-muted-foreground" />
-                      <span className="font-medium text-primary">
+                {/* Case Reference - Always shown */}
+                {document.case && (
+                  <div className="flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-2 sm:gap-3 mb-2">
+                    <div className="flex items-center gap-1.5 text-sm min-w-0">
+                      <Briefcase className="h-3.5 w-3.5 text-muted-foreground flex-shrink-0" />
+                      <span className="font-medium text-primary truncate">
                         {document.case.referenceNumber}
                       </span>
                     </div>
-                    {document.uploadedBy && (
-                      <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                        <User className="h-3.5 w-3.5" />
-                        <span>
+                    {/* Client Info - Only shown for AGENT/ADMIN */}
+                    {showCaseInfo && document.uploadedBy && (
+                      <div className="flex items-center gap-1.5 text-sm text-muted-foreground min-w-0">
+                        <User className="h-3.5 w-3.5 flex-shrink-0" />
+                        <span className="truncate">
                           {document.uploadedBy.firstName} {document.uploadedBy.lastName}
                         </span>
                       </div>
                     )}
-                    <Button variant="link" size="sm" className="h-auto p-0 text-sm" asChild>
-                      <Link href={`/dashboard/cases/${document.caseId}`}>
-                        {t('documents.viewCase')} <ExternalLink className="ml-1 h-3 w-3" />
-                      </Link>
-                    </Button>
+                    {/* View Case Button - Only shown for AGENT/ADMIN */}
+                    {showCaseInfo && (
+                      <Button
+                        variant="link"
+                        size="sm"
+                        className="h-auto p-0 text-sm self-start sm:self-center"
+                        asChild
+                      >
+                        <Link href={`/dashboard/cases/${document.caseId}`}>
+                          {t('documents.viewCase')} <ExternalLink className="ml-1 h-3 w-3 inline" />
+                        </Link>
+                      </Button>
+                    )}
                   </div>
                 )}
 
-                <p className="text-sm text-muted-foreground">
+                <p className="text-xs sm:text-sm text-muted-foreground break-words">
                   {docTypeLabels[document.documentType] || document.documentType} •{' '}
                   {formatFileSize(document.fileSize)} •{' '}
                   {new Date(document.uploadDate).toLocaleDateString()}
                 </p>
                 {document.status === 'APPROVED' && document.verifiedBy && (
-                  <p className="text-xs text-green-600 mt-1">
+                  <p className="text-xs text-green-600 mt-1 break-words">
                     ✓ {t('documents.verifiedBy')} {document.verifiedBy}
                   </p>
                 )}
                 {document.status === 'REJECTED' && document.rejectionReason && (
                   <div className="flex gap-2 mt-2 p-2 bg-red-50 dark:bg-red-950/20 rounded">
                     <AlertCircle className="h-4 w-4 text-red-600 flex-shrink-0" />
-                    <p className="text-xs text-red-600">{document.rejectionReason}</p>
+                    <p className="text-xs text-red-600 break-words">{document.rejectionReason}</p>
                   </div>
                 )}
               </div>
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-2 flex-shrink-0 justify-end sm:justify-start">
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button
@@ -166,6 +179,7 @@ export function DocumentCard({
                     size="sm"
                     onClick={onView}
                     aria-label={`View document: ${document.originalName ?? 'document'}`}
+                    className="flex-shrink-0"
                   >
                     <Eye className="h-4 w-4" />
                   </Button>
@@ -182,6 +196,7 @@ export function DocumentCard({
                     size="sm"
                     onClick={onDownload}
                     aria-label={`Download document: ${document.originalName ?? 'document'}`}
+                    className="flex-shrink-0"
                   >
                     <Download className="h-4 w-4" />
                   </Button>
@@ -200,6 +215,7 @@ export function DocumentCard({
                       onClick={onDelete}
                       disabled={isDeleting}
                       aria-label={`Delete document: ${document.originalName ?? 'document'}`}
+                      className="flex-shrink-0"
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>

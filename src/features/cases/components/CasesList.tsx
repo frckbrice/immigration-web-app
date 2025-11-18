@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useMemo, memo, useCallback, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuthStore } from '@/features/auth/store';
 import { useCases } from '../api';
 import type { Appointment, Case } from '../types';
@@ -40,33 +41,27 @@ import { toast } from 'sonner';
 import { CASES_KEY } from '../api';
 import type { CasesApiResponse } from '../api/queries';
 
-const statusConfig: Record<string, { label: string; className: string }> = {
+// Status and service labels will be translated in the component using useTranslation
+const statusConfig: Record<string, { className: string }> = {
   SUBMITTED: {
-    label: 'Submitted',
     className: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300',
   },
   UNDER_REVIEW: {
-    label: 'Under Review',
     className: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
   },
   DOCUMENTS_REQUIRED: {
-    label: 'Documents Required',
     className: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300',
   },
   PROCESSING: {
-    label: 'Processing',
     className: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300',
   },
   APPROVED: {
-    label: 'Approved',
     className: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
   },
   REJECTED: {
-    label: 'Rejected',
     className: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300',
   },
   CLOSED: {
-    label: 'Closed',
     className: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300',
   },
 };
@@ -81,6 +76,7 @@ const serviceLabels: Record<string, string> = {
 };
 
 export function CasesList() {
+  const { t } = useTranslation();
   const { user } = useAuthStore();
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
@@ -231,11 +227,12 @@ export function CasesList() {
       });
       const errorMessage =
         (error as { response?: { data?: { error?: string } } })?.response?.data?.error ||
+        t('cases.failedToUpdateStatus') ||
         'Failed to update case status. Please try again.';
       toast.error(errorMessage);
     },
     onSuccess: (_, variables) => {
-      toast.success('Case marked as closed.');
+      toast.success(t('cases.caseMarkedAsClosed') || 'Case marked as closed.');
       setOptimisticAppointments((prev) => {
         if (!prev[variables.caseId]) return prev;
         const next = { ...prev };
@@ -255,7 +252,8 @@ export function CasesList() {
       if (updateCaseStatusMutation.isPending && closingCaseIdRef.current === caseItem.id) return;
       if (typeof window !== 'undefined') {
         const confirmed = window.confirm(
-          `Mark case ${caseItem.referenceNumber} as closed? This will move it out of the active list.`
+          t('cases.markCaseAsClosedConfirm', { referenceNumber: caseItem.referenceNumber }) ||
+            `Mark case ${caseItem.referenceNumber} as closed? This will move it out of the active list.`
         );
         if (!confirmed) {
           return;
@@ -273,7 +271,9 @@ export function CasesList() {
   if (error)
     return (
       <div className="text-center py-12">
-        <p className="text-red-600">Error loading cases. Please try again.</p>
+        <p className="text-red-600">
+          {t('cases.errorLoadingCases') || 'Error loading cases. Please try again.'}
+        </p>
       </div>
     );
 
@@ -283,32 +283,53 @@ export function CasesList() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">{isClient ? 'My Cases' : 'Cases'}</h1>
-          <p className="text-muted-foreground mt-2">
-            {isClient ? 'View and track your immigration cases' : 'Manage all immigration cases'}
+          <h1 className="text-2xl sm:text-3xl font-bold">
+            {isClient ? t('cases.myCases') || 'My Cases' : t('cases.title') || 'Cases'}
+          </h1>
+          <p className="text-xs sm:text-sm text-muted-foreground mt-1 sm:mt-2">
+            {isClient
+              ? t('cases.viewAndTrack') || 'View and track your immigration cases'
+              : t('cases.manageAll') || 'Manage all immigration cases'}
           </p>
         </div>
         {!isClient && (
-          <Button asChild>
+          <Button
+            asChild
+            style={{
+              backgroundColor: '#361d22',
+              borderColor: '#ff4538',
+              borderWidth: '1px',
+              borderStyle: 'solid',
+              color: 'white',
+            }}
+            className="hover:opacity-90"
+          >
             <Link href="/dashboard/cases/new">
-              <Plus className="mr-2 h-4 w-4" />
-              New Case
+              <Plus className="mr-2 h-4 w-4" style={{ color: '#ff4538' }} />
+              {t('cases.newCase') || 'New Case'}
             </Link>
           </Button>
         )}
       </div>
 
       <Card>
-        <CardContent className="pt-6">
-          <div className="flex flex-col sm:flex-row gap-4">
+        <CardContent className="pt-4 sm:pt-6">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
             <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Search
+                className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 sm:h-4 sm:w-4"
+                style={{ color: '#ff4538' }}
+              />
               <Input
-                aria-label="Search cases by reference number or service type"
-                placeholder="Search by reference or service type..."
+                aria-label={
+                  t('cases.searchAriaLabel') || 'Search cases by reference number or service type'
+                }
+                placeholder={
+                  t('cases.searchPlaceholder') || 'Search by reference or service type...'
+                }
                 value={searchQuery}
                 onChange={(e) => handleSearchChange(e.target.value)}
-                className="pl-10"
+                className="pl-8 sm:pl-10 text-xs sm:text-sm h-9 sm:h-10"
               />
             </div>
             <Select value={statusFilter} onValueChange={handleStatusChange}>
@@ -316,14 +337,22 @@ export function CasesList() {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Status</SelectItem>
-                <SelectItem value="SUBMITTED">Submitted</SelectItem>
-                <SelectItem value="UNDER_REVIEW">Under Review</SelectItem>
-                <SelectItem value="DOCUMENTS_REQUIRED">Documents Required</SelectItem>
-                <SelectItem value="PROCESSING">Processing</SelectItem>
-                <SelectItem value="APPROVED">Approved</SelectItem>
-                <SelectItem value="REJECTED">Rejected</SelectItem>
-                <SelectItem value="CLOSED">Closed</SelectItem>
+                <SelectItem value="all">{t('cases.allStatus') || 'All Status'}</SelectItem>
+                <SelectItem value="SUBMITTED">
+                  {t('cases.status.submitted') || 'Submitted'}
+                </SelectItem>
+                <SelectItem value="UNDER_REVIEW">
+                  {t('cases.status.underReview') || 'Under Review'}
+                </SelectItem>
+                <SelectItem value="DOCUMENTS_REQUIRED">
+                  {t('cases.status.documentsRequired') || 'Documents Required'}
+                </SelectItem>
+                <SelectItem value="PROCESSING">
+                  {t('cases.status.processing') || 'Processing'}
+                </SelectItem>
+                <SelectItem value="APPROVED">{t('cases.status.approved') || 'Approved'}</SelectItem>
+                <SelectItem value="REJECTED">{t('cases.status.rejected') || 'Rejected'}</SelectItem>
+                <SelectItem value="CLOSED">{t('cases.status.closed') || 'Closed'}</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -334,17 +363,21 @@ export function CasesList() {
         <Card>
           <CardContent className="py-12 text-center">
             <Briefcase className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-2">No Cases Found</h3>
+            <h3 className="text-lg font-semibold mb-2">
+              {t('cases.noCasesFound') || 'No Cases Found'}
+            </h3>
             <p className="text-muted-foreground mb-4">
               {searchQuery || statusFilter !== 'all'
-                ? 'Try adjusting your filters'
+                ? t('cases.tryAdjustingFilters') || 'Try adjusting your filters'
                 : isClient
-                  ? 'You do not have any cases yet'
-                  : 'No cases created yet'}
+                  ? t('cases.noCasesYet') || 'You do not have any cases yet'
+                  : t('cases.noCasesCreated') || 'No cases created yet'}
             </p>
             {!isClient && (
               <Button asChild>
-                <Link href="/dashboard/cases/new">Create First Case</Link>
+                <Link href="/dashboard/cases/new">
+                  {t('cases.createFirstCase') || 'Create First Case'}
+                </Link>
               </Button>
             )}
           </CardContent>
@@ -366,51 +399,83 @@ export function CasesList() {
 
               return (
                 <Card key={c.id} className="hover:shadow-md transition-shadow">
-                  <CardHeader>
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="space-y-1">
-                        <CardTitle className="flex items-center gap-2">
-                          <Briefcase className="h-5 w-5 text-primary" />
-                          {c.referenceNumber}
+                  <CardHeader className="pb-3">
+                    <div className="flex items-start justify-between gap-2 sm:gap-3 min-w-0">
+                      <div className="space-y-0.5 sm:space-y-1 min-w-0 flex-1">
+                        <CardTitle className="text-base sm:text-lg flex items-center gap-2 min-w-0">
+                          <Briefcase
+                            className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0"
+                            style={{ color: '#ff4538' }}
+                          />
+                          <span className="truncate">{c.referenceNumber}</span>
                         </CardTitle>
-                        <CardDescription>
+                        <CardDescription className="text-xs sm:text-sm truncate">
                           {serviceLabels[c.serviceType] || c.serviceType}
                         </CardDescription>
                       </div>
-                      <div className="flex flex-col items-end gap-2">
+                      <div className="flex flex-col items-end gap-2 flex-shrink-0">
                         <Badge
                           className={cn(
-                            'flex items-center gap-1',
+                            'flex items-center gap-1 whitespace-nowrap text-xs',
                             statusConfig[caseStatus]?.className || ''
                           )}
                         >
-                          {statusConfig[caseStatus]?.label || caseStatus}
+                          {t(`cases.statusLabels.${caseStatus}`) ||
+                            t(`cases.status.${caseStatus.toLowerCase()}`) ||
+                            caseStatus}
                         </Badge>
-                        {hasAppointment && (
-                          <Badge variant="secondary" className="flex items-center gap-1">
-                            <Calendar className="h-3 w-3" />
-                            <span>{appointmentLabel}</span>
-                          </Badge>
-                        )}
+                        {hasAppointment &&
+                          appointmentInfo &&
+                          (appointmentInfo.status === 'SCHEDULED' ||
+                            appointmentInfo.status === 'RESCHEDULED') && (
+                            <Badge
+                              className="flex items-center gap-1 whitespace-nowrap text-xs"
+                              style={{
+                                backgroundColor: '#ff4538',
+                                color: 'white',
+                                border: 'none',
+                              }}
+                            >
+                              <Calendar className="h-3 w-3 flex-shrink-0" />
+                              <span className="hidden sm:inline">
+                                {t('cases.appointmentScheduled') || 'Appointment Scheduled'}
+                              </span>
+                              <span className="sm:hidden">
+                                {t('cases.scheduled') || 'Scheduled'}
+                              </span>
+                            </Badge>
+                          )}
                       </div>
                     </div>
                   </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
-                      <div className="flex items-center gap-2 text-sm">
-                        <Calendar className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-muted-foreground">Submitted:</span>
+                  <CardContent className="pt-0">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-4 mb-3 sm:mb-4">
+                      <div className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm">
+                        <Calendar
+                          className="h-3.5 w-3.5 sm:h-4 sm:w-4"
+                          style={{ color: '#ff4538' }}
+                        />
+                        <span className="text-muted-foreground">
+                          {t('cases.submitted') || 'Submitted'}:
+                        </span>
                         <span>{new Date(c.submissionDate).toLocaleDateString()}</span>
                       </div>
-                      <div className="flex items-center gap-2 text-sm">
-                        <Clock className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-muted-foreground">Updated:</span>
+                      <div className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm">
+                        <Clock className="h-3.5 w-3.5 sm:h-4 sm:w-4" style={{ color: '#ff4538' }} />
+                        <span className="text-muted-foreground">
+                          {t('cases.updated') || 'Updated'}:
+                        </span>
                         <span>{new Date(c.lastUpdated).toLocaleDateString()}</span>
                       </div>
                       {c.assignedAgent && (
-                        <div className="flex items-center gap-2 text-sm">
-                          <User className="h-4 w-4 text-muted-foreground" />
-                          <span className="text-muted-foreground">Advisor:</span>
+                        <div className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm">
+                          <User
+                            className="h-3.5 w-3.5 sm:h-4 sm:w-4"
+                            style={{ color: '#ff4538' }}
+                          />
+                          <span className="text-muted-foreground">
+                            {t('cases.advisor') || 'Advisor'}:
+                          </span>
                           <span>
                             {c.assignedAgent.firstName} {c.assignedAgent.lastName}
                           </span>
@@ -419,36 +484,57 @@ export function CasesList() {
                     </div>
 
                     {hasAppointment && (
-                      <div className="mt-4 space-y-3 rounded-md border border-dashed border-primary/40 bg-primary/5 px-3 py-3">
-                        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                          <div className="flex items-center gap-2 text-sm font-medium">
-                            <Calendar className="h-4 w-4 text-primary" />
-                            <span>{appointmentLabel}</span>
-                          </div>
+                      <div className="mt-3 sm:mt-4 space-y-2 sm:space-y-3 rounded-md border border-dashed border-primary/40 bg-primary/5 px-2 sm:px-3 py-2 sm:py-3">
+                        <div className="flex flex-col gap-1.5 sm:gap-2">
+                          {appointmentInfo && (
+                            <div className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-medium">
+                              <Calendar
+                                className="h-3.5 w-3.5 sm:h-4 sm:w-4 flex-shrink-0"
+                                style={{ color: '#ff4538' }}
+                              />
+                              <span>{appointmentLabel}</span>
+                            </div>
+                          )}
                           {appointmentInfo?.location && (
-                            <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground">
-                              <MapPin className="h-4 w-4" />
+                            <div className="flex items-center gap-1.5 sm:gap-2 text-[10px] sm:text-xs text-muted-foreground">
+                              <MapPin
+                                className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0"
+                                style={{ color: '#ff4538' }}
+                              />
                               <span className="line-clamp-1">{appointmentInfo.location}</span>
                             </div>
                           )}
                         </div>
-                        {!isCaseClosed ? (
+                        {!isClient && !isCaseClosed ? (
                           <Button
                             variant="default"
                             size="sm"
                             className="flex items-center gap-2"
                             disabled={isClosing}
                             onClick={() => markCaseClosed(c)}
+                            style={{
+                              backgroundColor: '#091a24',
+                              borderColor: '#ff4538',
+                              borderWidth: '1px',
+                              borderStyle: 'solid',
+                              color: 'white',
+                            }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.opacity = '0.9';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.opacity = '1';
+                            }}
                           >
                             {isClosing ? (
                               <>
                                 <RefreshCw className="h-4 w-4 animate-spin" />
-                                Closing...
+                                {t('cases.closing') || 'Closing...'}
                               </>
                             ) : (
                               <>
                                 <Briefcase className="h-4 w-4" />
-                                Mark Case as Closed
+                                {t('cases.markCaseAsClosed') || 'Mark Case as Closed'}
                               </>
                             )}
                           </Button>
@@ -457,29 +543,66 @@ export function CasesList() {
                             variant="outline"
                             className="text-xs border-emerald-500 text-emerald-600 bg-emerald-50"
                           >
-                            Case Closed
+                            {t('cases.caseClosed') || 'Case Closed'}
                           </Badge>
                         )}
                       </div>
                     )}
 
-                    <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
-                      <span className="text-sm text-muted-foreground">
-                        {c.documents?.length || 0} documents
+                    <div className="mt-3 sm:mt-4 flex flex-wrap items-center justify-between gap-2 sm:gap-3">
+                      <span className="text-xs sm:text-sm text-muted-foreground">
+                        {c.documents?.length || 0} {t('cases.documents') || 'documents'}
                       </span>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-1.5 sm:gap-2">
                         {!isClient && !isCaseClosed && c.status === CaseStatus.APPROVED && (
                           <Button
                             variant="secondary"
                             size="sm"
                             onClick={() => handleManageAppointment(c)}
+                            style={{
+                              backgroundColor: 'transparent',
+                              borderColor: 'rgba(255, 69, 56, 0.3)',
+                              borderWidth: '1px',
+                              borderStyle: 'solid',
+                              color: 'inherit',
+                            }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.borderColor = 'rgba(255, 69, 56, 0.5)';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.borderColor = 'rgba(255, 69, 56, 0.3)';
+                            }}
                           >
-                            <Calendar className="mr-2 h-4 w-4" />
-                            {hasAppointment ? 'Update Appointment' : 'Schedule Appointment'}
+                            <Calendar
+                              className="mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4"
+                              style={{ color: '#ff4538' }}
+                            />
+                            {hasAppointment
+                              ? t('cases.updateAppointment') || 'Update Appointment'
+                              : t('cases.scheduleAppointment') || 'Schedule Appointment'}
                           </Button>
                         )}
-                        <Button asChild variant="outline" size="sm">
-                          <Link href={`/dashboard/cases/${c.id}`}>View Details</Link>
+                        <Button
+                          asChild
+                          variant="outline"
+                          size="sm"
+                          style={{
+                            backgroundColor: 'transparent',
+                            borderColor: 'rgba(255, 69, 56, 0.3)',
+                            borderWidth: '1px',
+                            borderStyle: 'solid',
+                            color: 'inherit',
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.borderColor = 'rgba(255, 69, 56, 0.5)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.borderColor = 'rgba(255, 69, 56, 0.3)';
+                          }}
+                        >
+                          <Link href={`/dashboard/cases/${c.id}`}>
+                            {t('cases.viewDetails') || 'View Details'}
+                          </Link>
                         </Button>
                       </div>
                     </div>
@@ -495,8 +618,12 @@ export function CasesList() {
               <CardContent className="py-4">
                 <div className="flex items-center justify-between gap-4">
                   <div className="text-sm text-muted-foreground">
-                    Showing {pagination.startIndex + 1}-
-                    {Math.min(pagination.endIndex, filtered.length)} of {filtered.length}
+                    {t('cases.showing', {
+                      from: pagination.startIndex + 1,
+                      to: Math.min(pagination.endIndex, filtered.length),
+                      total: filtered.length,
+                    }) ||
+                      `Showing ${pagination.startIndex + 1}-${Math.min(pagination.endIndex, filtered.length)} of ${filtered.length}`}
                   </div>
                   <div className="flex items-center gap-2">
                     <Button
@@ -506,7 +633,9 @@ export function CasesList() {
                       disabled={currentPage === 1}
                     >
                       <ChevronLeft className="h-4 w-4" />
-                      <span className="hidden sm:inline ml-1">Previous</span>
+                      <span className="hidden sm:inline ml-1">
+                        {t('common.previous') || 'Previous'}
+                      </span>
                     </Button>
                     <div className="flex items-center gap-1">
                       {Array.from({ length: pagination.totalPages }, (_, i) => i + 1)
@@ -527,7 +656,22 @@ export function CasesList() {
                               variant={currentPage === page ? 'default' : 'ghost'}
                               size="sm"
                               onClick={() => setCurrentPage(page)}
-                              className="h-8 w-8 p-0"
+                              className="h-8 w-8 p-0 text-white"
+                              style={
+                                currentPage === page
+                                  ? {
+                                      backgroundColor: '#361d22',
+                                      borderColor: '#ff4538',
+                                      borderWidth: '1px',
+                                      borderStyle: 'solid',
+                                    }
+                                  : {
+                                      backgroundColor: '#143240',
+                                      borderColor: '#ff4538',
+                                      borderWidth: '1px',
+                                      borderStyle: 'solid',
+                                    }
+                              }
                             >
                               {page}
                             </Button>
@@ -540,7 +684,7 @@ export function CasesList() {
                       onClick={() => setCurrentPage((p) => Math.min(pagination.totalPages, p + 1))}
                       disabled={currentPage === pagination.totalPages}
                     >
-                      <span className="hidden sm:inline mr-1">Next</span>
+                      <span className="hidden sm:inline mr-1">{t('common.next') || 'Next'}</span>
                       <ChevronRight className="h-4 w-4" />
                     </Button>
                   </div>

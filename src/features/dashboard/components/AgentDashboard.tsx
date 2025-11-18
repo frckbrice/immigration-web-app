@@ -21,9 +21,11 @@ import Link from 'next/link';
 import { StatCardPlaceholder, ListItemPlaceholder } from '@/components/ui/progressive-placeholder';
 import { SimpleSkeleton, SkeletonText } from '@/components/ui/simple-skeleton';
 import { format } from 'date-fns';
+import { useTranslation } from 'react-i18next';
 
 export const AgentDashboard = memo(function AgentDashboard() {
   const { user } = useAuthStore();
+  const { t } = useTranslation();
 
   // PERFORMANCE: Add caching and prevent refetch for instant navigation
   const { data: casesData, isLoading } = useCases(
@@ -157,65 +159,87 @@ export const AgentDashboard = memo(function AgentDashboard() {
   return (
     <div className="space-y-4">
       <div>
-        <h1 className="text-2xl font-bold">Welcome back, {user?.firstName}!</h1>
-        <p className="text-sm text-muted-foreground mt-1">
-          {user?.role === 'ADMIN' ? 'Dashboard overview' : 'Your cases overview'}
+        <h1 className="text-2xl font-bold text-white">
+          {t('dashboard.admin.welcomeBack', { name: user?.firstName })}
+        </h1>
+        <p className="text-sm text-white/70 mt-1">
+          {user?.role === 'ADMIN'
+            ? t('dashboard.admin.dashboardOverview')
+            : t('dashboard.admin.casesOverview')}
         </p>
       </div>
 
       <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
-        <Card className="p-4">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-medium text-muted-foreground">
-              {user?.role === 'ADMIN' ? 'All Cases' : 'Assigned Cases'}
+        <Card className="p-2.5 sm:p-4">
+          <div className="flex items-center justify-between mb-1.5 sm:mb-2">
+            <span className="text-[10px] sm:text-xs font-medium text-muted-foreground">
+              {user?.role === 'ADMIN'
+                ? t('dashboard.admin.allCases')
+                : t('dashboard.admin.assignedCases')}
             </span>
-            <Briefcase className="h-3.5 w-3.5 text-muted-foreground" />
+            <Briefcase className="h-3 w-3 sm:h-3.5 sm:w-3.5" style={{ color: '#ff4538' }} />
           </div>
-          <div className="flex items-baseline gap-2">
-            <span className="text-2xl font-bold">{stats.assignedCases}</span>
-            <span className="text-xs text-muted-foreground">{stats.activeCases} active</span>
-          </div>
-        </Card>
-        <Card className="p-4">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-medium text-muted-foreground">
-              {user?.role === 'ADMIN' ? 'Under Review' : 'Pending Review'}
+          <div className="flex items-baseline gap-1.5 sm:gap-2">
+            <span className="text-xl sm:text-2xl font-bold">{stats.assignedCases}</span>
+            <span className="text-[10px] sm:text-xs text-muted-foreground">
+              {stats.activeCases} {t('dashboard.activeCases').toLowerCase()}
             </span>
-            <Clock className="h-3.5 w-3.5 text-muted-foreground" />
-          </div>
-          <div className="flex items-baseline gap-2">
-            <span className="text-2xl font-bold">{stats.pendingReview}</span>
-            <span className="text-xs text-muted-foreground">Require attention</span>
           </div>
         </Card>
-        <Card className="p-4">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-medium text-muted-foreground">Completed</span>
-            <CheckCircle2 className="h-3.5 w-3.5 text-muted-foreground" />
+        <Card className="p-2.5 sm:p-4">
+          <div className="flex items-center justify-between mb-1.5 sm:mb-2">
+            <span className="text-[10px] sm:text-xs font-medium text-muted-foreground">
+              {user?.role === 'ADMIN'
+                ? t('dashboard.admin.underReview')
+                : t('dashboard.admin.pendingReview')}
+            </span>
+            <Clock className="h-3 w-3 sm:h-3.5 sm:w-3.5" style={{ color: '#ff4538' }} />
           </div>
-          <div className="flex items-baseline gap-2">
-            <span className="text-2xl font-bold">{stats.completedThisMonth}</span>
-            <span className="text-xs text-muted-foreground">This month</span>
+          <div className="flex items-baseline gap-1.5 sm:gap-2">
+            <span className="text-xl sm:text-2xl font-bold">{stats.pendingReview}</span>
+            <span className="text-[10px] sm:text-xs text-muted-foreground">
+              {t('dashboard.admin.requireAttention')}
+            </span>
           </div>
         </Card>
-        <Card className="p-4">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-medium text-muted-foreground">Response Time</span>
-            <TrendingUp className="h-3.5 w-3.5 text-muted-foreground" />
+        <Card className="p-2.5 sm:p-4">
+          <div className="flex items-center justify-between mb-1.5 sm:mb-2">
+            <span className="text-[10px] sm:text-xs font-medium text-muted-foreground">
+              {t('dashboard.admin.completed')}
+            </span>
+            <CheckCircle2 className="h-3 w-3 sm:h-3.5 sm:w-3.5" style={{ color: '#ff4538' }} />
           </div>
-          <div className="flex items-baseline gap-2">
-            <span className="text-2xl font-bold">{stats.responseTime}</span>
-            <span className="text-xs text-muted-foreground">Average</span>
+          <div className="flex items-baseline gap-1.5 sm:gap-2">
+            <span className="text-xl sm:text-2xl font-bold">{stats.completedThisMonth}</span>
+            <span className="text-[10px] sm:text-xs text-muted-foreground">
+              {t('dashboard.admin.thisMonth')}
+            </span>
+          </div>
+        </Card>
+        <Card className="p-2.5 sm:p-4">
+          <div className="flex items-center justify-between mb-1.5 sm:mb-2">
+            <span className="text-[10px] sm:text-xs font-medium text-muted-foreground">
+              {t('dashboard.admin.responseTime')}
+            </span>
+            <TrendingUp className="h-3 w-3 sm:h-3.5 sm:w-3.5" style={{ color: '#ff4538' }} />
+          </div>
+          <div className="flex items-baseline gap-1.5 sm:gap-2">
+            <span className="text-xl sm:text-2xl font-bold">{stats.responseTime}</span>
+            <span className="text-[10px] sm:text-xs text-muted-foreground">
+              {t('dashboard.admin.average')}
+            </span>
           </div>
         </Card>
       </div>
 
-      <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-7">
-        <Card className="col-span-4">
-          <div className="p-4 pb-3 border-b">
-            <CardTitle className="text-sm font-semibold">Recent Cases</CardTitle>
-          </div>
-          <div className="p-3 space-y-2">
+      <div className="grid gap-3 sm:gap-4 md:grid-cols-2 lg:grid-cols-7">
+        <Card className="col-span-full md:col-span-4 lg:col-span-4">
+          <CardHeader className="pb-2 sm:pb-3">
+            <CardTitle className="text-sm sm:text-base font-semibold">
+              {t('dashboard.admin.recentCases')}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="pt-0 space-y-1.5 sm:space-y-2">
             {activeAssigned.slice(0, 5).map((c: Case) => (
               <div key={c.id} className="flex items-center justify-between py-1.5">
                 <div className="flex items-center gap-2 min-w-0">
@@ -232,7 +256,7 @@ export const AgentDashboard = memo(function AgentDashboard() {
                     {c.status.replace(/_/g, ' ')}
                   </Badge>
                   <Button asChild size="sm" variant="outline" className="h-7 text-xs">
-                    <Link href={`/dashboard/cases/${c.id}`}>Review</Link>
+                    <Link href={`/dashboard/cases/${c.id}`}>{t('dashboard.admin.review')}</Link>
                   </Button>
                 </div>
               </div>
@@ -241,43 +265,121 @@ export const AgentDashboard = memo(function AgentDashboard() {
               <div className="text-center py-6 text-muted-foreground">
                 <Briefcase className="mx-auto h-8 w-8 mb-2 opacity-50" />
                 <p className="text-sm">
-                  {user?.role === 'ADMIN' ? 'No active cases' : 'No active cases assigned'}
+                  {user?.role === 'ADMIN'
+                    ? t('dashboard.admin.noActiveCases')
+                    : t('dashboard.admin.noActiveCasesAssigned')}
                 </p>
               </div>
             )}
-          </div>
+          </CardContent>
         </Card>
 
-        <Card className="col-span-3">
-          <div className="p-4 pb-3 border-b">
-            <CardTitle className="text-sm font-semibold">Quick Actions</CardTitle>
-          </div>
-          <div className="p-3 space-y-1.5">
-            <Button asChild className="w-full justify-start h-8 text-sm" variant="outline">
+        <Card className="col-span-full md:col-span-2 lg:col-span-3">
+          <CardHeader className="pb-2 sm:pb-3">
+            <CardTitle className="text-sm sm:text-base font-semibold">
+              {t('dashboard.admin.quickActions')}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="pt-0 space-y-1.5">
+            <Button
+              asChild
+              className="w-full justify-start h-8 text-sm"
+              variant="outline"
+              style={{
+                backgroundColor: 'transparent',
+                borderColor: 'rgba(255, 69, 56, 0.3)',
+                borderWidth: '1px',
+                borderStyle: 'solid',
+                color: 'inherit',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = 'rgba(255, 69, 56, 0.5)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = 'rgba(255, 69, 56, 0.3)';
+              }}
+            >
               <Link href="/dashboard/cases">
-                <Briefcase className="mr-2 h-3.5 w-3.5" />
-                {user?.role === 'ADMIN' ? 'All Cases' : 'My Cases'}
+                <Briefcase className="mr-2 h-3.5 w-3.5" style={{ color: '#ff4538' }} />
+                {user?.role === 'ADMIN' ? t('dashboard.admin.allCases') : t('cases.myCases')}
               </Link>
             </Button>
-            <Button asChild className="w-full justify-start h-8 text-sm" variant="outline">
+            <Button
+              asChild
+              className="w-full justify-start h-8 text-sm"
+              variant="outline"
+              style={{
+                backgroundColor: 'transparent',
+                borderColor: 'rgba(255, 69, 56, 0.3)',
+                borderWidth: '1px',
+                borderStyle: 'solid',
+                color: 'inherit',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = 'rgba(255, 69, 56, 0.5)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = 'rgba(255, 69, 56, 0.3)';
+              }}
+            >
               <Link href="/dashboard/documents">
-                <FileCheck className="mr-2 h-3.5 w-3.5" />
-                {user?.role === 'ADMIN' ? 'All Documents' : 'Review Documents'}
+                <FileCheck className="mr-2 h-3.5 w-3.5" style={{ color: '#ff4538' }} />
+                {user?.role === 'ADMIN'
+                  ? t('dashboard.admin.allDocuments')
+                  : t('dashboard.admin.reviewDocuments')}
               </Link>
             </Button>
-            <Button asChild className="w-full justify-start h-8 text-sm" variant="outline">
+            <Button
+              asChild
+              className="w-full justify-start h-8 text-sm"
+              variant="outline"
+              style={{
+                backgroundColor: 'transparent',
+                borderColor: 'rgba(255, 69, 56, 0.3)',
+                borderWidth: '1px',
+                borderStyle: 'solid',
+                color: 'inherit',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = 'rgba(255, 69, 56, 0.5)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = 'rgba(255, 69, 56, 0.3)';
+              }}
+            >
               <Link href="/dashboard/clients">
-                <Users className="mr-2 h-3.5 w-3.5" />
-                {user?.role === 'ADMIN' ? 'All Clients' : 'My Clients'}
+                <Users className="mr-2 h-3.5 w-3.5" style={{ color: '#ff4538' }} />
+                {user?.role === 'ADMIN'
+                  ? t('dashboard.admin.allClients')
+                  : t('dashboard.admin.myClients')}
               </Link>
             </Button>
-            <Button asChild className="w-full justify-start h-8 text-sm" variant="outline">
+            <Button
+              asChild
+              className="w-full justify-start h-8 text-sm"
+              variant="outline"
+              style={{
+                backgroundColor: 'transparent',
+                borderColor: 'rgba(255, 69, 56, 0.3)',
+                borderWidth: '1px',
+                borderStyle: 'solid',
+                color: 'inherit',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = 'rgba(255, 69, 56, 0.5)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = 'rgba(255, 69, 56, 0.3)';
+              }}
+            >
               <Link href="/dashboard/messages">
-                <AlertCircle className="mr-2 h-3.5 w-3.5" />
-                {user?.role === 'ADMIN' ? 'All Messages' : 'Urgent Messages'}
+                <AlertCircle className="mr-2 h-3.5 w-3.5" style={{ color: '#ff4538' }} />
+                {user?.role === 'ADMIN'
+                  ? t('dashboard.admin.allMessages')
+                  : t('dashboard.admin.urgentMessages')}
               </Link>
             </Button>
-          </div>
+          </CardContent>
         </Card>
       </div>
     </div>
@@ -291,6 +393,7 @@ export const AgentDashboard = memo(function AgentDashboard() {
  * - Mobile-optimized for instant display
  */
 export function AgentDashboardSkeleton() {
+  const { t } = useTranslation();
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -301,10 +404,13 @@ export function AgentDashboardSkeleton() {
 
       {/* Stat Cards with Progressive Placeholders */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <StatCardPlaceholder title="Assigned Cases" icon={Briefcase} />
-        <StatCardPlaceholder title="Pending Review" icon={Clock} />
-        <StatCardPlaceholder title="Completed (This Month)" icon={CheckCircle2} />
-        <StatCardPlaceholder title="Avg Response Time" icon={TrendingUp} />
+        <StatCardPlaceholder title={t('dashboard.admin.assignedCases')} icon={Briefcase} />
+        <StatCardPlaceholder title={t('dashboard.admin.pendingReview')} icon={Clock} />
+        <StatCardPlaceholder
+          title={`${t('dashboard.admin.completed')} (${t('dashboard.admin.thisMonth')})`}
+          icon={CheckCircle2}
+        />
+        <StatCardPlaceholder title={t('dashboard.admin.responseTime')} icon={TrendingUp} />
       </div>
 
       {/* Content Grid */}
@@ -312,7 +418,7 @@ export function AgentDashboardSkeleton() {
         {/* Recent Cases Card */}
         <Card className="col-span-4">
           <CardHeader>
-            <CardTitle>Recent Cases</CardTitle>
+            <CardTitle>{t('dashboard.admin.recentCases')}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             {[1, 2, 3].map((i) => (
@@ -324,7 +430,7 @@ export function AgentDashboardSkeleton() {
         {/* Quick Actions Card */}
         <Card className="col-span-3">
           <CardHeader>
-            <CardTitle>Quick Actions</CardTitle>
+            <CardTitle>{t('dashboard.admin.quickActions')}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
             {[1, 2, 3, 4].map((i) => (

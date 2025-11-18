@@ -442,7 +442,16 @@ export function RegisterForm() {
                             type="button"
                             onClick={() => setShowPassword(!showPassword)}
                             className="absolute right-3 top-1/2 -translate-y-1/2 transition-colors z-10"
-                            style={{ color: 'rgba(255, 255, 255, 0.7)' }}
+                            style={{
+                              color: '#ffffff',
+                              backgroundColor: 'transparent',
+                            }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.color = '#ff4538';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.color = '#ffffff';
+                            }}
                             tabIndex={-1}
                           >
                             {showPassword ? (

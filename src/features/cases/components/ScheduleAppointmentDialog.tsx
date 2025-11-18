@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Dialog,
   DialogContent,
@@ -35,6 +36,7 @@ export function ScheduleAppointmentDialog({
   defaultLocation = '',
   onAppointmentScheduled,
 }: ScheduleAppointmentDialogProps) {
+  const { t } = useTranslation();
   const createAppointment = useCreateAppointment(caseId);
   const [scheduledAt, setScheduledAt] = useState('');
   const [location, setLocation] = useState(defaultLocation);
@@ -60,7 +62,7 @@ export function ScheduleAppointmentDialog({
 
     const scheduledDate = new Date(scheduledAt);
     if (Number.isNaN(scheduledDate.getTime())) {
-      toast.error('Please provide a valid appointment date and time.');
+      toast.error(t('cases.dialogs.scheduleAppointment.invalidDateTime'));
       return;
     }
 
@@ -87,18 +89,21 @@ export function ScheduleAppointmentDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Schedule Appointment</DialogTitle>
+          <DialogTitle>{t('cases.dialogs.scheduleAppointment.title')}</DialogTitle>
           <DialogDescription>
             {caseReference
-              ? `Arrange an appointment for case ${caseReference}${
-                  clientName ? ` with ${clientName}` : ''
-                }.`
-              : 'Set the appointment details below.'}
+              ? t('cases.dialogs.scheduleAppointment.descriptionWithCase', {
+                  reference: caseReference,
+                  clientName: clientName ? ` with ${clientName}` : '',
+                })
+              : t('cases.dialogs.scheduleAppointment.description')}
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4 py-4">
           <div className="space-y-2">
-            <Label htmlFor="schedule-appointment-datetime">Date &amp; Time</Label>
+            <Label htmlFor="schedule-appointment-datetime">
+              {t('cases.dialogs.scheduleAppointment.dateTime')}
+            </Label>
             <Input
               id="schedule-appointment-datetime"
               type="datetime-local"
@@ -107,19 +112,23 @@ export function ScheduleAppointmentDialog({
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="schedule-appointment-location">Location</Label>
+            <Label htmlFor="schedule-appointment-location">
+              {t('cases.dialogs.scheduleAppointment.location')}
+            </Label>
             <Input
               id="schedule-appointment-location"
-              placeholder="Patrick Travel Services HQ, 123 Main Street"
+              placeholder={t('cases.dialogs.scheduleAppointment.locationPlaceholder')}
               value={location}
               onChange={(event) => setLocation(event.target.value)}
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="schedule-appointment-notes">Notes (optional)</Label>
+            <Label htmlFor="schedule-appointment-notes">
+              {t('cases.dialogs.scheduleAppointment.notes')}
+            </Label>
             <Textarea
               id="schedule-appointment-notes"
-              placeholder="Add any instructions or documents the client should bring..."
+              placeholder={t('cases.dialogs.scheduleAppointment.notesPlaceholder')}
               value={notes}
               onChange={(event) => setNotes(event.target.value)}
               rows={4}
@@ -132,16 +141,16 @@ export function ScheduleAppointmentDialog({
             onClick={() => onOpenChange(false)}
             disabled={createAppointment.isPending}
           >
-            Cancel
+            {t('cases.dialogs.scheduleAppointment.cancel')}
           </Button>
           <Button onClick={handleSubmit} disabled={createAppointment.isPending || isSubmitDisabled}>
             {createAppointment.isPending ? (
               <>
                 <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
-                Scheduling...
+                {t('cases.dialogs.scheduleAppointment.scheduling')}
               </>
             ) : (
-              'Schedule'
+              t('cases.dialogs.scheduleAppointment.schedule')
             )}
           </Button>
         </DialogFooter>

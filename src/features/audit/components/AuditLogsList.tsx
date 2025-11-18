@@ -89,11 +89,9 @@ export function AuditLogsList() {
       <div>
         <h1 className="text-3xl font-bold tracking-tight">
           <Shield className="inline-block mr-2 h-8 w-8 text-primary" />
-          Audit Logs
+          {t('auditLogs.title')}
         </h1>
-        <p className="text-muted-foreground mt-2">
-          Track all system activities and changes for security and compliance
-        </p>
+        <p className="text-muted-foreground mt-2">{t('auditLogs.trackAllActivities')}</p>
       </div>
 
       {/* Filters */}
@@ -103,7 +101,7 @@ export function AuditLogsList() {
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Search logs..."
+                placeholder={t('auditLogs.searchPlaceholder')}
                 className="pl-10"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -115,10 +113,10 @@ export function AuditLogsList() {
               className="w-full md:w-auto"
             >
               <TabsList className="grid w-full grid-cols-4">
-                <TabsTrigger value="all">All</TabsTrigger>
-                <TabsTrigger value="user">User Actions</TabsTrigger>
-                <TabsTrigger value="system">System</TabsTrigger>
-                <TabsTrigger value="security">Security</TabsTrigger>
+                <TabsTrigger value="all">{t('auditLogs.all')}</TabsTrigger>
+                <TabsTrigger value="user">{t('auditLogs.userActions')}</TabsTrigger>
+                <TabsTrigger value="system">{t('auditLogs.system')}</TabsTrigger>
+                <TabsTrigger value="security">{t('auditLogs.security')}</TabsTrigger>
               </TabsList>
             </Tabs>
           </div>
@@ -131,26 +129,26 @@ export function AuditLogsList() {
           <CardContent className="py-12 text-center">
             <Shield className="mx-auto h-12 w-12 text-muted-foreground mb-4 opacity-50" />
             <h3 className="text-lg font-semibold mb-2">
-              Audit Logging - Backend Integration Required
+              {t('auditLogs.backendIntegrationRequired')}
             </h3>
             <p className="text-muted-foreground mb-2">
               {searchQuery || categoryFilter !== 'all'
-                ? 'No logs match your filters'
-                : 'The audit logging system is ready for backend integration'}
+                ? t('auditLogs.noLogsMatchFilters')
+                : t('auditLogs.systemReadyForIntegration')}
             </p>
             <div className="mt-6 p-4 rounded-lg bg-blue-50 dark:bg-blue-950/20 max-w-2xl mx-auto text-left">
               <p className="text-sm font-medium text-blue-900 dark:text-blue-100 mb-2">
-                📋 Implementation Checklist:
+                {t('auditLogs.implementationChecklist')}
               </p>
               <ul className="text-sm text-blue-700 dark:text-blue-300 space-y-1 list-disc list-inside">
-                <li>Add AuditLog model to Prisma schema</li>
-                <li>Create POST /api/audit-logs endpoint</li>
-                <li>Create GET /api/audit-logs endpoint with filtering</li>
-                <li>Add audit logging middleware to API routes</li>
-                <li>Connect frontend to useAuditLogs() hook</li>
+                <li>{t('auditLogs.addAuditLogModel')}</li>
+                <li>{t('auditLogs.createPostEndpoint')}</li>
+                <li>{t('auditLogs.createGetEndpoint')}</li>
+                <li>{t('auditLogs.addAuditMiddleware')}</li>
+                <li>{t('auditLogs.connectFrontendHook')}</li>
               </ul>
               <p className="text-xs text-blue-600 dark:text-blue-400 mt-3">
-                See ADMIN_DASHBOARD_COMPREHENSIVE_AUDIT.md for detailed implementation guide
+                {t('auditLogs.seeImplementationGuide')}
               </p>
             </div>
           </CardContent>
@@ -166,7 +164,7 @@ export function AuditLogsList() {
                     <div className="flex items-start justify-between gap-2 mb-2">
                       <div>
                         <p className="font-medium">
-                          {log.action} on {log.entity}
+                          {log.action} {t('auditLogs.on')} {log.entity}
                           {log.entityId && (
                             <span className="text-muted-foreground text-sm ml-2">
                               #{log.entityId}
@@ -189,9 +187,11 @@ export function AuditLogsList() {
                       </div>
                       <div className="flex items-center gap-2">
                         <Badge className={getSeverityBadgeColor(log.severity)}>
-                          {log.severity}
+                          {t(`auditLogs.severity.${log.severity}` as any) || log.severity}
                         </Badge>
-                        <Badge variant="outline">{log.category}</Badge>
+                        <Badge variant="outline">
+                          {t(`auditLogs.category.${log.category}` as any) || log.category}
+                        </Badge>
                       </div>
                     </div>
                   </div>
