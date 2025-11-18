@@ -503,6 +503,55 @@ Built with [shadcn/ui](https://ui.shadcn.com/):
 
 ## Code Quality & Git Workflow
 
+### Automated Code Reviews with CodeRabbit
+
+This project uses [CodeRabbit](https://coderabbit.ai) for automated code reviews on Pull Requests. CodeRabbit provides AI-powered code review suggestions to improve code quality, security, and best practices.
+
+#### Features
+
+- **Automatic PR Reviews** - Reviews every Pull Request automatically
+- **Code Quality Checks** - Identifies code quality issues and suggests improvements
+- **Security Scanning** - Detects potential security vulnerabilities
+- **Performance Analysis** - Suggests performance optimizations
+- **Best Practices** - Enforces React/TypeScript best practices
+- **Accessibility Checks** - Reviews accessibility compliance
+- **Documentation Review** - Ensures proper code documentation
+
+#### Configuration
+
+CodeRabbit is configured via `.coderabbit.yaml` in the project root. The configuration includes:
+
+- **Enabled Languages**: TypeScript, JavaScript, TSX, JSX, JSON, YAML, Markdown
+- **Review Types**: Code quality, security, performance, best practices, accessibility, documentation
+- **Path Filters**: Reviews only relevant source files, excludes generated files and dependencies
+- **Custom Instructions**: Focused on TypeScript/React best practices, security, and performance
+
+#### Setup Instructions
+
+1. **Install CodeRabbit GitHub App**
+   - Visit [https://coderabbit.ai](https://coderabbit.ai)
+   - Click "Install GitHub App"
+   - Select your repository
+   - Grant necessary permissions
+
+2. **Automatic Activation**
+   - Once installed, CodeRabbit will automatically review all new Pull Requests
+   - Reviews appear as comments on your PRs
+   - You can interact with CodeRabbit via PR comments
+
+3. **Customization**
+   - Edit `.coderabbit.yaml` to customize review behavior
+   - Adjust review types, paths, and instructions as needed
+   - See [CodeRabbit Documentation](https://docs.coderabbit.ai) for more options
+
+#### Review Coverage
+
+CodeRabbit reviews:
+- ✅ All TypeScript/JavaScript source files in `src/`
+- ✅ Configuration files (`.ts`, `.json`, `.yaml`)
+- ✅ Documentation files (`.md`)
+- ❌ Excludes: `node_modules`, `.next`, build artifacts, logs, generated files
+
 ### Pre-commit Hooks (via Husky)
 
 Automatically runs before each commit:
