@@ -52,7 +52,7 @@ export function TrustLogos() {
 
   return (
     <section
-      className="relative py-16 md:py-20 overflow-hidden"
+      className="relative py-12 md:py-16 overflow-hidden"
       style={{ backgroundColor: '#091a24' }}
     >
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

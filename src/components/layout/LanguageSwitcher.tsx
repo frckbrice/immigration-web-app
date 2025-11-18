@@ -51,7 +51,7 @@ export function LanguageSwitcher({ variant = 'light' }: LanguageSwitcherProps) {
         <Button
           variant="ghost"
           size="sm"
-          className="gap-2 transition-all duration-200 border hover:border-[#ff4538]/50"
+          className="gap-1.5 sm:gap-2 transition-all duration-200 border hover:border-[#ff4538]/50 h-8 sm:h-9 px-2 sm:px-3"
           style={{
             backgroundColor: 'transparent',
             borderColor: 'rgba(255, 69, 56, 0.3)',
@@ -68,9 +68,12 @@ export function LanguageSwitcher({ variant = 'light' }: LanguageSwitcherProps) {
             e.currentTarget.style.color = textColor;
           }}
         >
-          <Globe className="h-4 w-4 shrink-0" style={{ color: '#ff4538' }} />
+          <Globe className="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0" style={{ color: '#ff4538' }} />
           {mounted && (
-            <span className="text-sm font-medium whitespace-nowrap" style={{ color: textColor }}>
+            <span
+              className="text-xs sm:text-sm font-medium whitespace-nowrap"
+              style={{ color: textColor }}
+            >
               {currentLanguage.code.toUpperCase()}
             </span>
           )}

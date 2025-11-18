@@ -133,11 +133,11 @@ export function PricingTiers() {
   ];
 
   return (
-    <section className="relative py-16 md:py-24 lg:py-32" style={{ backgroundColor: '#091a24' }}>
+    <section className="relative py-12 md:py-16 lg:py-20" style={{ backgroundColor: '#091a24' }}>
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12 md:mb-16">
+        <div className="text-center mb-10 md:mb-12">
           <h2
-            className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-4"
+            className="text-2xl sm:text-3xl md:text-4xl font-bold leading-tight mb-3 md:mb-4"
             style={{ color: '#ffffff' }}
           >
             <span suppressHydrationWarning>
@@ -145,7 +145,7 @@ export function PricingTiers() {
             </span>
           </h2>
           <p
-            className="text-lg md:text-xl max-w-3xl mx-auto"
+            className="text-sm sm:text-base md:text-lg max-w-3xl mx-auto leading-relaxed"
             style={{ color: 'rgba(255, 255, 255, 0.7)' }}
           >
             <span suppressHydrationWarning>

@@ -36,7 +36,7 @@ export const Navbar = memo(function Navbar() {
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3">
             {/* PERFORMANCE: Priority loading for logo (above the fold) */}
-            <div className="relative w-10 h-10 sm:w-12 sm:h-12 shrink-0 rounded-lg bg-white/60 p-1.5 flex items-center justify-center overflow-hidden">
+            <div className="relative w-10 h-10 sm:w-12 sm:h-12 shrink-0 rounded-lg bg-white/40 p-1.5 flex items-center justify-center overflow-hidden">
               <Image
                 src="/images/app-logo.png"
                 alt="Patrick Travel Service"
