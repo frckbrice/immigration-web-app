@@ -51,12 +51,17 @@ export function Hero() {
             <Button
               size="lg"
               className="text-lg px-12 h-14 shadow-lg hover:shadow-xl transition-all duration-200 group text-white"
-              style={{ backgroundColor: '#ff4538' }}
+              style={{
+                backgroundColor: '#351d22',
+                borderColor: '#ff4538',
+                borderWidth: '1px',
+                borderStyle: 'solid',
+              }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = '#ff5c50';
+                e.currentTarget.style.backgroundColor = '#4a2830';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = '#ff4538';
+                e.currentTarget.style.backgroundColor = '#351d22';
               }}
               asChild
             >
@@ -68,17 +73,21 @@ export function Hero() {
             <Button
               size="lg"
               variant="outline"
-              className="text-lg px-12 h-14 border-2 transition-all duration-200"
+              className="text-lg px-12 h-14 transition-all duration-200"
               style={{
-                borderColor: '#ff4538',
-                color: '#ff4538',
+                borderColor: 'rgba(255, 255, 255, 0.3)',
+                color: 'rgba(255, 255, 255, 0.8)',
                 backgroundColor: 'transparent',
+                borderWidth: '1px',
+                borderStyle: 'solid',
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = 'rgba(255, 69, 56, 0.1)';
+                e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+                e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.5)';
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.backgroundColor = 'transparent';
+                e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.3)';
               }}
               asChild
             >

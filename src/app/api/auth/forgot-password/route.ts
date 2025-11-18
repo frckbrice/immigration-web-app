@@ -3,6 +3,8 @@ import { adminAuth } from '@/lib/firebase/firebase-admin';
 import { logger } from '@/lib/utils/logger';
 import { z } from 'zod';
 import { normalizeEmail } from '@/lib/utils/email';
+import { prisma } from '@/lib/db/prisma';
+import { sendPasswordResetEmail } from '@/lib/notifications/email.service';
 
 const forgotPasswordSchema = z.object({
   email: z.string().email('Invalid email address'),
@@ -29,6 +31,18 @@ export async function POST(request: NextRequest) {
     }
 
     const email = normalizeEmail(validation.data.email);
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL;
+
+    if (!appUrl) {
+      logger.error('NEXT_PUBLIC_APP_URL not configured');
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Application URL not configured',
+        },
+        { status: 500 }
+      );
+    }
 
     if (!adminAuth) {
       logger.error('Firebase Admin not initialized');
@@ -42,12 +56,12 @@ export async function POST(request: NextRequest) {
     }
 
     try {
-      // Check if user exists
+      // Check if user exists in Firebase
       const userRecord = await adminAuth.getUserByEmail(email);
 
-      // Generate password reset link
-      await adminAuth.generatePasswordResetLink(email, {
-        url: `${process.env.NEXT_PUBLIC_APP_URL}/reset-password`,
+      // Generate password reset link using Firebase Admin SDK
+      const resetLink = await adminAuth.generatePasswordResetLink(email, {
+        url: `${appUrl}/reset-password`,
       });
 
       logger.info('Password reset link generated', {
@@ -55,18 +69,46 @@ export async function POST(request: NextRequest) {
         email: email,
       });
 
-      // Firebase Admin SDK automatically sends the email
-      // No need to manually send it
+      // Get user name from database if available
+      let userName: string | undefined;
+      try {
+        const dbUser = await prisma.user.findUnique({
+          where: { email },
+          select: { firstName: true, lastName: true },
+        });
+        if (dbUser?.firstName && dbUser?.lastName) {
+          userName = `${dbUser.firstName} ${dbUser.lastName}`;
+        } else if (dbUser?.firstName) {
+          userName = dbUser.firstName;
+        }
+      } catch (_dbError) {
+        // If database lookup fails, continue without name
+        logger.warn('Could not fetch user name from database', { email });
+      }
 
+      // Send password reset email using Nodemailer service
+      try {
+        await sendPasswordResetEmail({
+          to: email,
+          clientName: userName || userRecord.displayName || 'there',
+          resetLink,
+        });
+        logger.info('Password reset email sent successfully', { email });
+      } catch (emailError) {
+        // Log email error but don't fail the request
+        // The link was generated successfully, user can request another email
+        logger.error('Failed to send password reset email', emailError);
+        // Still return success to avoid revealing if user exists
+      }
+
+      // For security, always return success (don't reveal if user exists)
       return NextResponse.json({
         success: true,
-        message: 'Password reset email sent successfully',
+        message: 'If an account exists with this email, a password reset link has been sent',
       });
     } catch (error: any) {
       // Handle Firebase errors
       if (error.code === 'auth/user-not-found') {
-        // For security, don't reveal if user exists
-        // Return success anyway
         logger.warn('Password reset attempted for non-existent email', { email });
         return NextResponse.json({
           success: true,

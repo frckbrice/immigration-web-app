@@ -7,8 +7,6 @@ import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 import { CheckCircle2 } from 'lucide-react';
-import { sendPasswordResetEmail } from 'firebase/auth';
-import { auth } from '@/lib/firebase/firebase-client';
 import { toast } from 'sonner';
 import { logger } from '@/lib/utils/logger';
 import { useRouter } from 'next/navigation';
@@ -31,6 +29,8 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { useAuthStore } from '@/features/auth/store';
+import axios from 'axios';
+import { apiClient } from '@/lib/utils/axios';
 
 type ForgotPasswordSchema = z.ZodObject<{
   email: z.ZodString;
@@ -72,25 +72,17 @@ export default function ForgotPasswordPage() {
   });
 
   const onSubmit = async (data: ForgotPasswordInput) => {
-    if (!auth) {
-      toast.error('Firebase Auth is not initialized. Please refresh the page.');
-      return;
-    }
     try {
-      await sendPasswordResetEmail(auth, data.email);
+      const response = await apiClient.post('/api/auth/forgot-password', data);
       setEmailSent(true);
-      toast.success(t('auth.toasts.resetEmailSent'));
+      toast.success(response.data?.message || t('auth.toasts.resetEmailSent'));
     } catch (error) {
-      logger.error('Password reset error:', error);
-      if (error instanceof Error) {
-        if (error.message.includes('user-not-found')) {
-          toast.error(t('auth.errors.resetEmailUserNotFound'));
-        } else {
-          toast.error(t('auth.errors.resetEmailFailed'));
-        }
-      } else {
-        toast.error(t('auth.errors.resetEmailFailed'));
-      }
+      logger.error('Password reset request failed:', error);
+      const message =
+        axios.isAxiosError(error) && error.response?.data?.error
+          ? error.response.data.error
+          : t('auth.errors.resetEmailFailed');
+      toast.error(message);
     }
   };
 

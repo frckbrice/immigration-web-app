@@ -314,19 +314,19 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                 </SheetContent>
               </Sheet>
 
-              <Link href="/dashboard" className="flex items-center space-x-3 cursor-pointer">
-                <div className="relative flex items-center justify-center w-14 h-14 sm:w-12 sm:h-12 rounded-lg bg-transparent dark:bg-white/10 dark:backdrop-blur-sm dark:border dark:border-white/20 p-1.5">
+              <Link href="/dashboard" className="flex items-center space-x-2 sm:space-x-3 cursor-pointer">
+                <div className="relative flex items-center justify-center w-12 h-12 sm:w-12 sm:h-12 rounded-lg bg-transparent dark:bg-white/10 dark:backdrop-blur-sm dark:border dark:border-white/20 p-1.5 flex-shrink-0">
                   <Image
                     src="/images/app-logo.png"
                     alt="Patrick Travel Service"
-                    width={56}
-                    height={56}
+                    width={48}
+                    height={48}
                     className="object-contain w-full h-full"
                     priority
                   />
                 </div>
                 <span
-                  className="hidden font-bold sm:inline-block text-lg"
+                  className="font-bold text-sm sm:text-lg leading-tight"
                   style={{ color: '#ff4538' }}
                 >
                   Patrick Travel Service
@@ -335,9 +335,9 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
             </div>
 
             {/* Right Section - Language & User Info */}
-            <div className="flex items-center space-x-3 sm:space-x-4">
-              {/* Language Switcher */}
-              <div className="flex items-center space-x-2 text-white">
+            <div className="flex items-center space-x-2 sm:space-x-4">
+              {/* Language Switcher - Visible on all screen sizes */}
+              <div className="flex items-center text-white">
                 <LanguageSwitcher variant="light" />
               </div>
 

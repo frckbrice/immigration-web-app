@@ -24,7 +24,10 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
         {/* Logo */}
         <div className="text-center mb-8">
           <div className="flex justify-center mb-4">
-            <div className="p-4 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 shadow-lg">
+            <div
+              className="p-4 rounded-2xl backdrop-blur-sm border border-white/20 shadow-lg"
+              style={{ backgroundColor: 'rgba(255, 255, 255, 0.4)' }}
+            >
               <Image
                 src="/images/app-logo.png"
                 alt="Patrick Travel Services"

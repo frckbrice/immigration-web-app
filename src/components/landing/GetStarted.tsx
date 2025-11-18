@@ -9,16 +9,16 @@ export function GetStarted() {
   const { t } = useTranslation();
 
   return (
-    <section className="relative py-16 md:py-24 lg:py-32" style={{ backgroundColor: '#091a24' }}>
+    <section className="relative py-12 md:py-16 lg:py-20" style={{ backgroundColor: '#091a24' }}>
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="max-w-3xl mx-auto text-center space-y-8">
+        <div className="max-w-3xl mx-auto text-center space-y-6 md:space-y-8">
           <h2
-            className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight"
+            className="text-2xl sm:text-3xl md:text-4xl font-bold leading-tight"
             style={{ color: '#ffffff' }}
           >
             <span suppressHydrationWarning>{t('landing.getStarted.title') || 'Get started'}</span>
           </h2>
-          <p className="text-lg md:text-xl" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+          <p className="text-sm sm:text-base md:text-lg leading-relaxed" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
             <span suppressHydrationWarning>
               {t('landing.getStarted.subtitle') ||
                 'Meet with an expert immigration consultant and start your journey today.'}
@@ -28,12 +28,17 @@ export function GetStarted() {
             <Button
               size="lg"
               className="text-lg px-12 h-14 text-white shadow-lg hover:shadow-xl transition-all duration-200"
-              style={{ backgroundColor: '#ff4538' }}
+              style={{
+                backgroundColor: '#351d22',
+                borderColor: '#ff4538',
+                borderWidth: '1px',
+                borderStyle: 'solid',
+              }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = '#ff5c50';
+                e.currentTarget.style.backgroundColor = '#4a2830';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = '#ff4538';
+                e.currentTarget.style.backgroundColor = '#351d22';
               }}
               asChild
             >
@@ -47,15 +52,19 @@ export function GetStarted() {
               variant="outline"
               className="text-lg px-12 h-14 transition-all duration-200"
               style={{
-                borderColor: '#ff4538',
-                color: '#ff4538',
+                borderColor: 'rgba(255, 255, 255, 0.3)',
+                color: 'rgba(255, 255, 255, 0.8)',
                 backgroundColor: 'transparent',
+                borderWidth: '1px',
+                borderStyle: 'solid',
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = 'rgba(255, 69, 56, 0.1)';
+                e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+                e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.5)';
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.backgroundColor = 'transparent';
+                e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.3)';
               }}
               asChild
             >

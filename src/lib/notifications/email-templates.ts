@@ -751,3 +751,83 @@ export function getWelcomeEmailTemplate(firstName: string): {
     html: minifyForProduction(html), // PERFORMANCE: Minify in production
   };
 }
+
+export interface PasswordResetEmailData {
+  clientName: string;
+  resetLink: string;
+}
+
+export function getPasswordResetEmailTemplate(data: PasswordResetEmailData): {
+  subject: string;
+  html: string;
+} {
+  const greetingName = data.clientName?.trim().length ? data.clientName : 'there';
+  const html = `
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Password Reset</title>
+  </head>
+  <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #ffffff; background-color: #091a24; margin: 0; padding: 0;">
+    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+      <tr>
+        <td align="center" style="padding: 30px 16px;">
+          <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="max-width: 600px; background: #0f2531; border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.08); overflow: hidden;">
+            <tr>
+              <td style="background: linear-gradient(135deg, #ff4538 0%, #ff6f61 100%); padding: 32px 24px; text-align: center;">
+                <h1 style="margin: 0; font-size: 28px; color: white; font-weight: 700;">Reset Your Password</h1>
+                <p style="margin: 12px 0 0; color: rgba(255,255,255,0.85); font-size: 16px;">Secure access to your Patrick Travel Services account</p>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding: 32px 24px;">
+                <p style="margin: 0 0 16px; font-size: 16px; color: rgba(255,255,255,0.9);">
+                  Hi <strong>${greetingName}</strong>,
+                </p>
+                <p style="margin: 0 0 16px; font-size: 16px; color: rgba(255,255,255,0.7);">
+                  We received a request to reset your password. Click the button below to choose a new password. This link will expire in 60 minutes for security reasons.
+                </p>
+                <div style="text-align: center; margin: 32px 0;">
+                  <a href="${data.resetLink}" style="display: inline-block; padding: 16px 32px; background: #ff4538; color: #ffffff; text-decoration: none; border-radius: 999px; font-weight: 600; font-size: 16px; letter-spacing: 0.5px;">
+                    Reset Password
+                  </a>
+                </div>
+                <p style="margin: 0 0 16px; font-size: 14px; color: rgba(255,255,255,0.6);">
+                  If the button above doesn’t work, copy and paste this link into your browser:
+                </p>
+                <p style="word-break: break-all; font-size: 14px; color: rgba(255,255,255,0.8); margin: 0 0 24px;">
+                  <a href="${data.resetLink}" style="color: #ff6f61;">${data.resetLink}</a>
+                </p>
+                <div style="background: rgba(255, 255, 255, 0.04); padding: 16px 20px; border-radius: 12px; border-left: 4px solid rgba(255, 69, 56, 0.6); margin-bottom: 24px;">
+                  <p style="margin: 0; font-size: 14px; color: rgba(255,255,255,0.7);">
+                    🔐 If you didn’t request a password reset, you can safely ignore this email. Your password will remain unchanged.
+                  </p>
+                </div>
+                <p style="margin: 0; font-size: 14px; color: rgba(255,255,255,0.6);">
+                  Stay secure,<br />
+                  <strong style="color: rgba(255,255,255,0.9);">${COMPANY_NAME}</strong>
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding: 20px; text-align: center; background: #0c1b24; border-top: 1px solid rgba(255, 255, 255, 0.05);">
+                <p style="margin: 0; font-size: 12px; color: rgba(255,255,255,0.4);">
+                  © ${new Date().getFullYear()} ${COMPANY_NAME}. All rights reserved.
+                </p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
+`;
+
+  return {
+    subject: 'Reset Your Patrick Travel Services Password',
+    html: minifyForProduction(html),
+  };
+}

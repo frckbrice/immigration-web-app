@@ -3,7 +3,10 @@
 import nodemailer from 'nodemailer';
 import { logger } from '@/lib/utils/logger';
 import { escapeHtml } from '@/lib/utils/helpers';
-import { getAppointmentScheduledEmailTemplate } from './email-templates';
+import {
+  getAppointmentScheduledEmailTemplate,
+  getPasswordResetEmailTemplate,
+} from './email-templates';
 
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST || 'smtp.gmail.com',
@@ -243,6 +246,23 @@ export async function sendAppointmentScheduledEmail(options: {
     location: options.location,
     advisorName: options.advisorName,
     notes: options.notes,
+  });
+
+  await sendEmail({
+    to: options.to,
+    subject: template.subject,
+    html: template.html,
+  });
+}
+
+export async function sendPasswordResetEmail(options: {
+  to: string;
+  clientName?: string;
+  resetLink: string;
+}) {
+  const template = getPasswordResetEmailTemplate({
+    clientName: options.clientName || 'there',
+    resetLink: options.resetLink,
   });
 
   await sendEmail({

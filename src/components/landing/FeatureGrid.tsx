@@ -114,8 +114,27 @@ export function FeatureGrid() {
   ];
 
   return (
-    <section className="relative py-16 md:py-24 lg:py-32" style={{ backgroundColor: '#091a24' }}>
+    <section className="relative py-12 md:py-16 lg:py-20" style={{ backgroundColor: '#091a24' }}>
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-10 md:mb-12">
+          <h2
+            className="text-2xl sm:text-3xl md:text-4xl font-bold leading-tight mb-3 md:mb-4"
+            style={{ color: '#ffffff' }}
+          >
+            <span suppressHydrationWarning>
+              {t('landing.featureGrid.title') || 'Why Choose Us'}
+            </span>
+          </h2>
+          <p
+            className="text-sm sm:text-base md:text-lg max-w-3xl mx-auto leading-relaxed"
+            style={{ color: 'rgba(255, 255, 255, 0.7)' }}
+          >
+            <span suppressHydrationWarning>
+              {t('landing.featureGrid.subtitle') ||
+                'Discover what makes us the trusted choice for immigration services'}
+            </span>
+          </p>
+        </div>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
           {features.map((feature, index) => (
             <FeatureCard key={index} {...feature} />

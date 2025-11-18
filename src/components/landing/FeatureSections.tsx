@@ -23,7 +23,7 @@ function FeatureSection({
   highlight,
 }: FeatureSectionProps) {
   return (
-    <section className="relative py-16 md:py-24 lg:py-32" style={{ backgroundColor: '#091a24' }}>
+    <section className="relative py-12 md:py-16 lg:py-20" style={{ backgroundColor: '#091a24' }}>
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto text-center space-y-6 md:space-y-8">
           <div className="flex justify-center mb-6">
@@ -32,18 +32,18 @@ function FeatureSection({
             </div>
           </div>
           <h2
-            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight"
+            className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold leading-tight"
             style={{ color: '#ffffff' }}
           >
             {title}
           </h2>
           {highlight && (
-            <p className="text-xl md:text-2xl font-medium" style={{ color: '#ff4538' }}>
+            <p className="text-base md:text-lg lg:text-xl font-medium" style={{ color: '#ff4538' }}>
               {highlight}
             </p>
           )}
           <p
-            className="text-lg md:text-xl max-w-3xl mx-auto leading-relaxed"
+            className="text-sm sm:text-base md:text-lg max-w-3xl mx-auto leading-relaxed"
             style={{ color: 'rgba(255, 255, 255, 0.7)' }}
           >
             {description}
