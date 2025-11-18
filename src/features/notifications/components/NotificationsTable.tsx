@@ -370,7 +370,9 @@ export function NotificationsTable({ onMarkAsRead, onMarkAllAsRead }: Notificati
       <Card style={{ borderColor: '#ff4538', borderWidth: '1px', borderStyle: 'solid' }}>
         <CardContent className="py-12 text-center">
           <AlertCircle className="mx-auto h-12 w-12 text-red-500 mb-4" />
-          <h3 className="text-lg sm:text-xl font-semibold mb-2 leading-tight">{t('notifications.errorLoading')}</h3>
+          <h3 className="text-lg sm:text-xl font-semibold mb-2 leading-tight">
+            {t('notifications.errorLoading')}
+          </h3>
           <Button
             onClick={() => refetch()}
             variant="outline"
@@ -395,7 +397,9 @@ export function NotificationsTable({ onMarkAsRead, onMarkAllAsRead }: Notificati
       <div className="flex items-center justify-between">
         <div>
           <div className="flex items-center gap-3">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold leading-tight">{t('notifications.pageTitle')}</h1>
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold leading-tight">
+              {t('notifications.pageTitle')}
+            </h1>
             {unreadCount > 0 && (
               <Badge variant="default">
                 {unreadCount} {t('notifications.unread')}
@@ -507,7 +511,9 @@ export function NotificationsTable({ onMarkAsRead, onMarkAllAsRead }: Notificati
           ) : notifications.length === 0 ? (
             <div className="py-12 text-center">
               <Bell className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-              <h3 className="text-lg sm:text-xl font-semibold mb-2 leading-tight">{t('notifications.noNotifications')}</h3>
+              <h3 className="text-lg sm:text-xl font-semibold mb-2 leading-tight">
+                {t('notifications.noNotifications')}
+              </h3>
               <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
                 {statusFilter !== 'all' || typeFilter !== 'all' || debouncedSearch
                   ? t('notifications.noMatchingFilters')

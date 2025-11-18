@@ -136,7 +136,9 @@ export function AnalyticsView() {
     <div className="space-y-4 sm:space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold leading-tight">{t('analytics.title')}</h1>
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold leading-tight">
+          {t('analytics.title')}
+        </h1>
         <p className="text-xs sm:text-sm text-muted-foreground mt-1.5 sm:mt-2 leading-relaxed">
           {t('analytics.description')}
         </p>
@@ -211,7 +213,9 @@ export function AnalyticsView() {
         <TabsContent value="status" className="space-y-3 sm:space-y-4">
           <Card style={{ borderColor: '#ff4538', borderWidth: '1px', borderStyle: 'solid' }}>
             <CardHeader className="pb-3 sm:pb-6">
-              <CardTitle className="text-sm sm:text-base font-semibold">{t('analytics.casesByStatus')}</CardTitle>
+              <CardTitle className="text-sm sm:text-base font-semibold">
+                {t('analytics.casesByStatus')}
+              </CardTitle>
               <CardDescription className="text-xs sm:text-sm">
                 {t('analytics.casesByStatusDescription')}
               </CardDescription>

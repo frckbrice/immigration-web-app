@@ -439,7 +439,9 @@ export function CaseDetailView({ caseId }: CaseDetailViewProps) {
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-1.5 sm:mb-4">
-              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold leading-tight break-words sm:break-normal sm:whitespace-nowrap">{caseData.referenceNumber}</h1>
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold leading-tight break-words sm:break-normal sm:whitespace-nowrap">
+                {caseData.referenceNumber}
+              </h1>
               <Badge
                 variant="outline"
                 className={cn(
@@ -458,7 +460,9 @@ export function CaseDetailView({ caseId }: CaseDetailViewProps) {
                 </Badge>
               )}
             </div>
-            <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">{caseData.serviceType.replace(/_/g, ' ')}</p>
+            <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+              {caseData.serviceType.replace(/_/g, ' ')}
+            </p>
           </div>
           <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
             {/* Assign to Agent Button (ADMIN only, unassigned cases) */}
@@ -483,7 +487,10 @@ export function CaseDetailView({ caseId }: CaseDetailViewProps) {
                       e.currentTarget.style.opacity = '1';
                     }}
                   >
-                    <UserPlus className="mr-1.5 sm:mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4" style={{ color: '#ff4538' }} />
+                    <UserPlus
+                      className="mr-1.5 sm:mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4"
+                      style={{ color: '#ff4538' }}
+                    />
                     {t('cases.dialogs.caseDetail.assignToAgent')}
                   </Button>
                 </TooltipTrigger>
@@ -503,19 +510,19 @@ export function CaseDetailView({ caseId }: CaseDetailViewProps) {
                     style={
                       statusDialogOpen || appointmentDialogOpen
                         ? {
-                          backgroundColor: 'transparent',
-                          borderColor: 'rgba(255, 255, 255, 0.3)',
-                          borderWidth: '1px',
-                          borderStyle: 'solid',
-                          color: 'white',
-                        }
+                            backgroundColor: 'transparent',
+                            borderColor: 'rgba(255, 255, 255, 0.3)',
+                            borderWidth: '1px',
+                            borderStyle: 'solid',
+                            color: 'white',
+                          }
                         : {
-                          backgroundColor: '#361d22',
-                          borderColor: '#ff4538',
-                          borderWidth: '1px',
-                          borderStyle: 'solid',
-                          color: 'white',
-                        }
+                            backgroundColor: '#361d22',
+                            borderColor: '#ff4538',
+                            borderWidth: '1px',
+                            borderStyle: 'solid',
+                            color: 'white',
+                          }
                     }
                     onMouseEnter={(e) => {
                       if (statusDialogOpen || appointmentDialogOpen) {
@@ -534,7 +541,9 @@ export function CaseDetailView({ caseId }: CaseDetailViewProps) {
                   >
                     <RefreshCw
                       className="mr-1.5 sm:mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4"
-                      style={{ color: statusDialogOpen || appointmentDialogOpen ? 'white' : '#ff4538' }}
+                      style={{
+                        color: statusDialogOpen || appointmentDialogOpen ? 'white' : '#ff4538',
+                      }}
                     />
                     {t('cases.dialogs.caseDetail.transferCase')}
                   </Button>
@@ -555,19 +564,19 @@ export function CaseDetailView({ caseId }: CaseDetailViewProps) {
                         style={
                           statusDialogOpen
                             ? {
-                              backgroundColor: '#361d22',
-                              borderColor: '#ff4538',
-                              borderWidth: '1px',
-                              borderStyle: 'solid',
-                              color: 'white',
-                            }
+                                backgroundColor: '#361d22',
+                                borderColor: '#ff4538',
+                                borderWidth: '1px',
+                                borderStyle: 'solid',
+                                color: 'white',
+                              }
                             : {
-                              backgroundColor: 'transparent',
-                              borderColor: 'rgba(255, 255, 255, 0.3)',
-                              borderWidth: '1px',
-                              borderStyle: 'solid',
-                              color: 'white',
-                            }
+                                backgroundColor: 'transparent',
+                                borderColor: 'rgba(255, 255, 255, 0.3)',
+                                borderWidth: '1px',
+                                borderStyle: 'solid',
+                                color: 'white',
+                              }
                         }
                         onMouseEnter={(e) => {
                           if (!statusDialogOpen) {
@@ -666,12 +675,15 @@ export function CaseDetailView({ caseId }: CaseDetailViewProps) {
                       >
                         {updateCaseStatus.isPending ? (
                           <>
-                            <RefreshCw className="mr-2 h-4 w-4 animate-spin" style={{ color: '#ff4538' }} />
+                            <RefreshCw
+                              className="mr-2 h-4 w-4 animate-spin"
+                              style={{ color: '#ff4538' }}
+                            />
                             {t('cases.dialogs.caseDetail.updating')}
                           </>
                         ) : (
                           <>
-                              <Edit className="mr-2 h-4 w-4" style={{ color: '#ff4538' }} />
+                            <Edit className="mr-2 h-4 w-4" style={{ color: '#ff4538' }} />
                             {t('cases.dialogs.caseDetail.updateStatus')}
                           </>
                         )}
@@ -695,19 +707,19 @@ export function CaseDetailView({ caseId }: CaseDetailViewProps) {
                       style={
                         appointmentDialogOpen
                           ? {
-                            backgroundColor: '#361d22',
-                            borderColor: '#ff4538',
-                            borderWidth: '1px',
-                            borderStyle: 'solid',
-                            color: 'white',
-                          }
+                              backgroundColor: '#361d22',
+                              borderColor: '#ff4538',
+                              borderWidth: '1px',
+                              borderStyle: 'solid',
+                              color: 'white',
+                            }
                           : {
-                            backgroundColor: 'transparent',
-                            borderColor: 'rgba(255, 255, 255, 0.3)',
-                            borderWidth: '1px',
-                            borderStyle: 'solid',
-                            color: 'white',
-                          }
+                              backgroundColor: 'transparent',
+                              borderColor: 'rgba(255, 255, 255, 0.3)',
+                              borderWidth: '1px',
+                              borderStyle: 'solid',
+                              color: 'white',
+                            }
                       }
                       onMouseEnter={(e) => {
                         if (!appointmentDialogOpen) {
@@ -826,15 +838,23 @@ export function CaseDetailView({ caseId }: CaseDetailViewProps) {
         <Tabs defaultValue="overview" className="space-y-3 sm:space-y-4">
           <div className="overflow-x-auto -mx-4 sm:mx-0 px-4 sm:px-0">
             <TabsList className="w-full sm:w-auto inline-flex min-w-max sm:min-w-0">
-              <TabsTrigger value="overview" className="text-xs sm:text-sm whitespace-nowrap">{t('cases.dialogs.caseDetail.overview')}</TabsTrigger>
+              <TabsTrigger value="overview" className="text-xs sm:text-sm whitespace-nowrap">
+                {t('cases.dialogs.caseDetail.overview')}
+              </TabsTrigger>
               <TabsTrigger value="documents" className="text-xs sm:text-sm whitespace-nowrap">
                 <span className="hidden sm:inline">{t('cases.dialogs.caseDetail.documents')}</span>
-                <span className="sm:hidden">{t('cases.dialogs.caseDetail.documents').split(' ')[0]}</span>
+                <span className="sm:hidden">
+                  {t('cases.dialogs.caseDetail.documents').split(' ')[0]}
+                </span>
                 <span className="ml-1">({caseData.documents?.length || 0})</span>
               </TabsTrigger>
-              <TabsTrigger value="timeline" className="text-xs sm:text-sm whitespace-nowrap">{t('cases.dialogs.caseDetail.timeline')}</TabsTrigger>
+              <TabsTrigger value="timeline" className="text-xs sm:text-sm whitespace-nowrap">
+                {t('cases.dialogs.caseDetail.timeline')}
+              </TabsTrigger>
               {isAgent && (
-                <TabsTrigger value="notes" className="text-xs sm:text-sm whitespace-nowrap">{t('cases.dialogs.caseDetail.internalNotes')}</TabsTrigger>
+                <TabsTrigger value="notes" className="text-xs sm:text-sm whitespace-nowrap">
+                  {t('cases.dialogs.caseDetail.internalNotes')}
+                </TabsTrigger>
               )}
             </TabsList>
           </div>
@@ -871,7 +891,10 @@ export function CaseDetailView({ caseId }: CaseDetailViewProps) {
                         e.currentTarget.style.borderColor = 'rgba(255, 69, 56, 0.3)';
                       }}
                     >
-                      <Plus className="mr-1.5 h-3.5 w-3.5 sm:h-4 sm:w-4" style={{ color: '#ff4538' }} />
+                      <Plus
+                        className="mr-1.5 h-3.5 w-3.5 sm:h-4 sm:w-4"
+                        style={{ color: '#ff4538' }}
+                      />
                       {t('cases.dialogs.caseDetail.schedule')}
                     </Button>
                   )}
@@ -987,8 +1010,14 @@ export function CaseDetailView({ caseId }: CaseDetailViewProps) {
                   {/* Status Section - Prominent */}
                   <div className="space-y-2">
                     <div className="flex items-center gap-2">
-                      <div className="p-1.5 sm:p-2 rounded-md" style={{ backgroundColor: 'rgba(255, 69, 56, 0.1)' }}>
-                        <Briefcase className="h-3.5 w-3.5 sm:h-4 sm:w-4" style={{ color: '#ff4538' }} />
+                      <div
+                        className="p-1.5 sm:p-2 rounded-md"
+                        style={{ backgroundColor: 'rgba(255, 69, 56, 0.1)' }}
+                      >
+                        <Briefcase
+                          className="h-3.5 w-3.5 sm:h-4 sm:w-4"
+                          style={{ color: '#ff4538' }}
+                        />
                       </div>
                       <span className="text-[10px] sm:text-xs font-medium text-muted-foreground uppercase tracking-wide">
                         {t('cases.dialogs.caseDetail.status')}
@@ -1009,7 +1038,10 @@ export function CaseDetailView({ caseId }: CaseDetailViewProps) {
                   {/* Priority Section */}
                   <div className="space-y-2">
                     <div className="flex items-center gap-2">
-                      <div className="p-1.5 sm:p-2 rounded-md" style={{ backgroundColor: 'rgba(255, 69, 56, 0.1)' }}>
+                      <div
+                        className="p-1.5 sm:p-2 rounded-md"
+                        style={{ backgroundColor: 'rgba(255, 69, 56, 0.1)' }}
+                      >
                         <Flag className="h-3.5 w-3.5 sm:h-4 sm:w-4" style={{ color: '#ff4538' }} />
                       </div>
                       <span className="text-[10px] sm:text-xs font-medium text-muted-foreground uppercase tracking-wide">
@@ -1026,7 +1058,10 @@ export function CaseDetailView({ caseId }: CaseDetailViewProps) {
                   {/* Timeline Section */}
                   <div className="space-y-2.5 sm:space-y-3">
                     <div className="flex items-center gap-2">
-                      <div className="p-1.5 sm:p-2 rounded-md" style={{ backgroundColor: 'rgba(255, 69, 56, 0.1)' }}>
+                      <div
+                        className="p-1.5 sm:p-2 rounded-md"
+                        style={{ backgroundColor: 'rgba(255, 69, 56, 0.1)' }}
+                      >
                         <Clock className="h-3.5 w-3.5 sm:h-4 sm:w-4" style={{ color: '#ff4538' }} />
                       </div>
                       <span className="text-[10px] sm:text-xs font-medium text-muted-foreground uppercase tracking-wide">
@@ -1112,7 +1147,10 @@ export function CaseDetailView({ caseId }: CaseDetailViewProps) {
                                   e.currentTarget.style.borderColor = 'rgba(255, 69, 56, 0.3)';
                                 }}
                               >
-                                <MessageSquare className="mr-1.5 sm:mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4" style={{ color: '#ff4538' }} />
+                                <MessageSquare
+                                  className="mr-1.5 sm:mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4"
+                                  style={{ color: '#ff4538' }}
+                                />
                                 {t('cases.dialogs.caseDetail.chat')}
                               </Button>
                             </TooltipTrigger>
@@ -1142,7 +1180,10 @@ export function CaseDetailView({ caseId }: CaseDetailViewProps) {
                                   e.currentTarget.style.borderColor = 'rgba(255, 69, 56, 0.3)';
                                 }}
                               >
-                                <Send className="mr-1.5 sm:mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4" style={{ color: '#ff4538' }} />
+                                <Send
+                                  className="mr-1.5 sm:mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4"
+                                  style={{ color: '#ff4538' }}
+                                />
                                 {t('cases.dialogs.caseDetail.email')}
                               </Button>
                             </TooltipTrigger>
@@ -1163,7 +1204,10 @@ export function CaseDetailView({ caseId }: CaseDetailViewProps) {
             {caseData.documents && caseData.documents.length > 0 ? (
               <div className="grid gap-3 sm:gap-4">
                 {caseData.documents.map((doc: Document) => (
-                  <Card key={doc.id} style={{ borderColor: '#ff4538', borderWidth: '1px', borderStyle: 'solid' }}>
+                  <Card
+                    key={doc.id}
+                    style={{ borderColor: '#ff4538', borderWidth: '1px', borderStyle: 'solid' }}
+                  >
                     <CardContent className="pt-4 sm:pt-6">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4 flex-1">
@@ -1288,7 +1332,9 @@ export function CaseDetailView({ caseId }: CaseDetailViewProps) {
           <TabsContent value="timeline">
             <Card style={{ borderColor: '#ff4538', borderWidth: '1px', borderStyle: 'solid' }}>
               <CardHeader className="pb-2 sm:pb-3">
-                <CardTitle className="text-sm sm:text-base font-semibold leading-tight">{t('cases.dialogs.caseDetail.caseTimelineTransferHistory')}</CardTitle>
+                <CardTitle className="text-sm sm:text-base font-semibold leading-tight">
+                  {t('cases.dialogs.caseDetail.caseTimelineTransferHistory')}
+                </CardTitle>
               </CardHeader>
               <CardContent className="pt-0">
                 <div className="space-y-4">
@@ -1342,7 +1388,9 @@ export function CaseDetailView({ caseId }: CaseDetailViewProps) {
             <TabsContent value="notes">
               <Card style={{ borderColor: '#ff4538', borderWidth: '1px', borderStyle: 'solid' }}>
                 <CardHeader className="pb-2 sm:pb-3">
-                  <CardTitle className="text-sm sm:text-base font-semibold leading-tight">{t('cases.dialogs.caseDetail.internalNotes')}</CardTitle>
+                  <CardTitle className="text-sm sm:text-base font-semibold leading-tight">
+                    {t('cases.dialogs.caseDetail.internalNotes')}
+                  </CardTitle>
                   <CardDescription className="text-xs sm:text-sm leading-relaxed">
                     {t('cases.dialogs.caseDetail.internalNotesDescription')}
                   </CardDescription>
@@ -1421,7 +1469,7 @@ function InfoRow({
   label,
   value,
 }: {
-    icon: React.ComponentType<{ className?: string; style?: React.CSSProperties }>;
+  icon: React.ComponentType<{ className?: string; style?: React.CSSProperties }>;
   label: string;
   value: React.ReactNode;
 }) {

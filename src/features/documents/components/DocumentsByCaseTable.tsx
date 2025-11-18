@@ -404,7 +404,9 @@ export function DocumentsByCaseTable() {
         {/* Header */}
         <div className="flex justify-between items-start">
           <div>
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold leading-tight">{t('documents.title')}</h1>
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold leading-tight">
+              {t('documents.title')}
+            </h1>
             <p className="text-xs sm:text-sm text-muted-foreground mt-1.5 sm:mt-2 leading-relaxed">
               {isClient
                 ? t('documents.manageDocuments')

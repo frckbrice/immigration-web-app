@@ -177,10 +177,15 @@ export const AgentDashboard = memo(function AgentDashboard() {
                 ? t('dashboard.admin.allCases')
                 : t('dashboard.admin.assignedCases')}
             </span>
-            <Briefcase className="h-3 w-3 sm:h-3.5 sm:w-3.5 flex-shrink-0" style={{ color: '#ff4538' }} />
+            <Briefcase
+              className="h-3 w-3 sm:h-3.5 sm:w-3.5 flex-shrink-0"
+              style={{ color: '#ff4538' }}
+            />
           </div>
           <div className="flex items-baseline gap-1.5">
-            <span className="text-lg sm:text-xl md:text-2xl font-bold leading-none">{stats.assignedCases}</span>
+            <span className="text-lg sm:text-xl md:text-2xl font-bold leading-none">
+              {stats.assignedCases}
+            </span>
             <span className="text-[10px] sm:text-xs text-muted-foreground leading-tight">
               {stats.activeCases} {t('dashboard.activeCases').toLowerCase()}
             </span>
@@ -193,10 +198,15 @@ export const AgentDashboard = memo(function AgentDashboard() {
                 ? t('dashboard.admin.underReview')
                 : t('dashboard.admin.pendingReview')}
             </span>
-            <Clock className="h-3 w-3 sm:h-3.5 sm:w-3.5 flex-shrink-0" style={{ color: '#ff4538' }} />
+            <Clock
+              className="h-3 w-3 sm:h-3.5 sm:w-3.5 flex-shrink-0"
+              style={{ color: '#ff4538' }}
+            />
           </div>
           <div className="flex items-baseline gap-1.5">
-            <span className="text-lg sm:text-xl md:text-2xl font-bold leading-none">{stats.pendingReview}</span>
+            <span className="text-lg sm:text-xl md:text-2xl font-bold leading-none">
+              {stats.pendingReview}
+            </span>
             <span className="text-[10px] sm:text-xs text-muted-foreground leading-tight">
               {t('dashboard.admin.requireAttention')}
             </span>
@@ -207,10 +217,15 @@ export const AgentDashboard = memo(function AgentDashboard() {
             <span className="text-[11px] sm:text-xs font-medium text-muted-foreground leading-tight">
               {t('dashboard.admin.completed')}
             </span>
-            <CheckCircle2 className="h-3 w-3 sm:h-3.5 sm:w-3.5 flex-shrink-0" style={{ color: '#ff4538' }} />
+            <CheckCircle2
+              className="h-3 w-3 sm:h-3.5 sm:w-3.5 flex-shrink-0"
+              style={{ color: '#ff4538' }}
+            />
           </div>
           <div className="flex items-baseline gap-1.5">
-            <span className="text-lg sm:text-xl md:text-2xl font-bold leading-none">{stats.completedThisMonth}</span>
+            <span className="text-lg sm:text-xl md:text-2xl font-bold leading-none">
+              {stats.completedThisMonth}
+            </span>
             <span className="text-[10px] sm:text-xs text-muted-foreground leading-tight">
               {t('dashboard.admin.thisMonth')}
             </span>
@@ -221,10 +236,15 @@ export const AgentDashboard = memo(function AgentDashboard() {
             <span className="text-[11px] sm:text-xs font-medium text-muted-foreground leading-tight">
               {t('dashboard.admin.responseTime')}
             </span>
-            <TrendingUp className="h-3 w-3 sm:h-3.5 sm:w-3.5 flex-shrink-0" style={{ color: '#ff4538' }} />
+            <TrendingUp
+              className="h-3 w-3 sm:h-3.5 sm:w-3.5 flex-shrink-0"
+              style={{ color: '#ff4538' }}
+            />
           </div>
           <div className="flex items-baseline gap-1.5">
-            <span className="text-lg sm:text-xl md:text-2xl font-bold leading-none">{stats.responseTime}</span>
+            <span className="text-lg sm:text-xl md:text-2xl font-bold leading-none">
+              {stats.responseTime}
+            </span>
             <span className="text-[10px] sm:text-xs text-muted-foreground leading-tight">
               {t('dashboard.admin.average')}
             </span>
@@ -241,9 +261,15 @@ export const AgentDashboard = memo(function AgentDashboard() {
           </CardHeader>
           <CardContent className="pt-0 space-y-1.5 sm:space-y-2">
             {activeAssigned.slice(0, 5).map((c: Case) => (
-              <div key={c.id} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 py-1.5">
+              <div
+                key={c.id}
+                className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 py-1.5"
+              >
                 <div className="flex items-center gap-2 min-w-0 flex-1">
-                  <Briefcase className="h-4 w-4 text-primary flex-shrink-0" style={{ color: '#ff4538' }} />
+                  <Briefcase
+                    className="h-4 w-4 text-primary flex-shrink-0"
+                    style={{ color: '#ff4538' }}
+                  />
                   <div className="min-w-0 flex-1">
                     <p className="text-xs sm:text-sm font-medium truncate">{c.referenceNumber}</p>
                     <p className="text-[10px] sm:text-xs text-muted-foreground truncate">
@@ -255,7 +281,12 @@ export const AgentDashboard = memo(function AgentDashboard() {
                   <Badge variant="outline" className="text-[10px] sm:text-xs">
                     {c.status.replace(/_/g, ' ')}
                   </Badge>
-                  <Button asChild size="sm" variant="outline" className="h-6 sm:h-7 text-[10px] sm:text-xs px-2 sm:px-3">
+                  <Button
+                    asChild
+                    size="sm"
+                    variant="outline"
+                    className="h-6 sm:h-7 text-[10px] sm:text-xs px-2 sm:px-3"
+                  >
                     <Link href={`/dashboard/cases/${c.id}`}>{t('dashboard.admin.review')}</Link>
                   </Button>
                 </div>
@@ -300,8 +331,13 @@ export const AgentDashboard = memo(function AgentDashboard() {
               }}
             >
               <Link href="/dashboard/cases" className="flex items-center">
-                <Briefcase className="mr-2 h-3 w-3 sm:h-3.5 sm:w-3.5 flex-shrink-0" style={{ color: '#ff4538' }} />
-                <span className="truncate">{user?.role === 'ADMIN' ? t('dashboard.admin.allCases') : t('cases.myCases')}</span>
+                <Briefcase
+                  className="mr-2 h-3 w-3 sm:h-3.5 sm:w-3.5 flex-shrink-0"
+                  style={{ color: '#ff4538' }}
+                />
+                <span className="truncate">
+                  {user?.role === 'ADMIN' ? t('dashboard.admin.allCases') : t('cases.myCases')}
+                </span>
               </Link>
             </Button>
             <Button
@@ -323,10 +359,15 @@ export const AgentDashboard = memo(function AgentDashboard() {
               }}
             >
               <Link href="/dashboard/documents" className="flex items-center">
-                <FileCheck className="mr-2 h-3 w-3 sm:h-3.5 sm:w-3.5 flex-shrink-0" style={{ color: '#ff4538' }} />
-                <span className="truncate">{user?.role === 'ADMIN'
-                  ? t('dashboard.admin.allDocuments')
-                  : t('dashboard.admin.reviewDocuments')}</span>
+                <FileCheck
+                  className="mr-2 h-3 w-3 sm:h-3.5 sm:w-3.5 flex-shrink-0"
+                  style={{ color: '#ff4538' }}
+                />
+                <span className="truncate">
+                  {user?.role === 'ADMIN'
+                    ? t('dashboard.admin.allDocuments')
+                    : t('dashboard.admin.reviewDocuments')}
+                </span>
               </Link>
             </Button>
             <Button
@@ -348,10 +389,15 @@ export const AgentDashboard = memo(function AgentDashboard() {
               }}
             >
               <Link href="/dashboard/clients" className="flex items-center">
-                <Users className="mr-2 h-3 w-3 sm:h-3.5 sm:w-3.5 flex-shrink-0" style={{ color: '#ff4538' }} />
-                <span className="truncate">{user?.role === 'ADMIN'
-                  ? t('dashboard.admin.allClients')
-                  : t('dashboard.admin.myClients')}</span>
+                <Users
+                  className="mr-2 h-3 w-3 sm:h-3.5 sm:w-3.5 flex-shrink-0"
+                  style={{ color: '#ff4538' }}
+                />
+                <span className="truncate">
+                  {user?.role === 'ADMIN'
+                    ? t('dashboard.admin.allClients')
+                    : t('dashboard.admin.myClients')}
+                </span>
               </Link>
             </Button>
             <Button
@@ -373,10 +419,15 @@ export const AgentDashboard = memo(function AgentDashboard() {
               }}
             >
               <Link href="/dashboard/messages" className="flex items-center">
-                <AlertCircle className="mr-2 h-3 w-3 sm:h-3.5 sm:w-3.5 flex-shrink-0" style={{ color: '#ff4538' }} />
-                <span className="truncate">{user?.role === 'ADMIN'
-                  ? t('dashboard.admin.allMessages')
-                  : t('dashboard.admin.urgentMessages')}</span>
+                <AlertCircle
+                  className="mr-2 h-3 w-3 sm:h-3.5 sm:w-3.5 flex-shrink-0"
+                  style={{ color: '#ff4538' }}
+                />
+                <span className="truncate">
+                  {user?.role === 'ADMIN'
+                    ? t('dashboard.admin.allMessages')
+                    : t('dashboard.admin.urgentMessages')}
+                </span>
               </Link>
             </Button>
           </CardContent>

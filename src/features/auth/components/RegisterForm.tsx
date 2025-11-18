@@ -434,14 +434,20 @@ export function RegisterForm() {
                             }}
                             onFocus={(e) => {
                               e.currentTarget.style.borderColor = '#ff4538';
-                              const bgColor = window.getComputedStyle(e.currentTarget).backgroundColor;
-                              const isWhite = bgColor === 'rgb(255, 255, 255)' || bgColor === 'white';
+                              const bgColor = window.getComputedStyle(
+                                e.currentTarget
+                              ).backgroundColor;
+                              const isWhite =
+                                bgColor === 'rgb(255, 255, 255)' || bgColor === 'white';
                               setEyeIconColor(isWhite ? 'rgba(0, 0, 0, 0.7)' : '#ffffff');
                             }}
                             onBlur={(e) => {
                               e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
-                              const bgColor = window.getComputedStyle(e.currentTarget).backgroundColor;
-                              const isWhite = bgColor === 'rgb(255, 255, 255)' || bgColor === 'white';
+                              const bgColor = window.getComputedStyle(
+                                e.currentTarget
+                              ).backgroundColor;
+                              const isWhite =
+                                bgColor === 'rgb(255, 255, 255)' || bgColor === 'white';
                               setEyeIconColor(isWhite ? 'rgba(0, 0, 0, 0.7)' : '#ffffff');
                             }}
                           />

@@ -164,7 +164,7 @@ export function AssignCaseDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent 
+      <DialogContent
         className="max-w-2xl max-h-[95vh] overflow-y-auto sm:max-h-[90vh] w-[95vw] sm:w-full"
         style={{ borderColor: '#ff4538', borderWidth: '1px', borderStyle: 'solid' }}
       >
@@ -173,11 +173,16 @@ export function AssignCaseDialog({
             <UserCheck className="h-4 w-4 sm:h-5 sm:w-5" style={{ color: '#ff4538' }} />
             {t('cases.dialogs.assignCase.title')}
           </DialogTitle>
-          <DialogDescription className="text-xs sm:text-sm leading-relaxed">{t('cases.dialogs.assignCase.description')}</DialogDescription>
+          <DialogDescription className="text-xs sm:text-sm leading-relaxed">
+            {t('cases.dialogs.assignCase.description')}
+          </DialogDescription>
         </DialogHeader>
 
         {/* Current Case Info */}
-        <div className="rounded-lg border p-3 sm:p-4 bg-muted/50 space-y-2 sm:space-y-3" style={{ borderColor: 'rgba(255, 69, 56, 0.2)' }}>
+        <div
+          className="rounded-lg border p-3 sm:p-4 bg-muted/50 space-y-2 sm:space-y-3"
+          style={{ borderColor: 'rgba(255, 69, 56, 0.2)' }}
+        >
           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-0">
             <div className="flex-1 min-w-0">
               <p className="text-xs sm:text-sm font-medium break-words">
@@ -191,7 +196,9 @@ export function AssignCaseDialog({
                 {t('cases.dialogs.assignCase.service')}: {caseData.serviceType.replace(/_/g, ' ')}
               </p>
             </div>
-            <Badge variant="outline" className="text-[10px] sm:text-xs w-fit">{caseData.status}</Badge>
+            <Badge variant="outline" className="text-[10px] sm:text-xs w-fit">
+              {caseData.status}
+            </Badge>
           </div>
         </div>
 
@@ -392,12 +399,18 @@ export function AssignCaseDialog({
           >
             {assignCase.isPending ? (
               <>
-                <RefreshCw className="mr-1.5 sm:mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4 animate-spin" style={{ color: '#ff4538' }} />
+                <RefreshCw
+                  className="mr-1.5 sm:mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4 animate-spin"
+                  style={{ color: '#ff4538' }}
+                />
                 {t('cases.dialogs.assignCase.assigning')}
               </>
             ) : (
               <>
-                <UserCheck className="mr-1.5 sm:mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4" style={{ color: '#ff4538' }} />
+                <UserCheck
+                  className="mr-1.5 sm:mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4"
+                  style={{ color: '#ff4538' }}
+                />
                 {t('cases.dialogs.assignCase.assignCase')}
               </>
             )}

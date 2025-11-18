@@ -753,7 +753,9 @@ export function MessagesList({
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
         <div className="flex-1">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold leading-tight">{t('messages.title')}</h1>
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold leading-tight">
+            {t('messages.title')}
+          </h1>
           <p className="text-xs sm:text-sm text-muted-foreground mt-1.5 sm:mt-2 leading-relaxed">
             {user?.role === 'CLIENT'
               ? t('messages.communicateWithAdvisor')
@@ -791,7 +793,9 @@ export function MessagesList({
         {/* Conversations - Hidden on mobile */}
         <Card className="hidden lg:flex lg:col-span-1 overflow-hidden flex-col">
           <CardHeader className="border-b">
-            <CardTitle className="text-sm sm:text-base font-semibold">{t('messages.conversations')}</CardTitle>
+            <CardTitle className="text-sm sm:text-base font-semibold">
+              {t('messages.conversations')}
+            </CardTitle>
             <div className="relative mt-2">
               <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
@@ -1389,7 +1393,9 @@ export function MessagesList({
               ) : (
                 <div className="text-center">
                   <MessageSquare className="mx-auto h-16 w-16 text-muted-foreground mb-4 opacity-50" />
-                  <h3 className="text-lg sm:text-xl font-semibold leading-tight">Select a Conversation</h3>
+                  <h3 className="text-lg sm:text-xl font-semibold leading-tight">
+                    Select a Conversation
+                  </h3>
                   <p className="text-xs sm:text-sm text-muted-foreground mt-1.5 sm:mt-2 leading-relaxed">
                     Choose a conversation to start messaging
                   </p>

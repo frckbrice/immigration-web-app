@@ -61,8 +61,12 @@ export function ClientsList() {
       <Card style={{ borderColor: '#ff4538', borderWidth: '1px', borderStyle: 'solid' }}>
         <CardContent className="py-12 text-center">
           <Users className="mx-auto h-12 w-12 text-destructive mb-4 opacity-50" />
-          <h3 className="text-lg sm:text-xl font-semibold mb-2 leading-tight">{t('clients.failedToLoad')}</h3>
-          <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">{t('clients.failedToLoadDescription')}</p>
+          <h3 className="text-lg sm:text-xl font-semibold mb-2 leading-tight">
+            {t('clients.failedToLoad')}
+          </h3>
+          <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+            {t('clients.failedToLoadDescription')}
+          </p>
         </CardContent>
       </Card>
     );

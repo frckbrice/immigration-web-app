@@ -478,7 +478,9 @@ export function UsersListEnhanced() {
             <Shield className="inline-block mr-2 h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8 text-primary" />
             {t('users.userManagement')}
           </h1>
-          <p className="text-xs sm:text-sm text-muted-foreground mt-1.5 sm:mt-2 leading-relaxed">{t('users.manageSystemUsers')}</p>
+          <p className="text-xs sm:text-sm text-muted-foreground mt-1.5 sm:mt-2 leading-relaxed">
+            {t('users.manageSystemUsers')}
+          </p>
         </div>
         <Card>
           <CardContent className="py-12 text-center">
@@ -503,7 +505,9 @@ export function UsersListEnhanced() {
             <Shield className="inline-block mr-2 h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8 text-primary" />
             {t('users.userManagement')}
           </h1>
-          <p className="text-xs sm:text-sm text-muted-foreground mt-1.5 sm:mt-2 leading-relaxed">{t('users.manageSystemUsers')}</p>
+          <p className="text-xs sm:text-sm text-muted-foreground mt-1.5 sm:mt-2 leading-relaxed">
+            {t('users.manageSystemUsers')}
+          </p>
         </div>
         <Badge variant="secondary" className="text-base px-4 py-2 w-fit">
           {totalUsers} {totalUsers === 1 ? t('users.user') : t('users.title')}
@@ -570,7 +574,9 @@ export function UsersListEnhanced() {
               <Users className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
               {t('users.systemUsers')}
             </CardTitle>
-            <CardDescription className="text-xs sm:text-sm">{t('users.viewManageUsers')}</CardDescription>
+            <CardDescription className="text-xs sm:text-sm">
+              {t('users.viewManageUsers')}
+            </CardDescription>
           </CardHeader>
           <CardContent>
             {/* MOBILE RESPONSIVE: Horizontal scrollable container */}

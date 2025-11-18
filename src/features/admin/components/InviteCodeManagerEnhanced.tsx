@@ -169,7 +169,9 @@ export function InviteCodeManagerEnhanced() {
             <Key className="h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8 text-primary" />
             {t('inviteCodes.management')}
           </h1>
-          <p className="text-xs sm:text-sm text-muted-foreground mt-1.5 sm:mt-2 leading-relaxed">{t('inviteCodes.description')}</p>
+          <p className="text-xs sm:text-sm text-muted-foreground mt-1.5 sm:mt-2 leading-relaxed">
+            {t('inviteCodes.description')}
+          </p>
         </div>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>

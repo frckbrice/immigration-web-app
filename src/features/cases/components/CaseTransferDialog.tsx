@@ -128,7 +128,7 @@ export function CaseTransferDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent 
+      <DialogContent
         className="max-w-2xl max-h-[95vh] overflow-y-auto sm:max-h-[90vh] w-[95vw] sm:w-full"
         style={{ borderColor: '#ff4538', borderWidth: '1px', borderStyle: 'solid' }}
       >
@@ -137,11 +137,16 @@ export function CaseTransferDialog({
             <RefreshCw className="h-4 w-4 sm:h-5 sm:w-5" style={{ color: '#ff4538' }} />
             {t('cases.dialogs.transferCase.title')}
           </DialogTitle>
-          <DialogDescription className="text-xs sm:text-sm leading-relaxed">{t('cases.dialogs.transferCase.description')}</DialogDescription>
+          <DialogDescription className="text-xs sm:text-sm leading-relaxed">
+            {t('cases.dialogs.transferCase.description')}
+          </DialogDescription>
         </DialogHeader>
 
         {/* Current Case Info */}
-        <div className="rounded-lg border p-3 sm:p-4 bg-muted/50 space-y-2 sm:space-y-3" style={{ borderColor: 'rgba(255, 69, 56, 0.2)' }}>
+        <div
+          className="rounded-lg border p-3 sm:p-4 bg-muted/50 space-y-2 sm:space-y-3"
+          style={{ borderColor: 'rgba(255, 69, 56, 0.2)' }}
+        >
           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-0">
             <div className="flex-1 min-w-0">
               <p className="text-xs sm:text-sm font-medium break-words">
@@ -155,7 +160,9 @@ export function CaseTransferDialog({
                 {t('cases.dialogs.transferCase.service')}: {caseData.serviceType.replace(/_/g, ' ')}
               </p>
             </div>
-            <Badge variant="outline" className="text-[10px] sm:text-xs w-fit">{caseData.status}</Badge>
+            <Badge variant="outline" className="text-[10px] sm:text-xs w-fit">
+              {caseData.status}
+            </Badge>
           </div>
           {caseData.assignedAgent && (
             <div className="pt-2 border-t mt-2" style={{ borderColor: 'rgba(255, 69, 56, 0.1)' }}>
@@ -165,7 +172,9 @@ export function CaseTransferDialog({
               <p className="text-xs sm:text-sm font-medium break-words">
                 {caseData.assignedAgent.firstName} {caseData.assignedAgent.lastName}
               </p>
-              <p className="text-[10px] sm:text-xs text-muted-foreground break-words">{caseData.assignedAgent.email}</p>
+              <p className="text-[10px] sm:text-xs text-muted-foreground break-words">
+                {caseData.assignedAgent.email}
+              </p>
             </div>
           )}
         </div>
@@ -207,10 +216,16 @@ export function CaseTransferDialog({
 
             {/* Selected Agent Preview */}
             {selectedAgent && (
-              <div className="rounded-lg border p-3 sm:p-4 bg-background space-y-2" style={{ borderColor: 'rgba(255, 69, 56, 0.2)' }}>
+              <div
+                className="rounded-lg border p-3 sm:p-4 bg-background space-y-2"
+                style={{ borderColor: 'rgba(255, 69, 56, 0.2)' }}
+              >
                 <div className="flex items-center gap-2 sm:gap-3">
                   <Avatar className="h-8 w-8 sm:h-10 sm:w-10">
-                    <AvatarFallback className="text-xs sm:text-sm" style={{ backgroundColor: '#091a24' }}>
+                    <AvatarFallback
+                      className="text-xs sm:text-sm"
+                      style={{ backgroundColor: '#091a24' }}
+                    >
                       {getInitials(`${selectedAgent.firstName} ${selectedAgent.lastName}`)}
                     </AvatarFallback>
                   </Avatar>
@@ -218,7 +233,9 @@ export function CaseTransferDialog({
                     <p className="text-xs sm:text-sm font-semibold break-words">
                       {selectedAgent.firstName} {selectedAgent.lastName}
                     </p>
-                    <p className="text-[10px] sm:text-xs text-muted-foreground break-words">{selectedAgent.email}</p>
+                    <p className="text-[10px] sm:text-xs text-muted-foreground break-words">
+                      {selectedAgent.email}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -273,7 +290,10 @@ export function CaseTransferDialog({
             />
 
             {/* Notification Options */}
-            <div className="space-y-2 sm:space-y-3 rounded-lg border p-3 sm:p-4" style={{ borderColor: 'rgba(255, 69, 56, 0.2)' }}>
+            <div
+              className="space-y-2 sm:space-y-3 rounded-lg border p-3 sm:p-4"
+              style={{ borderColor: 'rgba(255, 69, 56, 0.2)' }}
+            >
               <p className="text-xs sm:text-sm font-medium">
                 {t('cases.dialogs.transferCase.notificationOptions')}
               </p>
@@ -316,8 +336,19 @@ export function CaseTransferDialog({
             </div>
 
             {/* Info Box */}
-            <div className="flex items-start gap-2 p-3 rounded-md text-xs sm:text-sm" style={{ backgroundColor: 'rgba(255, 69, 56, 0.1)', borderColor: 'rgba(255, 69, 56, 0.2)', borderWidth: '1px', borderStyle: 'solid' }}>
-              <Info className="h-3.5 w-3.5 sm:h-4 sm:w-4 mt-0.5 flex-shrink-0" style={{ color: '#ff4538' }} />
+            <div
+              className="flex items-start gap-2 p-3 rounded-md text-xs sm:text-sm"
+              style={{
+                backgroundColor: 'rgba(255, 69, 56, 0.1)',
+                borderColor: 'rgba(255, 69, 56, 0.2)',
+                borderWidth: '1px',
+                borderStyle: 'solid',
+              }}
+            >
+              <Info
+                className="h-3.5 w-3.5 sm:h-4 sm:w-4 mt-0.5 flex-shrink-0"
+                style={{ color: '#ff4538' }}
+              />
               <div className="min-w-0 flex-1">
                 <p className="font-medium mb-1">
                   {t('cases.dialogs.transferCase.transferEffects')}
@@ -354,8 +385,8 @@ export function CaseTransferDialog({
               >
                 {t('cases.dialogs.transferCase.cancel')}
               </Button>
-              <Button 
-                type="submit" 
+              <Button
+                type="submit"
                 disabled={transferCase.isPending || !form.formState.isValid}
                 className="w-full sm:w-auto text-xs sm:text-sm h-8 sm:h-9"
                 style={{
