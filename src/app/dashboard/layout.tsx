@@ -314,7 +314,10 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                 </SheetContent>
               </Sheet>
 
-              <Link href="/dashboard" className="flex items-center space-x-2 sm:space-x-3 cursor-pointer">
+              <Link
+                href="/dashboard"
+                className="flex items-center space-x-2 sm:space-x-3 cursor-pointer"
+              >
                 <div className="relative flex items-center justify-center w-12 h-12 sm:w-12 sm:h-12 rounded-lg bg-transparent dark:bg-white/10 dark:backdrop-blur-sm dark:border dark:border-white/20 p-1.5 flex-shrink-0">
                   <Image
                     src="/images/app-logo.png"

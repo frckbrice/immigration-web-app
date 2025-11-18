@@ -151,7 +151,10 @@ export function Testimonials() {
             >
               <div className="flex gap-4 sm:gap-6 min-w-max sm:min-w-0 pb-2">
                 {mosaicTestimonials.map((testimonial) => (
-                  <div key={testimonial.name} className="flex-shrink-0 w-[85vw] sm:w-auto sm:flex-1">
+                  <div
+                    key={testimonial.name}
+                    className="flex-shrink-0 w-[85vw] sm:w-auto sm:flex-1"
+                  >
                     <TestimonialCard testimonial={testimonial} />
                   </div>
                 ))}
@@ -188,8 +191,13 @@ export function Testimonials() {
             >
               <div className="absolute inset-0 bg-linear-to-tr from-[rgba(255,69,56,0.05)] via-transparent to-[rgba(255,69,56,0.05)]"></div>
               <div className="relative space-y-1.5 md:space-y-2">
-                <p className="text-2xl md:text-3xl font-black" style={{ color: '#ff4538' }}>{stat.value}</p>
-                <p className="text-xs md:text-sm font-semibold uppercase tracking-wide" style={{ color: 'rgba(255, 255, 255, 0.9)' }}>
+                <p className="text-2xl md:text-3xl font-black" style={{ color: '#ff4538' }}>
+                  {stat.value}
+                </p>
+                <p
+                  className="text-xs md:text-sm font-semibold uppercase tracking-wide"
+                  style={{ color: 'rgba(255, 255, 255, 0.9)' }}
+                >
                   <span suppressHydrationWarning>{stat.label}</span>
                 </p>
                 <p className="text-[10px] md:text-xs" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
@@ -220,11 +228,21 @@ function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
         aria-hidden
       />
       <CardContent className="relative space-y-4 p-5 md:p-6">
-        <Quote className="h-8 w-8 md:h-10 md:w-10" style={{ color: '#ff4538' }} aria-hidden="true" />
-        <p className="text-sm md:text-base leading-relaxed" style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
+        <Quote
+          className="h-8 w-8 md:h-10 md:w-10"
+          style={{ color: '#ff4538' }}
+          aria-hidden="true"
+        />
+        <p
+          className="text-sm md:text-base leading-relaxed"
+          style={{ color: 'rgba(255, 255, 255, 0.8)' }}
+        >
           <span suppressHydrationWarning>&ldquo;{testimonial.content}&rdquo;</span>
         </p>
-        <div className="flex items-center gap-3 md:gap-4 pt-3 md:pt-4 border-t" style={{ borderColor: 'rgba(255, 69, 56, 0.2)' }}>
+        <div
+          className="flex items-center gap-3 md:gap-4 pt-3 md:pt-4 border-t"
+          style={{ borderColor: 'rgba(255, 69, 56, 0.2)' }}
+        >
           <Avatar className="h-12 w-12 md:h-16 md:w-16 ring-2 ring-[rgba(255,69,56,0.3)]">
             <AvatarImage
               src={testimonial.avatarSrc}
@@ -240,7 +258,9 @@ function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
             </AvatarFallback>
           </Avatar>
           <div className="space-y-0.5 md:space-y-1">
-            <p className="font-semibold text-sm md:text-base" style={{ color: '#ffffff' }}>{testimonial.name}</p>
+            <p className="font-semibold text-sm md:text-base" style={{ color: '#ffffff' }}>
+              {testimonial.name}
+            </p>
             <p className="text-xs md:text-sm" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
               <span suppressHydrationWarning>{testimonial.role}</span>
             </p>
@@ -279,11 +299,21 @@ function SpotlightCard({ testimonial }: { testimonial: Testimonial }) {
             {t('landing.testimonials.badge') || 'Testimonials'}
           </span>
         </div>
-        <Quote className="h-12 w-12 md:h-16 md:w-16" style={{ color: 'rgba(255, 69, 56, 0.3)' }} aria-hidden="true" />
-        <p className="text-base md:text-lg lg:text-xl leading-relaxed font-medium" style={{ color: 'rgba(255, 255, 255, 0.9)' }}>
+        <Quote
+          className="h-12 w-12 md:h-16 md:w-16"
+          style={{ color: 'rgba(255, 69, 56, 0.3)' }}
+          aria-hidden="true"
+        />
+        <p
+          className="text-base md:text-lg lg:text-xl leading-relaxed font-medium"
+          style={{ color: 'rgba(255, 255, 255, 0.9)' }}
+        >
           <span suppressHydrationWarning>&ldquo;{testimonial.content}&rdquo;</span>
         </p>
-        <div className="flex items-center gap-3 md:gap-4 pt-4 md:pt-6 border-t" style={{ borderColor: 'rgba(255, 69, 56, 0.2)' }}>
+        <div
+          className="flex items-center gap-3 md:gap-4 pt-4 md:pt-6 border-t"
+          style={{ borderColor: 'rgba(255, 69, 56, 0.2)' }}
+        >
           <Avatar className="h-16 w-16 md:h-20 md:w-20 ring-2 md:ring-4 ring-[rgba(255,69,56,0.3)]">
             <AvatarImage
               src={testimonial.avatarSrc}
@@ -299,7 +329,9 @@ function SpotlightCard({ testimonial }: { testimonial: Testimonial }) {
             </AvatarFallback>
           </Avatar>
           <div>
-            <p className="text-base md:text-lg font-semibold" style={{ color: '#ffffff' }}>{testimonial.name}</p>
+            <p className="text-base md:text-lg font-semibold" style={{ color: '#ffffff' }}>
+              {testimonial.name}
+            </p>
             <p className="text-xs md:text-sm" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
               <span suppressHydrationWarning>{testimonial.role}</span>
             </p>

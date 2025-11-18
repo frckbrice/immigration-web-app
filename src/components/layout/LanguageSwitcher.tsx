@@ -70,7 +70,10 @@ export function LanguageSwitcher({ variant = 'light' }: LanguageSwitcherProps) {
         >
           <Globe className="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0" style={{ color: '#ff4538' }} />
           {mounted && (
-            <span className="text-xs sm:text-sm font-medium whitespace-nowrap" style={{ color: textColor }}>
+            <span
+              className="text-xs sm:text-sm font-medium whitespace-nowrap"
+              style={{ color: textColor }}
+            >
               {currentLanguage.code.toUpperCase()}
             </span>
           )}

@@ -18,7 +18,10 @@ export function GetStarted() {
           >
             <span suppressHydrationWarning>{t('landing.getStarted.title') || 'Get started'}</span>
           </h2>
-          <p className="text-sm sm:text-base md:text-lg leading-relaxed" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+          <p
+            className="text-sm sm:text-base md:text-lg leading-relaxed"
+            style={{ color: 'rgba(255, 255, 255, 0.7)' }}
+          >
             <span suppressHydrationWarning>
               {t('landing.getStarted.subtitle') ||
                 'Meet with an expert immigration consultant and start your journey today.'}
