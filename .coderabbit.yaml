@@ -1,0 +1,103 @@
+# CodeRabbit Configuration
+# Documentation: https://docs.coderabbit.ai/config-file
+
+# Language settings
+language:
+  # Enable reviews for these languages
+  enabled:
+    - typescript
+    - javascript
+    - tsx
+    - jsx
+    - json
+    - yaml
+    - markdown
+
+# Review settings
+reviews:
+  # Enable automatic reviews
+  enabled: true
+  
+  # Review types to enable
+  review_types:
+    - code_quality
+    - security
+    - performance
+    - best_practices
+    - accessibility
+    - documentation
+  
+  # Paths to include in reviews
+  paths:
+    include:
+      - "src/**/*"
+      - "*.ts"
+      - "*.tsx"
+      - "*.js"
+      - "*.jsx"
+      - "*.json"
+      - "*.yaml"
+      - "*.yml"
+  
+  # Paths to exclude from reviews
+  paths:
+    exclude:
+      - "node_modules/**"
+      - ".next/**"
+      - "out/**"
+      - "build/**"
+      - "dist/**"
+      - "public/sw.js"
+      - "public/workbox-*.js"
+      - "public/swe-worker-*.js"
+      - "*.log"
+      - "*.log.*"
+      - "build-*.log"
+      - "dev-server.log"
+      - "logs/**"
+      - "docs/**"
+      - "prisma/migrations/**"
+      - ".git/**"
+      - ".vercel/**"
+
+# Chat settings
+chat:
+  # Enable chat for PR reviews
+  enabled: true
+  
+  # Auto-review settings
+  auto_review:
+    enabled: true
+    # Review only changed files
+    review_only_changed_files: true
+
+# Suggestions settings
+suggestions:
+  # Enable code suggestions
+  enabled: true
+  
+  # Minimum confidence level for suggestions (0-1)
+  min_confidence: 0.7
+
+# Ignore patterns
+ignore:
+  # Patterns to ignore in reviews
+  patterns:
+    - "**/*.test.ts"
+    - "**/*.test.tsx"
+    - "**/*.spec.ts"
+    - "**/*.spec.tsx"
+    - "**/__tests__/**"
+    - "**/__mocks__/**"
+
+# Custom instructions
+instructions:
+  - "Focus on TypeScript/React best practices"
+  - "Check for security vulnerabilities"
+  - "Suggest performance optimizations"
+  - "Ensure accessibility compliance"
+  - "Review code follows project conventions"
+  - "Check for proper error handling"
+  - "Verify proper use of React hooks"
+  - "Check for memory leaks and proper cleanup"
+
