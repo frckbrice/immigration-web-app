@@ -511,7 +511,8 @@
         "noteCannotBeEmpty": "La note ne peut pas être vide",
         "noteSavedSuccessfully": "Note interne enregistrée avec succès",
         "failedToSaveNote": "Échec de l'enregistrement de la note",
-        "clientInfoNotAvailable": "Informations client non disponibles"
+        "clientInfoNotAvailable": "Informations client non disponibles",
+        "selectStatus": "Sélectionner le statut"
       },
       "selectStatus": "Sélectionner le statut",
       "advisor": "Conseiller",

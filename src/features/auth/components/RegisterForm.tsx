@@ -40,6 +40,7 @@ export function RegisterForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [redirecting, setRedirecting] = useState(false);
+  const [eyeIconColor, setEyeIconColor] = useState('#ffffff');
   const registerMutation = useRegister();
   const googleSignInMutation = useGoogleSignIn();
   const { t } = useTranslation();
@@ -433,9 +434,21 @@ export function RegisterForm() {
                             }}
                             onFocus={(e) => {
                               e.currentTarget.style.borderColor = '#ff4538';
+                              const bgColor = window.getComputedStyle(
+                                e.currentTarget
+                              ).backgroundColor;
+                              const isWhite =
+                                bgColor === 'rgb(255, 255, 255)' || bgColor === 'white';
+                              setEyeIconColor(isWhite ? 'rgba(0, 0, 0, 0.7)' : '#ffffff');
                             }}
                             onBlur={(e) => {
                               e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                              const bgColor = window.getComputedStyle(
+                                e.currentTarget
+                              ).backgroundColor;
+                              const isWhite =
+                                bgColor === 'rgb(255, 255, 255)' || bgColor === 'white';
+                              setEyeIconColor(isWhite ? 'rgba(0, 0, 0, 0.7)' : '#ffffff');
                             }}
                           />
                           <button
@@ -443,14 +456,14 @@ export function RegisterForm() {
                             onClick={() => setShowPassword(!showPassword)}
                             className="absolute right-3 top-1/2 -translate-y-1/2 transition-colors z-10"
                             style={{
-                              color: '#ffffff',
+                              color: eyeIconColor,
                               backgroundColor: 'transparent',
                             }}
                             onMouseEnter={(e) => {
                               e.currentTarget.style.color = '#ff4538';
                             }}
                             onMouseLeave={(e) => {
-                              e.currentTarget.style.color = '#ffffff';
+                              e.currentTarget.style.color = eyeIconColor;
                             }}
                             tabIndex={-1}
                           >

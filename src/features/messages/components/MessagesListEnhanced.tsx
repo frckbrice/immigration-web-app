@@ -753,8 +753,10 @@ export function MessagesList({
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
         <div className="flex-1">
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">{t('messages.title')}</h1>
-          <p className="text-sm sm:text-base text-muted-foreground mt-2">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold leading-tight">
+            {t('messages.title')}
+          </h1>
+          <p className="text-xs sm:text-sm text-muted-foreground mt-1.5 sm:mt-2 leading-relaxed">
             {user?.role === 'CLIENT'
               ? t('messages.communicateWithAdvisor')
               : t('messages.manageConversations')}
@@ -791,7 +793,9 @@ export function MessagesList({
         {/* Conversations - Hidden on mobile */}
         <Card className="hidden lg:flex lg:col-span-1 overflow-hidden flex-col">
           <CardHeader className="border-b">
-            <CardTitle className="text-base">{t('messages.conversations')}</CardTitle>
+            <CardTitle className="text-sm sm:text-base font-semibold">
+              {t('messages.conversations')}
+            </CardTitle>
             <div className="relative mt-2">
               <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
@@ -960,7 +964,7 @@ export function MessagesList({
                   </div>
                   <div>
                     <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
-                      <h3 className="text-sm sm:text-base font-semibold">
+                      <h3 className="text-base sm:text-lg font-semibold leading-tight">
                         {selectedConversation.participantName}
                       </h3>
                       {isParticipantTyping ? (
@@ -1023,10 +1027,10 @@ export function MessagesList({
                         <MessageSquare className="h-8 w-8 text-primary" />
                       </div>
                       <div>
-                        <h3 className="text-base font-semibold mb-1">
+                        <h3 className="text-lg sm:text-xl font-semibold mb-1.5 leading-tight">
                           No conversation yet with {selectedConversation?.participantName}
                         </h3>
-                        <p className="text-sm text-muted-foreground">
+                        <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
                           Start a new conversation by typing your message below
                         </p>
                       </div>
@@ -1389,8 +1393,10 @@ export function MessagesList({
               ) : (
                 <div className="text-center">
                   <MessageSquare className="mx-auto h-16 w-16 text-muted-foreground mb-4 opacity-50" />
-                  <h3 className="text-lg font-semibold">Select a Conversation</h3>
-                  <p className="text-sm text-muted-foreground mt-2">
+                  <h3 className="text-lg sm:text-xl font-semibold leading-tight">
+                    Select a Conversation
+                  </h3>
+                  <p className="text-xs sm:text-sm text-muted-foreground mt-1.5 sm:mt-2 leading-relaxed">
                     Choose a conversation to start messaging
                   </p>
                 </div>

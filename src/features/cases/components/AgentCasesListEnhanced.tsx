@@ -340,9 +340,9 @@ export function AgentCasesListEnhanced() {
     logger.warn('AgentCasesListEnhanced: user.id is missing');
     return (
       <div className="space-y-6">
-        <Card>
+        <Card style={{ borderColor: '#ff4538', borderWidth: '1px', borderStyle: 'solid' }}>
           <CardContent className="py-12 text-center">
-            <AlertTriangle className="mx-auto h-12 w-12 text-amber-500 mb-4" />
+            <AlertTriangle className="mx-auto h-12 w-12 mb-4" style={{ color: '#ff4538' }} />
             <h3 className="text-lg font-semibold mb-2">
               {t('cases.management.couldNotDetermineUser')}
             </h3>
@@ -363,10 +363,10 @@ export function AgentCasesListEnhanced() {
       <div className="space-y-4 sm:space-y-6 w-full max-w-full overflow-x-hidden">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="min-w-0 flex-1">
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold">
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold leading-tight">
               {user.role === 'ADMIN' ? t('cases.allCases') : t('cases.myCases')}
             </h1>
-            <p className="text-muted-foreground mt-1 sm:mt-2 text-sm sm:text-base">
+            <p className="text-muted-foreground mt-1 sm:mt-1.5 text-xs sm:text-sm leading-relaxed">
               {user.role === 'ADMIN'
                 ? t('cases.management.manageAll')
                 : t('cases.management.manageAssigned')}
@@ -426,12 +426,18 @@ export function AgentCasesListEnhanced() {
         </div>
 
         {/* Filters Card */}
-        <Card className="overflow-visible">
+        <Card
+          className="overflow-visible"
+          style={{ borderColor: '#ff4538', borderWidth: '1px', borderStyle: 'solid' }}
+        >
           <CardContent className="pt-4 sm:pt-6 px-4 sm:px-6 overflow-visible">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
               {/* Search */}
               <div className="relative sm:col-span-2 lg:col-span-2">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
+                <Search
+                  className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5"
+                  style={{ color: '#ff4538' }}
+                />
                 <Input
                   placeholder={t('cases.management.searchPlaceholder')}
                   value={searchQuery}
@@ -535,7 +541,7 @@ export function AgentCasesListEnhanced() {
                 </SelectContent>
               </Select>
 
-              {/* Date Range - Inline */}
+              {/* Date Range - Start Date */}
               <div className="relative w-full overflow-visible">
                 <Input
                   type="date"
@@ -548,6 +554,7 @@ export function AgentCasesListEnhanced() {
                   className="text-base h-10 sm:h-11 w-full"
                 />
               </div>
+              {/* Date Range - End Date */}
               <div className="relative w-full overflow-visible">
                 <Input
                   type="date"
@@ -566,11 +573,21 @@ export function AgentCasesListEnhanced() {
 
         {/* Bulk Actions Bar (ADMIN ONLY - Agents cannot assign/unassign cases) */}
         {user.role === 'ADMIN' && selectedCases.size > 0 && (
-          <Card className="bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800">
+          <Card
+            style={{
+              borderColor: '#ff4538',
+              borderWidth: '1px',
+              borderStyle: 'solid',
+              backgroundColor: 'rgba(255, 69, 56, 0.1)',
+            }}
+          >
             <CardContent className="py-3 sm:py-4 px-4 sm:px-6">
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
                 <div className="flex items-center gap-2 sm:gap-4">
-                  <CheckSquare className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600 flex-shrink-0" />
+                  <CheckSquare
+                    className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0"
+                    style={{ color: '#ff4538' }}
+                  />
                   <span className="font-medium text-sm sm:text-base">
                     {selectedCases.size}{' '}
                     {selectedCases.size !== 1
@@ -677,9 +694,9 @@ export function AgentCasesListEnhanced() {
         )}
 
         {cases.length === 0 ? (
-          <Card>
+          <Card style={{ borderColor: '#ff4538', borderWidth: '1px', borderStyle: 'solid' }}>
             <CardContent className="py-12 text-center">
-              <Briefcase className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+              <Briefcase className="mx-auto h-12 w-12 mb-4" style={{ color: '#ff4538' }} />
               <h3 className="text-lg font-semibold mb-2">{t('cases.management.noCasesFound')}</h3>
               <p className="text-muted-foreground">{t('cases.management.noMatchingFilters')}</p>
             </CardContent>
@@ -688,7 +705,7 @@ export function AgentCasesListEnhanced() {
           <>
             {/* Cases Table - Mobile Responsive with Horizontal Scroll */}
             <div className="w-full overflow-x-auto">
-              <Card>
+              <Card style={{ borderColor: '#ff4538', borderWidth: '1px', borderStyle: 'solid' }}>
                 <CardContent className="p-0">
                   <div className="overflow-x-auto">
                     <table className="w-full divide-y divide-gray-200 dark:divide-gray-700">
@@ -866,7 +883,7 @@ export function AgentCasesListEnhanced() {
 
             {/* Pagination */}
             {totalPages > 1 && (
-              <Card>
+              <Card style={{ borderColor: '#ff4538', borderWidth: '1px', borderStyle: 'solid' }}>
                 <CardContent className="py-3 sm:py-4 px-4 sm:px-6">
                   <div className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">
                     <div className="text-sm sm:text-base text-muted-foreground">

@@ -474,11 +474,13 @@ export function UsersListEnhanced() {
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">
-            <Shield className="inline-block mr-2 h-8 w-8 text-primary" />
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold leading-tight">
+            <Shield className="inline-block mr-2 h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8 text-primary" />
             {t('users.userManagement')}
           </h1>
-          <p className="text-muted-foreground mt-2">{t('users.manageSystemUsers')}</p>
+          <p className="text-xs sm:text-sm text-muted-foreground mt-1.5 sm:mt-2 leading-relaxed">
+            {t('users.manageSystemUsers')}
+          </p>
         </div>
         <Card>
           <CardContent className="py-12 text-center">
@@ -499,11 +501,13 @@ export function UsersListEnhanced() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">
-            <Shield className="inline-block mr-2 h-8 w-8 text-primary" />
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold leading-tight">
+            <Shield className="inline-block mr-2 h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8 text-primary" />
             {t('users.userManagement')}
           </h1>
-          <p className="text-muted-foreground mt-2">{t('users.manageSystemUsers')}</p>
+          <p className="text-xs sm:text-sm text-muted-foreground mt-1.5 sm:mt-2 leading-relaxed">
+            {t('users.manageSystemUsers')}
+          </p>
         </div>
         <Badge variant="secondary" className="text-base px-4 py-2 w-fit">
           {totalUsers} {totalUsers === 1 ? t('users.user') : t('users.title')}
@@ -555,10 +559,10 @@ export function UsersListEnhanced() {
         <Card style={{ borderColor: '#ff4538', borderWidth: '1px', borderStyle: 'solid' }}>
           <CardContent className="py-12 text-center">
             <Users className="mx-auto h-12 w-12 text-muted-foreground mb-4 opacity-50" />
-            <h3 className="text-lg font-semibold mb-2">
+            <h3 className="text-lg sm:text-xl font-semibold mb-2 leading-tight">
               {hasActiveFilters ? t('users.noUsersFound') : t('users.noUsersYet')}
             </h3>
-            <p className="text-muted-foreground">
+            <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
               {hasActiveFilters ? t('users.adjustFilters') : t('users.usersWillAppear')}
             </p>
           </CardContent>
@@ -566,11 +570,13 @@ export function UsersListEnhanced() {
       ) : (
         <Card style={{ borderColor: '#ff4538', borderWidth: '1px', borderStyle: 'solid' }}>
           <CardHeader>
-            <CardTitle className="flex items-center">
-              <Users className="mr-2 h-5 w-5" />
+            <CardTitle className="flex items-center text-sm sm:text-base font-semibold">
+              <Users className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
               {t('users.systemUsers')}
             </CardTitle>
-            <CardDescription>{t('users.viewManageUsers')}</CardDescription>
+            <CardDescription className="text-xs sm:text-sm">
+              {t('users.viewManageUsers')}
+            </CardDescription>
           </CardHeader>
           <CardContent>
             {/* MOBILE RESPONSIVE: Horizontal scrollable container */}

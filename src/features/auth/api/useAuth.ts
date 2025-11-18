@@ -252,13 +252,13 @@ export const useLogout = () => {
       logout();
       queryClient.clear(); // Clear all queries
       toast.success(sanitizeMessage('Logged out successfully'));
-      router.replace('/');
+      router.push('/');
     },
     onError: () => {
       // Even if logout fails, clear local state
       logout();
       queryClient.clear();
-      router.replace('/');
+      router.push('/');
     },
   });
 };

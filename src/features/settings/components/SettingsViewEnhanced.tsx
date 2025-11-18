@@ -159,8 +159,12 @@ export function SettingsView() {
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">{t('settings.title')}</h1>
-          <p className="text-muted-foreground mt-2">{t('settings.subtitle')}</p>
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold leading-tight">
+            {t('settings.title')}
+          </h1>
+          <p className="text-xs sm:text-sm text-muted-foreground mt-1.5 sm:mt-2 leading-relaxed">
+            {t('settings.subtitle')}
+          </p>
         </div>
         <Card style={{ borderColor: '#ff4538', borderWidth: '1px', borderStyle: 'solid' }}>
           <CardContent className="pt-6">
@@ -182,11 +186,13 @@ export function SettingsView() {
       {/* Appearance */}
       <Card style={{ borderColor: '#ff4538', borderWidth: '1px', borderStyle: 'solid' }}>
         <CardHeader>
-          <CardTitle className="flex items-center">
-            <Palette className="mr-2 h-5 w-5" style={{ color: '#ff4538' }} />
+          <CardTitle className="flex items-center text-sm sm:text-base font-semibold">
+            <Palette className="mr-2 h-4 w-4 sm:h-5 sm:w-5" style={{ color: '#ff4538' }} />
             {t('settings.appearance.title')}
           </CardTitle>
-          <CardDescription>{t('settings.appearance.description')}</CardDescription>
+          <CardDescription className="text-xs sm:text-sm">
+            {t('settings.appearance.description')}
+          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           {/* Theme section commented out - no longer needed */}
@@ -215,11 +221,13 @@ export function SettingsView() {
       {/* Notifications */}
       <Card style={{ borderColor: '#ff4538', borderWidth: '1px', borderStyle: 'solid' }}>
         <CardHeader>
-          <CardTitle className="flex items-center">
-            <Bell className="mr-2 h-5 w-5" style={{ color: '#ff4538' }} />
+          <CardTitle className="flex items-center text-sm sm:text-base font-semibold">
+            <Bell className="mr-2 h-4 w-4 sm:h-5 sm:w-5" style={{ color: '#ff4538' }} />
             {t('settings.notificationSettings.title')}
           </CardTitle>
-          <CardDescription>{t('settings.notificationSettings.description')}</CardDescription>
+          <CardDescription className="text-xs sm:text-sm">
+            {t('settings.notificationSettings.description')}
+          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <SettingToggle
@@ -251,11 +259,13 @@ export function SettingsView() {
       {/* Security */}
       <Card style={{ borderColor: '#ff4538', borderWidth: '1px', borderStyle: 'solid' }}>
         <CardHeader>
-          <CardTitle className="flex items-center">
-            <Shield className="mr-2 h-5 w-5" style={{ color: '#ff4538' }} />
+          <CardTitle className="flex items-center text-sm sm:text-base font-semibold">
+            <Shield className="mr-2 h-4 w-4 sm:h-5 sm:w-5" style={{ color: '#ff4538' }} />
             {t('settings.securitySettings.title')}
           </CardTitle>
-          <CardDescription>{t('settings.securitySettings.description')}</CardDescription>
+          <CardDescription className="text-xs sm:text-sm">
+            {t('settings.securitySettings.description')}
+          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-3">
           {/* Show different UI for OAuth users vs password users */}

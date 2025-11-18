@@ -49,6 +49,7 @@ function ResetPasswordForm() {
   const searchParams = useSearchParams();
   const oobCode = searchParams.get('oobCode'); // Firebase reset code from email
   const [showPassword, setShowPassword] = useState(false);
+  const [eyeIconColor, setEyeIconColor] = useState('rgba(255, 255, 255, 0.7)');
   const { t } = useTranslation();
   const { isAuthenticated, isLoading } = useAuthStore();
   const [redirecting, setRedirecting] = useState(false);
@@ -192,9 +193,23 @@ function ResetPasswordForm() {
                           }}
                           onFocus={(e) => {
                             e.currentTarget.style.borderColor = '#ff4538';
+                            const bgColor = window.getComputedStyle(
+                              e.currentTarget
+                            ).backgroundColor;
+                            const isWhite = bgColor === 'rgb(255, 255, 255)' || bgColor === 'white';
+                            setEyeIconColor(
+                              isWhite ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)'
+                            );
                           }}
                           onBlur={(e) => {
                             e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                            const bgColor = window.getComputedStyle(
+                              e.currentTarget
+                            ).backgroundColor;
+                            const isWhite = bgColor === 'rgb(255, 255, 255)' || bgColor === 'white';
+                            setEyeIconColor(
+                              isWhite ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)'
+                            );
                           }}
                         />
                         <button
@@ -202,7 +217,13 @@ function ResetPasswordForm() {
                           onClick={() => setShowPassword(!showPassword)}
                           aria-label={showPassword ? 'Hide password' : 'Show password'}
                           className="absolute right-3 top-1/2 -translate-y-1/2 transition-colors"
-                          style={{ color: 'rgba(255, 255, 255, 0.7)' }}
+                          style={{ color: eyeIconColor }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.color = '#ff4538';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.color = eyeIconColor;
+                          }}
                         >
                           {showPassword ? (
                             <EyeOff className="h-4 w-4" />
@@ -236,9 +257,23 @@ function ResetPasswordForm() {
                           }}
                           onFocus={(e) => {
                             e.currentTarget.style.borderColor = '#ff4538';
+                            const bgColor = window.getComputedStyle(
+                              e.currentTarget
+                            ).backgroundColor;
+                            const isWhite = bgColor === 'rgb(255, 255, 255)' || bgColor === 'white';
+                            setEyeIconColor(
+                              isWhite ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)'
+                            );
                           }}
                           onBlur={(e) => {
                             e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                            const bgColor = window.getComputedStyle(
+                              e.currentTarget
+                            ).backgroundColor;
+                            const isWhite = bgColor === 'rgb(255, 255, 255)' || bgColor === 'white';
+                            setEyeIconColor(
+                              isWhite ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)'
+                            );
                           }}
                         />
                         <button
@@ -246,7 +281,13 @@ function ResetPasswordForm() {
                           onClick={() => setShowPassword(!showPassword)}
                           aria-label={showPassword ? 'Hide password' : 'Show password'}
                           className="absolute right-3 top-1/2 -translate-y-1/2 transition-colors"
-                          style={{ color: 'rgba(255, 255, 255, 0.7)' }}
+                          style={{ color: eyeIconColor }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.color = '#ff4538';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.color = eyeIconColor;
+                          }}
                         >
                           {showPassword ? (
                             <EyeOff className="h-4 w-4" />
