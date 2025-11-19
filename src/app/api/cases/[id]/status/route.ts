@@ -161,7 +161,7 @@ const handler = asyncHandler(
         sendCaseStatusEmail(
           caseData.client.email,
           caseData.referenceNumber,
-          status,
+          statusDisplayText,
           clientDisplayName
         ),
         // Send realtime notification to CLIENT (web dashboard)

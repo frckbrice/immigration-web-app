@@ -23,6 +23,7 @@ import { SimpleSkeleton, SkeletonText, SkeletonCard } from '@/components/ui/simp
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { logger } from '@/lib/utils/logger';
+import { isTrustedDomain } from '@/lib/utils/file-validation';
 
 export function DocumentsList() {
   const { t } = useTranslation();
@@ -209,16 +210,9 @@ export function DocumentsList() {
 
       const url = new URL(fileUrl);
 
-      // Define trusted domains for file hosting (UploadThing and Cloudinary)
-      const trustedDomains = ['utfs.io', 'uploadthing.com', 'ufs.sh', 'cloudinary.com'];
-
-      // Check if the hostname ends with one of the trusted domains
+      // Check if the hostname is from a trusted domain
       // This will match: *.utfs.io, *.uploadthing.com, *.ufs.sh, *.cloudinary.com
-      const isTrustedDomain = trustedDomains.some(
-        (domain) => url.hostname === domain || url.hostname.endsWith('.' + domain)
-      );
-
-      if (!isTrustedDomain) {
+      if (!isTrustedDomain(url.hostname)) {
         logger.warn('Document URL is not from trusted domain', {
           hostname: url.hostname,
           fileUrl,

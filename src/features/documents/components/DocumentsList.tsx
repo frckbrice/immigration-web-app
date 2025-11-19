@@ -31,6 +31,7 @@ import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import { DocumentCard } from './DocumentCard';
 import { useTranslation } from 'react-i18next';
+import { isTrustedDomain } from '@/lib/utils/file-validation';
 
 const getDocTypeLabels = (t: any) => ({
   PASSPORT: t('documents.types.PASSPORT'),
@@ -333,11 +334,7 @@ export function DocumentsList() {
                 // Validate URL before opening to prevent security issues
                 try {
                   const url = new URL(d.filePath);
-                  const trustedDomains = ['utfs.io', 'uploadthing.com', 'ufs.sh', 'cloudinary.com'];
-                  const isTrustedDomain = trustedDomains.some(
-                    (domain) => url.hostname === domain || url.hostname.endsWith('.' + domain)
-                  );
-                  if (!isTrustedDomain) {
+                  if (!isTrustedDomain(url.hostname)) {
                     toast.error(t('documents.invalidDocumentUrl'));
                     return;
                   }

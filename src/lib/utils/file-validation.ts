@@ -36,6 +36,9 @@ export const FILE_VALIDATION = {
     'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': '.xlsx',
     'text/plain': '.txt',
   },
+
+  // Trusted domains for file hosting (used for document viewing security)
+  TRUSTED_DOMAINS: ['utfs.io', 'uploadthing.com', 'ufs.sh', 'cloudinary.com'] as const,
 };
 
 export interface FileValidationError {
@@ -151,4 +154,17 @@ export function sanitizeFilename(filename: string): string {
 
   // Remove dangerous characters
   return basename.replace(/[^a-zA-Z0-9._-]/g, '_');
+}
+
+/**
+ * Check if a URL hostname is from a trusted domain
+ * Used for document viewing security to prevent opening untrusted URLs
+ *
+ * @param hostname - The hostname from the URL
+ * @returns true if the hostname matches a trusted domain (exact match or subdomain)
+ */
+export function isTrustedDomain(hostname: string): boolean {
+  return FILE_VALIDATION.TRUSTED_DOMAINS.some(
+    (domain) => hostname === domain || hostname.endsWith('.' + domain)
+  );
 }
