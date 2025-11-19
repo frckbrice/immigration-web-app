@@ -20,6 +20,7 @@ import { sendEmail } from '@/lib/notifications/email.service';
 import { sendPushNotificationToUser } from '@/lib/notifications/expo-push.service';
 import { createRealtimeNotification } from '@/lib/firebase/notifications.service.server';
 import { getCaseSubmissionConfirmationEmailTemplate } from '@/lib/notifications/email-templates';
+import { shouldBypassPayment } from '@/lib/utils/payment';
 
 // Terminal case statuses (end states - these are NOT considered active)
 const TERMINAL_STATUSES: ('APPROVED' | 'REJECTED' | 'CLOSED')[] = [
@@ -280,6 +281,29 @@ const postHandler = asyncHandler(async (request: NextRequest) => {
 
   if (!destination || destination.isActive === false) {
     throw new ApiError('Invalid destination', HttpStatus.BAD_REQUEST);
+  }
+
+  // Check payment status for CLIENT users (AGENT and ADMIN bypass payment requirement)
+  if (!shouldBypassPayment(req.user.role)) {
+    const user = await prisma.user.findUnique({
+      where: { id: req.user.userId },
+      select: { hasPaid: true },
+    });
+
+    if (!user) {
+      throw new ApiError('User not found', HttpStatus.NOT_FOUND);
+    }
+
+    if (!user.hasPaid) {
+      logger.warn('Case creation blocked - user has not paid', {
+        userId: req.user.userId,
+        role: req.user.role,
+      });
+      throw new ApiError(
+        'Payment required. Please complete your subscription payment before submitting a case.',
+        HttpStatus.FORBIDDEN
+      );
+    }
   }
 
   // Generate unique reference number
