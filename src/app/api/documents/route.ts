@@ -4,6 +4,7 @@
 
 import { NextRequest } from 'next/server';
 import { prisma } from '@/lib/db/prisma';
+import { DocumentType } from '@prisma/client';
 import { ERROR_MESSAGES, SUCCESS_MESSAGES, PAGINATION } from '@/lib/constants';
 import { logger } from '@/lib/utils/logger';
 import { successResponse } from '@/lib/utils/api-response';
@@ -53,7 +54,19 @@ const getHandler = asyncHandler(async (request: NextRequest) => {
   }
 
   if (type) {
-    where.documentType = type;
+    // Validate that type is a valid DocumentType enum value
+    const validDocumentTypes = Object.values(DocumentType);
+    if (validDocumentTypes.includes(type as DocumentType)) {
+      where.documentType = type as DocumentType;
+    } else {
+      // Invalid document type - log warning but don't filter by type
+      logger.warn('Invalid document type in query parameter', {
+        type,
+        validTypes: validDocumentTypes,
+        userId: req.user.userId,
+      });
+      // Don't filter by type if invalid - return all documents
+    }
   }
 
   const [documents, total] = await Promise.all([
