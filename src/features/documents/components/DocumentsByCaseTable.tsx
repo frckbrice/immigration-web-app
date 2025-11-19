@@ -63,6 +63,7 @@ import Link from 'next/link';
 import { SimpleSkeleton, SkeletonText } from '@/components/ui/simple-skeleton';
 import { useTranslation } from 'react-i18next';
 import { logger } from '@/lib/utils/logger';
+import { isTrustedDomain, FILE_VALIDATION } from '@/lib/utils/file-validation';
 
 const getStatusConfig = (t: any) => ({
   PENDING: {
@@ -325,27 +326,12 @@ export function DocumentsByCaseTable() {
 
       // Validate hostname is from trusted domains (UploadThing and Cloudinary)
       // Check for exact match or subdomain match (e.g., utfs.io, abc123.utfs.io, res.cloudinary.com)
-      const trustedDomains = ['utfs.io', 'uploadthing.com', 'ufs.sh', 'cloudinary.com'];
-      const domainChecks = trustedDomains.map((domain) => {
-        const exactMatch = url.hostname === domain;
-        const subdomainMatch = url.hostname.endsWith('.' + domain);
-        const includesMatch = url.hostname.includes(domain);
-        return {
-          domain,
-          exactMatch,
-          subdomainMatch,
-          includesMatch,
-          matches: exactMatch || subdomainMatch || includesMatch,
-        };
-      });
-
-      const isTrusted = domainChecks.some((check) => check.matches);
+      const isTrusted = isTrustedDomain(url.hostname);
 
       logger.info('Domain validation check (by-case)', {
         fullUri: url.href,
         hostname: url.hostname,
-        trustedDomains,
-        domainChecks,
+        trustedDomains: [...FILE_VALIDATION.TRUSTED_DOMAINS],
         isTrusted,
         documentId: doc.id,
       });
@@ -356,8 +342,7 @@ export function DocumentsByCaseTable() {
           hostname: url.hostname,
           host: url.host,
           origin: url.origin,
-          trustedDomains,
-          domainChecks,
+          trustedDomains: [...FILE_VALIDATION.TRUSTED_DOMAINS],
           constructedFileUrl: fileUrl,
           originalFilePath: doc.filePath,
           documentId: doc.id,

@@ -57,6 +57,7 @@ import {
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import Link from 'next/link';
+import { isTrustedDomain } from '@/lib/utils/file-validation';
 import { SimpleSkeleton, SkeletonText } from '@/components/ui/simple-skeleton';
 import { useTranslation } from 'react-i18next';
 import { logger } from '@/lib/utils/logger';
@@ -221,12 +222,9 @@ export function DocumentsTable() {
       logger.info('Constructed file URL (agent)', { fileUrl });
 
       const url = new URL(fileUrl);
-      const trustedDomains = ['utfs.io', 'uploadthing.com', 'ufs.sh', 'cloudinary.com'];
-      const isTrusted = trustedDomains.some(
-        (domain) => url.hostname === domain || url.hostname.endsWith('.' + domain)
-      );
 
-      if (!isTrusted) {
+      // Check if the hostname is from a trusted domain
+      if (!isTrustedDomain(url.hostname)) {
         logger.warn('Document URL is not from trusted domain (agent)', {
           hostname: url.hostname,
           fileUrl,

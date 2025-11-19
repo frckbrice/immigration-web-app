@@ -24,7 +24,7 @@ const getHandler = asyncHandler(async (request: NextRequest) => {
   const { searchParams } = new URL(request.url);
   const caseId = searchParams.get('caseId');
   const type = searchParams.get('type'); // DocumentType enum (PASSPORT, ID_CARD, etc.)
-  const extensionType = searchParams.get('extensionType'); // ALL, PDF, IMAGE
+  const extensionType = searchParams.get('extensionType'); // ALL, PDF, IMAGE, DOC, DOCX, XLS, XLSX
   const status = searchParams.get('status'); // ALL, PENDING, APPROVED, REJECTED
   const pageParam = searchParams.get('page');
   const limitParam = searchParams.get('limit');
@@ -72,7 +72,7 @@ const getHandler = asyncHandler(async (request: NextRequest) => {
     }
   }
 
-  // Filter by extension type (PDF, IMAGE, or ALL)
+  // Filter by extension type (PDF, IMAGE, DOC, DOCX, XLS, XLSX, or ALL)
   if (extensionType && extensionType !== 'ALL') {
     if (extensionType === 'PDF') {
       where.mimeType = 'application/pdf';
