@@ -2,7 +2,7 @@
 
 import { NextRequest } from 'next/server';
 import { prisma } from '@/lib/db/prisma';
-import { ERROR_MESSAGES } from '@/lib/constants';
+import { ERROR_MESSAGES, NOTIFICATION_ACTION_URLS } from '@/lib/constants';
 import { logger } from '@/lib/utils/logger';
 import { successResponse } from '@/lib/utils/api-response';
 import { asyncHandler, ApiError, HttpStatus } from '@/lib/utils/error-handler';
@@ -11,6 +11,7 @@ import { withRateLimit, RateLimitPresets } from '@/lib/middleware/rate-limit';
 import { authenticateToken, AuthenticatedRequest } from '@/lib/auth/middleware';
 import { sendCaseStatusEmail } from '@/lib/notifications/email.service';
 import { createRealtimeNotification } from '@/lib/firebase/notifications.service.server';
+import { sendPushNotificationToUser } from '@/lib/notifications/expo-push.service';
 
 const handler = asyncHandler(
   async (request: NextRequest, context: { params: Promise<{ id: string }> }) => {
@@ -127,18 +128,63 @@ const handler = asyncHandler(
       const clientDisplayName =
         nameParts.length > 0 ? nameParts.join(' ') : caseData.client.email || 'Client';
 
-      await Promise.all([
+      const statusDisplayText = status.replace(/_/g, ' ').toLowerCase();
+      const actionUrl = NOTIFICATION_ACTION_URLS.CASE_STATUS_UPDATE(params.id);
+
+      // 1. Create notification in PostgreSQL database first
+      const notification = await prisma.notification.create({
+        data: {
+          userId: caseData.clientId,
+          caseId: params.id,
+          type: 'CASE_STATUS_UPDATE',
+          title: 'Case Status Updated',
+          message: `Your case ${caseData.referenceNumber} is now ${statusDisplayText}`,
+          actionUrl,
+          isRead: false,
+        },
+      });
+
+      // Compute badge count for push notification (after creating notification)
+      let clientBadge: number | undefined;
+      try {
+        const unread = await prisma.notification.count({
+          where: { userId: caseData.clientId, isRead: false },
+        });
+        clientBadge = unread > 0 ? unread : undefined;
+      } catch (badgeErr) {
+        logger.warn('Failed to compute badge count for push notification', badgeErr);
+      }
+
+      // 2. Send all notifications in parallel (fire-and-forget for non-critical ones)
+      await Promise.allSettled([
+      // Send email notification to CLIENT
         sendCaseStatusEmail(
           caseData.client.email,
           caseData.referenceNumber,
           status,
           clientDisplayName
         ),
+        // Send realtime notification to CLIENT (web dashboard)
         createRealtimeNotification(caseData.clientId, {
           type: 'CASE_STATUS_UPDATE',
           title: 'Case Status Updated',
-          message: `Your case ${caseData.referenceNumber} is now ${status.replace(/_/g, ' ').toLowerCase()}`,
-          actionUrl: `/dashboard/cases/${params.id}`,
+          message: `Your case ${caseData.referenceNumber} is now ${statusDisplayText}`,
+          actionUrl,
+        }),
+        // Send mobile push notification to CLIENT
+        sendPushNotificationToUser(caseData.clientId, {
+          title: 'Case Status Updated',
+          body: `Your case ${caseData.referenceNumber} is now ${statusDisplayText}`,
+          data: {
+            type: 'CASE_STATUS_UPDATE',
+            caseId: params.id,
+            notificationId: notification.id,
+            actionUrl,
+            screen: 'cases',
+            params: { caseId: params.id },
+          },
+          badge: clientBadge,
+          channelId: 'cases',
         }),
       ]);
     } catch (error) {
