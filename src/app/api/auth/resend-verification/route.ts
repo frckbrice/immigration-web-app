@@ -57,8 +57,20 @@ export async function POST(request: NextRequest) {
       }
 
       // Generate email verification link
+      // Use APP_URL for server-side (not NEXT_PUBLIC_APP_URL which is for client-side)
+      const appUrl = process.env.APP_URL;
+      if (!appUrl) {
+        logger.error('APP_URL not configured');
+        return NextResponse.json(
+          {
+            success: false,
+            error: 'Application URL not configured',
+          },
+          { status: 500 }
+        );
+      }
       const verificationLink = await adminAuth.generateEmailVerificationLink(email, {
-        url: `${process.env.NEXT_PUBLIC_APP_URL}/login?verified=true`,
+        url: `${appUrl}/login?verified=true`,
       });
 
       logger.info('Email verification link generated', {
