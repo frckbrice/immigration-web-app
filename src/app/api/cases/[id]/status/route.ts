@@ -157,7 +157,7 @@ const handler = asyncHandler(
 
       // 2. Send all notifications in parallel (fire-and-forget for non-critical ones)
       await Promise.allSettled([
-      // Send email notification to CLIENT
+        // Send email notification to CLIENT
         sendCaseStatusEmail(
           caseData.client.email,
           caseData.referenceNumber,
