@@ -209,11 +209,11 @@ export function DocumentsList() {
 
       const url = new URL(fileUrl);
 
-      // Define trusted domains for file hosting
-      const trustedDomains = ['utfs.io', 'uploadthing.com', 'ufs.sh'];
+      // Define trusted domains for file hosting (UploadThing and Cloudinary)
+      const trustedDomains = ['utfs.io', 'uploadthing.com', 'ufs.sh', 'cloudinary.com'];
 
       // Check if the hostname ends with one of the trusted domains
-      // This will match: *.utfs.io, *.uploadthing.com, *.ufs.sh
+      // This will match: *.utfs.io, *.uploadthing.com, *.ufs.sh, *.cloudinary.com
       const isTrustedDomain = trustedDomains.some(
         (domain) => url.hostname === domain || url.hostname.endsWith('.' + domain)
       );

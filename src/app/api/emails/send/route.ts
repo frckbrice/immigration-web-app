@@ -198,7 +198,8 @@ const postHandler = asyncHandler(async (request: NextRequest) => {
 
   // Create notification for recipient (leverage existing notification system)
   // Skip notifications for 'support' recipientId (system notifications)
-  if (finalRecipientId && finalRecipientId !== 'support') {
+  // CRITICAL: Don't notify the sender - only notify the recipient
+  if (finalRecipientId && finalRecipientId !== 'support' && finalRecipientId !== req.user.userId) {
     try {
       const notification = await prisma.notification.create({
         data: {

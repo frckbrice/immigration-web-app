@@ -178,14 +178,16 @@ export function DocumentCard({
                     variant="outline"
                     size="sm"
                     onClick={onView}
-                    aria-label={`View document: ${document.originalName ?? 'document'}`}
+                    aria-label={t('documents.viewDocumentAria', {
+                      fileName: document.originalName ?? t('documents.document'),
+                    })}
                     className="flex-shrink-0"
                   >
                     <Eye className="h-4 w-4" />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>View Document</p>
+                  <p>{t('documents.viewDocument')}</p>
                 </TooltipContent>
               </Tooltip>
 
@@ -195,14 +197,16 @@ export function DocumentCard({
                     variant="outline"
                     size="sm"
                     onClick={onDownload}
-                    aria-label={`Download document: ${document.originalName ?? 'document'}`}
+                    aria-label={t('documents.downloadDocumentAria', {
+                      fileName: document.originalName ?? t('documents.document'),
+                    })}
                     className="flex-shrink-0"
                   >
                     <Download className="h-4 w-4" />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>Download Document</p>
+                  <p>{t('documents.downloadDocument')}</p>
                 </TooltipContent>
               </Tooltip>
 
@@ -214,14 +218,16 @@ export function DocumentCard({
                       size="sm"
                       onClick={onDelete}
                       disabled={isDeleting}
-                      aria-label={`Delete document: ${document.originalName ?? 'document'}`}
+                      aria-label={t('documents.deleteDocumentAria', {
+                        fileName: document.originalName ?? t('documents.document'),
+                      })}
                       className="flex-shrink-0"
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>Delete Document</p>
+                    <p>{t('documents.deleteDocument')}</p>
                   </TooltipContent>
                 </Tooltip>
               )}
