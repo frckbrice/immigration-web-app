@@ -369,6 +369,9 @@ const postHandler = async (request: NextRequest) => {
 
     // Create notification for original sender (agent/admin)
     // CRITICAL: Don't notify if the reply is from the same person (self-reply edge case)
+    // This ensures:
+    // - Original sender WILL receive notification when someone else replies ✓
+    // - Original sender will NOT receive notification if they reply to themselves ✓
     if (originalMessage.senderId !== replyFromUser.id) {
       const originalSenderName = `${originalMessage.sender.firstName} ${originalMessage.sender.lastName}`;
       const replySenderName = `${replyFromUser.firstName} ${replyFromUser.lastName}`;
