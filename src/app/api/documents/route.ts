@@ -4,6 +4,7 @@
 
 import { NextRequest } from 'next/server';
 import { prisma } from '@/lib/db/prisma';
+import { DocumentType, DocumentStatus } from '@prisma/client';
 import { ERROR_MESSAGES, SUCCESS_MESSAGES, PAGINATION } from '@/lib/constants';
 import { logger } from '@/lib/utils/logger';
 import { successResponse } from '@/lib/utils/api-response';
@@ -22,7 +23,9 @@ const getHandler = asyncHandler(async (request: NextRequest) => {
 
   const { searchParams } = new URL(request.url);
   const caseId = searchParams.get('caseId');
-  const type = searchParams.get('type');
+  const type = searchParams.get('type'); // DocumentType enum (PASSPORT, ID_CARD, etc.)
+  const extensionType = searchParams.get('extensionType'); // ALL, PDF, IMAGE
+  const status = searchParams.get('status'); // ALL, PENDING, APPROVED, REJECTED
   const pageParam = searchParams.get('page');
   const limitParam = searchParams.get('limit');
 
@@ -52,8 +55,63 @@ const getHandler = asyncHandler(async (request: NextRequest) => {
     where.caseId = caseId;
   }
 
+  // Filter by DocumentType enum (PASSPORT, ID_CARD, etc.)
   if (type) {
-    where.documentType = type;
+    // Validate that type is a valid DocumentType enum value
+    const validDocumentTypes = Object.values(DocumentType);
+    if (validDocumentTypes.includes(type as DocumentType)) {
+      where.documentType = type as DocumentType;
+    } else {
+      // Invalid document type - log warning but don't filter by type
+      logger.warn('Invalid document type in query parameter', {
+        type,
+        validTypes: validDocumentTypes,
+        userId: req.user.userId,
+      });
+      // Don't filter by type if invalid - return all documents
+    }
+  }
+
+  // Filter by extension type (PDF, IMAGE, or ALL)
+  if (extensionType && extensionType !== 'ALL') {
+    if (extensionType === 'PDF') {
+      where.mimeType = 'application/pdf';
+    } else if (extensionType === 'DOC') {
+      where.mimeType = 'application/msword';
+    } else if (extensionType === 'DOCX') {
+      where.mimeType = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+    } else if (extensionType === 'XLS') {
+      where.mimeType = 'application/vnd.ms-excel';
+    } else if (extensionType === 'XLSX') {
+      where.mimeType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+    } else if (extensionType === 'IMAGE') {
+      where.mimeType = {
+        startsWith: 'image/',
+      };
+    } else {
+      // Invalid extension type - log warning
+      logger.warn('Invalid extension type in query parameter', {
+        extensionType,
+        validTypes: ['ALL', 'PDF', 'IMAGE', 'DOC', 'DOCX', 'XLS', 'XLSX'],
+        userId: req.user.userId,
+      });
+    }
+  }
+
+  // Filter by document status (PENDING, APPROVED, REJECTED, or ALL)
+  if (status && status !== 'ALL') {
+    // Validate that status is a valid DocumentStatus enum value
+    const validStatuses = Object.values(DocumentStatus);
+    if (validStatuses.includes(status as DocumentStatus)) {
+      where.status = status as DocumentStatus;
+    } else {
+      // Invalid status - log warning but don't filter by status
+      logger.warn('Invalid document status in query parameter', {
+        status,
+        validStatuses,
+        userId: req.user.userId,
+      });
+    }
   }
 
   const [documents, total] = await Promise.all([

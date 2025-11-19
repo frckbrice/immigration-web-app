@@ -764,18 +764,18 @@ export function MessagesList({
         </div>
         <Button
           onClick={() => setEmailComposerOpen(true)}
-          className="gap-2 w-full sm:w-auto !text-white hover:opacity-90 transition-opacity"
+          className="gap-2 w-full sm:w-auto text-white hover:opacity-90 transition-opacity h-8 sm:h-9 text-xs sm:text-sm"
           style={{
-            backgroundColor: '#361d22 !important',
-            borderColor: '#ff4538 !important',
+            backgroundColor: '#361d22',
+            borderColor: '#ff4538',
             borderWidth: '1px',
             borderStyle: 'solid',
-            color: 'white !important',
+            color: 'white',
           }}
         >
-          <Mail className="h-4 w-4 !text-white" />
-          <span className="hidden sm:inline !text-white">{t('messages.sendEmail')}</span>
-          <span className="sm:hidden !text-white">{t('messages.email')}</span>
+          <Mail className="h-3.5 w-3.5 sm:h-4 sm:w-4" style={{ color: '#ff4538' }} />
+          <span className="hidden sm:inline">{t('messages.sendEmail')}</span>
+          <span className="sm:hidden">{t('messages.email')}</span>
         </Button>
       </div>
 
