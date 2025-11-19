@@ -326,10 +326,23 @@ export function EmailComposer({
                 <Mail className="h-4 w-4 sm:h-5 sm:w-5" style={{ color: '#ff4538' }} />
               </div>
               <div className="flex-1 min-w-0">
-                <h4 className="font-semibold text-xs sm:text-sm">{t('email.sendingEmailTo')}</h4>
-                <p className="text-xs sm:text-sm font-medium mt-1 truncate">{recipientName}</p>
+                <h4
+                  className="font-semibold text-xs sm:text-sm"
+                  style={{ color: 'rgba(255, 255, 255, 0.7)' }}
+                >
+                  {t('email.sendingEmailTo')}
+                </h4>
+                <p
+                  className="text-xs sm:text-sm font-medium mt-1 truncate"
+                  style={{ color: 'rgba(255, 255, 255, 0.9)' }}
+                >
+                  {recipientName}
+                </p>
                 {recipientEmail && (
-                  <p className="text-xs text-muted-foreground truncate break-all">
+                  <p
+                    className="text-xs truncate break-all"
+                    style={{ color: 'rgba(255, 255, 255, 0.7)' }}
+                  >
                     {recipientEmail}
                   </p>
                 )}

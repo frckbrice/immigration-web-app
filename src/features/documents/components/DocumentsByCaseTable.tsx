@@ -265,29 +265,73 @@ export function DocumentsByCaseTable() {
 
   const handleView = (doc: Document) => {
     try {
+      logger.info('Attempting to view document (by-case)', {
+        filePath: doc.filePath,
+        documentId: doc.id,
+        fileName: doc.fileName,
+      });
+
       if (!doc.filePath) {
+        logger.error('Document filePath is empty (by-case)', {
+          documentId: doc.id,
+          fileName: doc.fileName,
+        });
         toast.error(t('documents.invalidDocumentUrl'));
         return;
       }
 
       let fileUrl = doc.filePath;
+
+      // If it's not a full URL, add https://
       if (!fileUrl.startsWith('http://') && !fileUrl.startsWith('https://')) {
+        logger.warn('Document filePath is not a full URL (by-case), adding https://', {
+          filePath: doc.filePath,
+          documentId: doc.id,
+        });
         fileUrl = `https://${fileUrl}`;
       }
 
-      const url = new URL(fileUrl);
+      logger.info('Constructed file URL (by-case)', { fileUrl, documentId: doc.id });
+
+      // Validate URL format
+      let url: URL;
+      try {
+        url = new URL(fileUrl);
+      } catch (urlError) {
+        logger.error('Invalid URL format (by-case)', {
+          error: urlError instanceof Error ? urlError.message : String(urlError),
+          filePath: doc.filePath,
+          fileUrl,
+          documentId: doc.id,
+        });
+        toast.error(t('documents.invalidDocumentUrl'));
+        return;
+      }
+
       const trustedDomains = ['utfs.io', 'uploadthing.com', 'ufs.sh'];
       const isTrusted = trustedDomains.some(
         (domain) => url.hostname === domain || url.hostname.endsWith('.' + domain)
       );
 
       if (!isTrusted) {
+        logger.warn('Document URL is not from trusted domain (by-case)', {
+          hostname: url.hostname,
+          fileUrl,
+          documentId: doc.id,
+          trustedDomains,
+        });
         toast.error(t('documents.invalidDocumentUrl'));
         return;
       }
 
+      logger.info('Opening document in new tab (by-case)', { fileUrl, documentId: doc.id });
       window.open(fileUrl, '_blank', 'noopener,noreferrer');
     } catch (error) {
+      logger.error('Failed to open document (by-case)', error, {
+        filePath: doc.filePath,
+        documentId: doc.id,
+        fileName: doc.fileName,
+      });
       toast.error(t('documents.invalidDocumentUrl'));
     }
   };
