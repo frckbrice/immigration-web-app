@@ -831,3 +831,83 @@ export function getPasswordResetEmailTemplate(data: PasswordResetEmailData): {
     html: minifyForProduction(html),
   };
 }
+
+export interface VerificationEmailData {
+  clientName: string;
+  verificationLink: string;
+}
+
+export function getVerificationEmailTemplate(data: VerificationEmailData): {
+  subject: string;
+  html: string;
+} {
+  const greetingName = data.clientName?.trim().length ? data.clientName : 'there';
+  const html = `
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Verify Your Email</title>
+  </head>
+  <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #ffffff; background-color: #091a24; margin: 0; padding: 0;">
+    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+      <tr>
+        <td align="center" style="padding: 30px 16px;">
+          <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="max-width: 600px; background: #0f2531; border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.08); overflow: hidden;">
+            <tr>
+              <td style="background: linear-gradient(135deg, #0066CC 0%, #0052A3 100%); padding: 32px 24px; text-align: center;">
+                <h1 style="margin: 0; font-size: 28px; color: white; font-weight: 700;">Verify Your Email Address</h1>
+                <p style="margin: 12px 0 0; color: rgba(255,255,255,0.85); font-size: 16px;">Complete your account setup with Patrick Travel Services</p>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding: 32px 24px;">
+                <p style="margin: 0 0 16px; font-size: 16px; color: rgba(255,255,255,0.9);">
+                  Hi <strong>${greetingName}</strong>,
+                </p>
+                <p style="margin: 0 0 16px; font-size: 16px; color: rgba(255,255,255,0.7);">
+                  Thank you for signing up! To complete your registration and start using your account, please verify your email address by clicking the button below. This link will expire in 24 hours for security reasons.
+                </p>
+                <div style="text-align: center; margin: 32px 0;">
+                  <a href="${data.verificationLink}" style="display: inline-block; padding: 16px 32px; background: #0066CC; color: #ffffff; text-decoration: none; border-radius: 999px; font-weight: 600; font-size: 16px; letter-spacing: 0.5px;">
+                    Verify Email Address
+                  </a>
+                </div>
+                <p style="margin: 0 0 16px; font-size: 14px; color: rgba(255,255,255,0.6);">
+                  If the button above doesn't work, copy and paste this link into your browser:
+                </p>
+                <p style="word-break: break-all; font-size: 14px; color: rgba(255,255,255,0.8); margin: 0 0 24px;">
+                  <a href="${data.verificationLink}" style="color: #4a9eff;">${data.verificationLink}</a>
+                </p>
+                <div style="background: rgba(255, 255, 255, 0.04); padding: 16px 20px; border-radius: 12px; border-left: 4px solid rgba(0, 102, 204, 0.6); margin-bottom: 24px;">
+                  <p style="margin: 0; font-size: 14px; color: rgba(255,255,255,0.7);">
+                    ✉️ If you didn't create an account, you can safely ignore this email.
+                  </p>
+                </div>
+                <p style="margin: 0; font-size: 14px; color: rgba(255,255,255,0.6);">
+                  Best regards,<br />
+                  <strong style="color: rgba(255,255,255,0.9);">${COMPANY_NAME}</strong>
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding: 20px; text-align: center; background: #0c1b24; border-top: 1px solid rgba(255, 255, 255, 0.05);">
+                <p style="margin: 0; font-size: 12px; color: rgba(255,255,255,0.4);">
+                  © ${new Date().getFullYear()} ${COMPANY_NAME}. All rights reserved.
+                </p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
+`;
+
+  return {
+    subject: 'Verify Your Email Address - Patrick Travel Services',
+    html: minifyForProduction(html),
+  };
+}

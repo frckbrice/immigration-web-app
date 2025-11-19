@@ -3,6 +3,8 @@ import { adminAuth } from '@/lib/firebase/firebase-admin';
 import { logger } from '@/lib/utils/logger';
 import { z } from 'zod';
 import { normalizeEmail } from '@/lib/utils/email';
+import { prisma } from '@/lib/db/prisma';
+import { sendVerificationEmail } from '@/lib/notifications/email.service';
 
 const resendVerificationSchema = z.object({
   email: z.string().email('Invalid email address'),
@@ -78,28 +80,54 @@ export async function POST(request: NextRequest) {
         email: email,
       });
 
-      // In a real app, you would send this via email service
-      // For now, Firebase will handle sending if using client SDK
-      // Or you can integrate with SendGrid/Mailgun/etc here
+      // Get user name from database if available
+      let userName: string | undefined;
+      try {
+        const dbUser = await prisma.user.findUnique({
+          where: { email },
+          select: { firstName: true, lastName: true },
+        });
+        if (dbUser?.firstName && dbUser?.lastName) {
+          userName = `${dbUser.firstName} ${dbUser.lastName}`;
+        } else if (dbUser?.firstName) {
+          userName = dbUser.firstName;
+        }
+      } catch (_dbError) {
+        // If database lookup fails, continue without name
+        logger.warn('Could not fetch user name from database', { email });
+      }
 
+      // Send verification email using Nodemailer service
+      try {
+        await sendVerificationEmail({
+          to: email,
+          clientName: userName || userRecord.displayName || 'there',
+          verificationLink,
+        });
+        logger.info('Verification email sent successfully', { email });
+      } catch (emailError) {
+        // Log email error but don't fail the request
+        // The link was generated successfully, user can request another email
+        logger.error('Failed to send verification email', emailError);
+        // Still return success to avoid revealing if user exists
+      }
+
+      // For security, always return success (don't reveal if user exists)
       return NextResponse.json({
         success: true,
-        message: 'Verification email sent successfully',
-        data: {
-          // Don't send the actual link in production
-          // link: verificationLink,
-        },
+        message:
+          'If an account exists with this email and is not yet verified, a verification link has been sent',
       });
     } catch (error: any) {
       // Handle Firebase errors
       if (error.code === 'auth/user-not-found') {
-        return NextResponse.json(
-          {
-            success: false,
-            error: 'No account found with this email address',
-          },
-          { status: 404 }
-        );
+        logger.warn('Verification resend attempted for non-existent email', { email });
+        // For security, always return success (don't reveal if user exists)
+        return NextResponse.json({
+          success: true,
+          message:
+            'If an account exists with this email and is not yet verified, a verification link has been sent',
+        });
       }
 
       throw error;
