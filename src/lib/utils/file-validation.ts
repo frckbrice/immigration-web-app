@@ -38,7 +38,7 @@ export const FILE_VALIDATION = {
   },
 
   // Trusted domains for file hosting (used for document viewing security)
-  TRUSTED_DOMAINS: ['utfs.io', 'uploadthing.com', 'ufs.sh', 'cloudinary.com'] as const,
+  TRUSTED_DOMAINS: ['utfs.io', 'uploadthing.com', 'ufs.sh', 'res.cloudinary.com'] as const,
 };
 
 export interface FileValidationError {
