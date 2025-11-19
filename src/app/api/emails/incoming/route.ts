@@ -368,65 +368,74 @@ const postHandler = async (request: NextRequest) => {
     });
 
     // Create notification for original sender (agent/admin)
-    const originalSenderName = `${originalMessage.sender.firstName} ${originalMessage.sender.lastName}`;
-    const replySenderName = `${replyFromUser.firstName} ${replyFromUser.lastName}`;
+    // CRITICAL: Don't notify if the reply is from the same person (self-reply edge case)
+    if (originalMessage.senderId !== replyFromUser.id) {
+      const originalSenderName = `${originalMessage.sender.firstName} ${originalMessage.sender.lastName}`;
+      const replySenderName = `${replyFromUser.firstName} ${replyFromUser.lastName}`;
 
-    const notification = await prisma.notification.create({
-      data: {
-        userId: originalMessage.senderId,
-        caseId: originalMessage.caseId,
-        type: NotificationType.NEW_EMAIL,
-        title: `Email reply from ${replySenderName}`,
-        message: `Subject: ${finalSubject.substring(0, 100)}${finalSubject.length > 100 ? '...' : ''}`,
-        isRead: false,
-        actionUrl: `/dashboard/messages?tab=received&messageId=${replyMessage.id}`,
-      },
-    });
-
-    // Send Firebase realtime notification (fire-and-forget)
-    createRealtimeNotification(originalMessage.senderId, {
-      type: notification.type,
-      title: notification.title,
-      message: notification.message,
-      actionUrl: notification.actionUrl || undefined,
-    }).catch((error) => {
-      logger.warn('Failed to create Firebase notification for email reply', {
-        error,
-        notificationId: notification.id,
-        userId: originalMessage.senderId,
-      });
-    });
-
-    // Send push notification to original sender (fire-and-forget)
-    (async () => {
-      let badge: number | undefined;
-      try {
-        const unread = await prisma.notification.count({
-          where: { userId: originalMessage.senderId, isRead: false },
-        });
-        badge = unread > 0 ? unread : undefined;
-      } catch {}
-      await sendPushNotificationToUser(originalMessage.senderId, {
-        title: notification.title,
-        body: notification.message,
+      const notification = await prisma.notification.create({
         data: {
-          type: notification.type,
-          notificationId: notification.id,
-          caseId: notification.caseId || undefined,
-          actionUrl: notification.actionUrl || undefined,
-          screen: 'messages',
-          params: { caseId: notification.caseId || undefined, messageId: replyMessage.id },
+          userId: originalMessage.senderId,
+          caseId: originalMessage.caseId,
+          type: NotificationType.NEW_EMAIL,
+          title: `Email reply from ${replySenderName}`,
+          message: `Subject: ${finalSubject.substring(0, 100)}${finalSubject.length > 100 ? '...' : ''}`,
+          isRead: false,
+          actionUrl: `/dashboard/messages?tab=received&messageId=${replyMessage.id}`,
         },
-        badge,
-        channelId: 'emails',
       });
-    })().catch((error) => {
-      logger.warn('Failed to send push notification for email reply', {
-        error,
+
+      // Send Firebase realtime notification (fire-and-forget)
+      createRealtimeNotification(originalMessage.senderId, {
+        type: notification.type,
+        title: notification.title,
+        message: notification.message,
+        actionUrl: notification.actionUrl || undefined,
+      }).catch((error) => {
+        logger.warn('Failed to create Firebase notification for email reply', {
+          error,
+          notificationId: notification.id,
+          userId: originalMessage.senderId,
+        });
+      });
+
+      // Send push notification to original sender (fire-and-forget)
+      (async () => {
+        let badge: number | undefined;
+        try {
+          const unread = await prisma.notification.count({
+            where: { userId: originalMessage.senderId, isRead: false },
+          });
+          badge = unread > 0 ? unread : undefined;
+        } catch {}
+        await sendPushNotificationToUser(originalMessage.senderId, {
+          title: notification.title,
+          body: notification.message,
+          data: {
+            type: notification.type,
+            notificationId: notification.id,
+            caseId: notification.caseId || undefined,
+            actionUrl: notification.actionUrl || undefined,
+            screen: 'messages',
+            params: { caseId: notification.caseId || undefined, messageId: replyMessage.id },
+          },
+          badge,
+          channelId: 'emails',
+        });
+      })().catch((error) => {
+        logger.warn('Failed to send push notification for email reply', {
+          error,
+          userId: originalMessage.senderId,
+          notificationId: notification.id,
+        });
+      });
+    } else {
+      logger.info('Skipping notification for self-reply', {
         userId: originalMessage.senderId,
-        notificationId: notification.id,
+        replyMessageId: replyMessage.id,
+        originalMessageId: originalMessage.id,
       });
-    });
+    }
 
     return NextResponse.json({
       success: true,

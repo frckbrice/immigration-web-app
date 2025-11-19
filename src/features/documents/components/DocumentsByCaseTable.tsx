@@ -291,40 +291,87 @@ export function DocumentsByCaseTable() {
         fileUrl = `https://${fileUrl}`;
       }
 
-      logger.info('Constructed file URL (by-case)', { fileUrl, documentId: doc.id });
+      logger.info('Constructed file URL (by-case)', {
+        originalFilePath: doc.filePath,
+        constructedFileUrl: fileUrl,
+        documentId: doc.id,
+      });
 
       // Validate URL format
       let url: URL;
       try {
         url = new URL(fileUrl);
+        logger.info('URL parsed successfully (by-case)', {
+          fullUri: url.href,
+          protocol: url.protocol,
+          hostname: url.hostname,
+          host: url.host,
+          pathname: url.pathname,
+          search: url.search,
+          hash: url.hash,
+          origin: url.origin,
+          documentId: doc.id,
+        });
       } catch (urlError) {
         logger.error('Invalid URL format (by-case)', {
           error: urlError instanceof Error ? urlError.message : String(urlError),
-          filePath: doc.filePath,
-          fileUrl,
+          originalFilePath: doc.filePath,
+          constructedFileUrl: fileUrl,
           documentId: doc.id,
         });
         toast.error(t('documents.invalidDocumentUrl'));
         return;
       }
 
-      const trustedDomains = ['utfs.io', 'uploadthing.com', 'ufs.sh'];
-      const isTrusted = trustedDomains.some(
-        (domain) => url.hostname === domain || url.hostname.endsWith('.' + domain)
-      );
+      // Validate hostname is from trusted domains (UploadThing and Cloudinary)
+      // Check for exact match or subdomain match (e.g., utfs.io, abc123.utfs.io, res.cloudinary.com)
+      const trustedDomains = ['utfs.io', 'uploadthing.com', 'ufs.sh', 'cloudinary.com'];
+      const domainChecks = trustedDomains.map((domain) => {
+        const exactMatch = url.hostname === domain;
+        const subdomainMatch = url.hostname.endsWith('.' + domain);
+        const includesMatch = url.hostname.includes(domain);
+        return {
+          domain,
+          exactMatch,
+          subdomainMatch,
+          includesMatch,
+          matches: exactMatch || subdomainMatch || includesMatch,
+        };
+      });
+
+      const isTrusted = domainChecks.some((check) => check.matches);
+
+      logger.info('Domain validation check (by-case)', {
+        fullUri: url.href,
+        hostname: url.hostname,
+        trustedDomains,
+        domainChecks,
+        isTrusted,
+        documentId: doc.id,
+      });
 
       if (!isTrusted) {
         logger.warn('Document URL is not from trusted domain (by-case)', {
+          fullUri: url.href,
           hostname: url.hostname,
-          fileUrl,
-          documentId: doc.id,
+          host: url.host,
+          origin: url.origin,
           trustedDomains,
+          domainChecks,
+          constructedFileUrl: fileUrl,
+          originalFilePath: doc.filePath,
+          documentId: doc.id,
         });
         toast.error(t('documents.invalidDocumentUrl'));
         return;
       }
 
-      logger.info('Opening document in new tab (by-case)', { fileUrl, documentId: doc.id });
+      logger.info('Opening document in new tab (by-case)', {
+        fullUri: url.href,
+        fileUrl,
+        hostname: url.hostname,
+        documentId: doc.id,
+      });
       window.open(fileUrl, '_blank', 'noopener,noreferrer');
     } catch (error) {
       logger.error('Failed to open document (by-case)', error, {
