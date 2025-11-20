@@ -8,8 +8,6 @@ import { useTranslation } from 'react-i18next';
 import Link from 'next/link';
 import { z } from 'zod';
 import { Eye, EyeOff } from 'lucide-react';
-import { confirmPasswordReset } from 'firebase/auth';
-import { auth } from '@/lib/firebase/firebase-client';
 import { toast } from 'sonner';
 import { logger } from '@/lib/utils/logger';
 import { Button } from '@/components/ui/button';
@@ -31,10 +29,17 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { useAuthStore } from '@/features/auth/store';
+import { apiClient } from '@/lib/utils/axios';
+import axios from 'axios';
 
 const resetPasswordSchema = z
   .object({
-    password: z.string().min(6, 'Password must be at least 6 characters'),
+    password: z
+      .string()
+      .min(8, 'Password must be at least 8 characters')
+      .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
+      .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
+      .regex(/[0-9]/, 'Password must contain at least one number'),
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
@@ -77,27 +82,24 @@ function ResetPasswordForm() {
       return;
     }
 
-    if (!auth) {
-      toast.error('Firebase Auth is not initialized. Please refresh the page.');
-      return;
-    }
     try {
-      await confirmPasswordReset(auth, oobCode, data.password);
-      toast.success('Password reset successful! You can now log in.');
+      const response = await apiClient.post('/api/auth/reset-password', {
+        oobCode,
+        password: data.password,
+      });
+
+      toast.success(response.data?.message || 'Password reset successful! You can now log in.');
       logger.info('Password reset successful');
       router.push('/login');
     } catch (error: any) {
       logger.error('Reset password error', error);
 
-      if (error.code === 'auth/expired-action-code') {
-        toast.error('Reset link has expired. Please request a new one.');
-      } else if (error.code === 'auth/invalid-action-code') {
-        toast.error('Invalid reset link. Please request a new one.');
-      } else if (error.code === 'auth/weak-password') {
-        toast.error('Password is too weak. Please use a stronger password.');
-      } else {
-        toast.error('Failed to reset password. Please try again.');
-      }
+      const errorMessage =
+        axios.isAxiosError(error) && error.response?.data?.error
+          ? error.response.data.error
+          : 'Failed to reset password. Please try again.';
+
+      toast.error(errorMessage);
     }
   };
 

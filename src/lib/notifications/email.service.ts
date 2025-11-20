@@ -6,6 +6,7 @@ import { escapeHtml } from '@/lib/utils/helpers';
 import {
   getAppointmentScheduledEmailTemplate,
   getPasswordResetEmailTemplate,
+  getVerificationEmailTemplate,
 } from './email-templates';
 
 const transporter = nodemailer.createTransport({
@@ -263,6 +264,23 @@ export async function sendPasswordResetEmail(options: {
   const template = getPasswordResetEmailTemplate({
     clientName: options.clientName || 'there',
     resetLink: options.resetLink,
+  });
+
+  await sendEmail({
+    to: options.to,
+    subject: template.subject,
+    html: template.html,
+  });
+}
+
+export async function sendVerificationEmail(options: {
+  to: string;
+  clientName?: string;
+  verificationLink: string;
+}) {
+  const template = getVerificationEmailTemplate({
+    clientName: options.clientName || 'there',
+    verificationLink: options.verificationLink,
   });
 
   await sendEmail({

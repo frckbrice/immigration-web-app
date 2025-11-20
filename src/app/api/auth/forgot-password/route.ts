@@ -31,10 +31,11 @@ export async function POST(request: NextRequest) {
     }
 
     const email = normalizeEmail(validation.data.email);
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL;
+    // Use APP_URL for server-side (not NEXT_PUBLIC_APP_URL which is for client-side)
+    const appUrl = process.env.APP_URL;
 
     if (!appUrl) {
-      logger.error('NEXT_PUBLIC_APP_URL not configured');
+      logger.error('APP_URL not configured');
       return NextResponse.json(
         {
           success: false,
