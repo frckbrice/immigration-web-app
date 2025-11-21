@@ -195,6 +195,16 @@ const handler = asyncHandler(async (request: NextRequest) => {
   const firstName = names[0] || 'User';
   const lastName = names.slice(1).join(' ') || '';
 
+  // Auto-provision GDPR consent when user signs in with Google (implicit consent by authentication)
+  const consentTimestamp = new Date();
+  const gdprData = {
+    consentedAt: consentTimestamp,
+    acceptedTerms: true,
+    acceptedPrivacy: true,
+    termsAcceptedAt: consentTimestamp,
+    privacyAcceptedAt: consentTimestamp,
+  };
+
   try {
     user = await prisma.user.create({
       data: {
@@ -208,6 +218,7 @@ const handler = asyncHandler(async (request: NextRequest) => {
         isVerified: true, // Google accounts are already verified
         profilePicture: photoURL || null,
         firebaseId: firebaseUid, // Link Firebase UID
+        ...gdprData, // Include GDPR consent fields
       },
       select: {
         id: true,
@@ -225,6 +236,14 @@ const handler = asyncHandler(async (request: NextRequest) => {
         createdAt: true,
         updatedAt: true,
         lastLogin: true,
+        // GDPR Consent Fields
+        consentedAt: true,
+        acceptedTerms: true,
+        acceptedPrivacy: true,
+        termsAcceptedAt: true,
+        privacyAcceptedAt: true,
+        dataExportRequests: true,
+        lastDataExport: true,
       },
     });
 

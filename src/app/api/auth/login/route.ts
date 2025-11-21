@@ -153,6 +153,16 @@ const handler = asyncHandler(async (request: NextRequest) => {
         hint: firebaseEmail?.substring(0, 5) + '...',
       });
 
+      // Auto-provision GDPR consent when user logs in (implicit consent by authentication)
+      const consentTimestamp = new Date();
+      const gdprData = {
+        consentedAt: consentTimestamp,
+        acceptedTerms: true,
+        acceptedPrivacy: true,
+        termsAcceptedAt: consentTimestamp,
+        privacyAcceptedAt: consentTimestamp,
+      };
+
       const created = await prisma.user.create({
         data: {
           email: normalizedFirebaseEmail,
@@ -163,6 +173,7 @@ const handler = asyncHandler(async (request: NextRequest) => {
           isActive: true,
           isVerified: true,
           firebaseId: firebaseUid,
+          ...gdprData, // Include GDPR consent fields
         },
         select: {
           id: true,
@@ -180,6 +191,14 @@ const handler = asyncHandler(async (request: NextRequest) => {
           createdAt: true,
           updatedAt: true,
           firebaseId: true,
+          // GDPR Consent Fields
+          consentedAt: true,
+          acceptedTerms: true,
+          acceptedPrivacy: true,
+          termsAcceptedAt: true,
+          privacyAcceptedAt: true,
+          dataExportRequests: true,
+          lastDataExport: true,
         },
       });
 
