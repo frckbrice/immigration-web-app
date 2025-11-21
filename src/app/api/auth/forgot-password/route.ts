@@ -61,9 +61,34 @@ export async function POST(request: NextRequest) {
       const userRecord = await adminAuth.getUserByEmail(email);
 
       // Generate password reset link using Firebase Admin SDK
-      const resetLink = await adminAuth.generatePasswordResetLink(email, {
-        url: `${appUrl}/reset-password`,
-      });
+      let resetLink: string;
+      try {
+        resetLink = await adminAuth.generatePasswordResetLink(email, {
+          url: `${appUrl}/reset-password`,
+        });
+      } catch (linkError: any) {
+        // Handle domain not allowlisted error
+        if (
+          linkError.message?.includes('Domain not allowlisted') ||
+          linkError.message?.includes('not allowlisted by project')
+        ) {
+          logger.error('Domain not allowlisted in Firebase', {
+            appUrl,
+            error: linkError.message,
+            hint: 'Add the domain to Firebase Console > Authentication > Settings > Authorized domains',
+          });
+          return NextResponse.json(
+            {
+              success: false,
+              error: 'Password reset service is not properly configured. Please contact support.',
+              message:
+                'The application domain needs to be authorized in Firebase. Please contact the administrator.',
+            },
+            { status: 500 }
+          );
+        }
+        throw linkError;
+      }
 
       logger.info('Password reset link generated', {
         userId: userRecord.uid,
@@ -117,15 +142,33 @@ export async function POST(request: NextRequest) {
         });
       }
 
+      // Re-throw domain allowlist errors (already handled above)
+      if (
+        error.message?.includes('Domain not allowlisted') ||
+        error.message?.includes('not allowlisted by project')
+      ) {
+        throw error;
+      }
+
       throw error;
     }
   } catch (error: any) {
     logger.error('Forgot password error', { error: error.message });
+
+    // Don't expose internal error details to client for security
+    const isDomainError =
+      error.message?.includes('Domain not allowlisted') ||
+      error.message?.includes('not allowlisted by project');
+
     return NextResponse.json(
       {
         success: false,
-        error: 'Failed to process password reset request',
-        message: error.message,
+        error: isDomainError
+          ? 'Password reset service is not properly configured. Please contact support.'
+          : 'Failed to process password reset request',
+        message: isDomainError
+          ? 'The application domain needs to be authorized in Firebase. Please contact the administrator.'
+          : 'An error occurred while processing your request. Please try again later.',
       },
       { status: 500 }
     );
