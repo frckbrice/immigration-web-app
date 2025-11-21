@@ -80,8 +80,7 @@ export async function POST(request: NextRequest) {
           return NextResponse.json(
             {
               success: false,
-              error:
-                'Password reset service is not properly configured. Please contact support.',
+              error: 'Password reset service is not properly configured. Please contact support.',
               message:
                 'The application domain needs to be authorized in Firebase. Please contact the administrator.',
             },

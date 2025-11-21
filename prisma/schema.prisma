@@ -8,59 +8,59 @@ datasource db {
 }
 
 model User {
-  id                   String             @id @default(uuid())
-  email                String             @unique
-  password             String
-  firstName            String
-  lastName             String
-  phone                String?
-  street               String?
-  city                 String?
-  country              String?
-  profilePicture       String?
-  role                 Role               @default(CLIENT)
-  isActive             Boolean            @default(true)
-  isVerified           Boolean            @default(false)
-  verificationToken    String?
-  resetToken           String?
-  resetTokenExpiry     DateTime?
-  lastLogin            DateTime?
-  createdAt            DateTime           @default(now())
-  updatedAt            DateTime           @updatedAt
-  acceptedPrivacy      Boolean?
-  acceptedTerms        Boolean?
-  consentedAt          DateTime?
-  dataExportRequests   Int                @default(0)
-  deletionReason       String?
-  deletionScheduledFor DateTime?
-  lastDataExport       DateTime?
-  privacyAcceptedAt    DateTime?
-  termsAcceptedAt      DateTime?
-  firebaseId           String?            @unique
-  hasPaid              Boolean            @default(false)
-  subscriptionTier     String?            // Basic, Standard, Premium
-  paymentDate          DateTime?
-  subscriptionExpiresAt DateTime?         // For tracking purposes (one-time payment)
-  activityLogs         ActivityLog[]
-  assignedCases        Case[]             @relation("AgentCases")
-  cases                Case[]             @relation("ClientCases")
-  destinationsCreated  Destination[]      @relation("DestinationsCreated")
-  documents            Document[]
-  templatesCreated     DocumentTemplate[] @relation("TemplatesCreated")
-  inviteCodesCreated   InviteCode[]       @relation("CreatedInviteCodes")
-  inviteCodesLastUsed  InviteCode[]       @relation("LastUsedInviteCodes")
-  inviteUsages         InviteUsage[]      @relation("UserInviteUsages")
-  receivedMessages     Message[]          @relation("ReceivedMessages")
-  sentMessages         Message[]          @relation("SentMessages")
-  notifications        Notification[]
-  transferredFrom      TransferHistory[]  @relation("TransferFrom")
-  transferredTo        TransferHistory[]  @relation("TransferTo")
-  transfersInitiated   TransferHistory[]  @relation("TransferInitiator")
-  payments             Payment[]
-  refunds              Refund[]
-  appointmentsCreated  Appointment[]      @relation("CreatedAppointments")
-  clientAppointments   Appointment[]      @relation("ClientAppointments")
-  assignedAppointments Appointment[]      @relation("AssignedAgentAppointments")
+  id                    String             @id @default(uuid())
+  email                 String             @unique
+  password              String
+  firstName             String
+  lastName              String
+  phone                 String?
+  street                String?
+  city                  String?
+  country               String?
+  profilePicture        String?
+  role                  Role               @default(CLIENT)
+  isActive              Boolean            @default(true)
+  isVerified            Boolean            @default(false)
+  verificationToken     String?
+  resetToken            String?
+  resetTokenExpiry      DateTime?
+  lastLogin             DateTime?
+  createdAt             DateTime           @default(now())
+  updatedAt             DateTime           @updatedAt
+  acceptedPrivacy       Boolean?
+  acceptedTerms         Boolean?
+  consentedAt           DateTime?
+  dataExportRequests    Int                @default(0)
+  deletionReason        String?
+  deletionScheduledFor  DateTime?
+  lastDataExport        DateTime?
+  privacyAcceptedAt     DateTime?
+  termsAcceptedAt       DateTime?
+  firebaseId            String?            @unique
+  hasPaid               Boolean            @default(false)
+  subscriptionTier      String? // Basic, Standard, Premium
+  paymentDate           DateTime?
+  subscriptionExpiresAt DateTime? // For tracking purposes (one-time payment)
+  activityLogs          ActivityLog[]
+  assignedCases         Case[]             @relation("AgentCases")
+  cases                 Case[]             @relation("ClientCases")
+  destinationsCreated   Destination[]      @relation("DestinationsCreated")
+  documents             Document[]
+  templatesCreated      DocumentTemplate[] @relation("TemplatesCreated")
+  inviteCodesCreated    InviteCode[]       @relation("CreatedInviteCodes")
+  inviteCodesLastUsed   InviteCode[]       @relation("LastUsedInviteCodes")
+  inviteUsages          InviteUsage[]      @relation("UserInviteUsages")
+  receivedMessages      Message[]          @relation("ReceivedMessages")
+  sentMessages          Message[]          @relation("SentMessages")
+  notifications         Notification[]
+  transferredFrom       TransferHistory[]  @relation("TransferFrom")
+  transferredTo         TransferHistory[]  @relation("TransferTo")
+  transfersInitiated    TransferHistory[]  @relation("TransferInitiator")
+  payments              Payment[]
+  refunds               Refund[]
+  appointmentsCreated   Appointment[]      @relation("CreatedAppointments")
+  clientAppointments    Appointment[]      @relation("ClientAppointments")
+  assignedAppointments  Appointment[]      @relation("AssignedAgentAppointments")
 
   @@index([email])
   @@index([role])
@@ -173,20 +173,20 @@ model Message {
 }
 
 model Notification {
-  id        String           @id @default(uuid())
-  userId    String
-  caseId    String?
+  id            String           @id @default(uuid())
+  userId        String
+  caseId        String?
   appointmentId String?
-  type      NotificationType
-  title     String
-  message   String
-  isRead    Boolean          @default(false)
-  readAt    DateTime?
-  createdAt DateTime         @default(now())
-  actionUrl String?
-  case      Case?            @relation(fields: [caseId], references: [id])
-  appointment Appointment?   @relation(fields: [appointmentId], references: [id])
-  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type          NotificationType
+  title         String
+  message       String
+  isRead        Boolean          @default(false)
+  readAt        DateTime?
+  createdAt     DateTime         @default(now())
+  actionUrl     String?
+  case          Case?            @relation(fields: [caseId], references: [id])
+  appointment   Appointment?     @relation(fields: [appointmentId], references: [id])
+  user          User             @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([isRead])
@@ -369,23 +369,23 @@ model ChatRoom {
 }
 
 model Appointment {
-  id               String             @id @default(uuid())
-  caseId           String
-  clientId         String
-  createdById      String
-  assignedAgentId  String?
-  scheduledAt      DateTime
-  location         String
-  notes            String?
-  status           AppointmentStatus  @default(SCHEDULED)
-  reminderSentAt   DateTime?
-  createdAt        DateTime           @default(now())
-  updatedAt        DateTime           @updatedAt
-  case             Case               @relation(fields: [caseId], references: [id], onDelete: Cascade)
-  client           User               @relation("ClientAppointments", fields: [clientId], references: [id], onDelete: Cascade)
-  createdBy        User               @relation("CreatedAppointments", fields: [createdById], references: [id])
-  assignedAgent    User?              @relation("AssignedAgentAppointments", fields: [assignedAgentId], references: [id])
-  notifications    Notification[]
+  id              String            @id @default(uuid())
+  caseId          String
+  clientId        String
+  createdById     String
+  assignedAgentId String?
+  scheduledAt     DateTime
+  location        String
+  notes           String?
+  status          AppointmentStatus @default(SCHEDULED)
+  reminderSentAt  DateTime?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  case            Case              @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  client          User              @relation("ClientAppointments", fields: [clientId], references: [id], onDelete: Cascade)
+  createdBy       User              @relation("CreatedAppointments", fields: [createdById], references: [id])
+  assignedAgent   User?             @relation("AssignedAgentAppointments", fields: [assignedAgentId], references: [id])
+  notifications   Notification[]
 
   @@index([caseId])
   @@index([clientId])
@@ -521,17 +521,17 @@ enum ContactStatus {
 }
 
 model LegalDocument {
-  id          String     @id @default(uuid())
+  id          String    @id @default(uuid())
   type        LegalType
-  language    String     @default("en") // Language code: en, fr, etc.
+  language    String    @default("en") // Language code: en, fr, etc.
   title       String
   slug        String
   version     String?
-  content     String     // Markdown or HTML content
-  isActive    Boolean    @default(true)
+  content     String // Markdown or HTML content
+  isActive    Boolean   @default(true)
   publishedAt DateTime?
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
   @@unique([type, language, slug])
   @@index([type])
@@ -547,20 +547,20 @@ enum LegalType {
 }
 
 model Payment {
-  id                String    @id @default(uuid())
-  userId            String
-  stripeIntentId    String    @unique // Stripe PaymentIntent ID
-  amount            Decimal   @db.Decimal(10, 2) // Amount in major units (e.g., 150.00)
-  currency          String    @default("usd")
-  description       String?
-  status            PaymentStatus @default(PENDING)
-  caseNumber        String?
-  metadata          Json?     // Additional metadata (caseNumber, etc.)
-  clientSecret      String?   // Stripe client secret (for client-side confirmation)
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime  @updatedAt
-  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  refunds           Refund[]
+  id             String        @id @default(uuid())
+  userId         String
+  stripeIntentId String        @unique // Stripe PaymentIntent ID
+  amount         Decimal       @db.Decimal(10, 2) // Amount in major units (e.g., 150.00)
+  currency       String        @default("usd")
+  description    String?
+  status         PaymentStatus @default(PENDING)
+  caseNumber     String?
+  metadata       Json? // Additional metadata (caseNumber, etc.)
+  clientSecret   String? // Stripe client secret (for client-side confirmation)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  refunds        Refund[]
 
   @@index([userId])
   @@index([stripeIntentId])
@@ -570,18 +570,18 @@ model Payment {
 }
 
 model Refund {
-  id                String    @id @default(uuid())
-  paymentId         String
-  userId            String
-  stripeRefundId    String?   @unique // Stripe Refund ID
-  amount            Decimal   @db.Decimal(10, 2) // Refund amount in major units
-  currency          String    @default("usd")
-  reason            String?
-  status            RefundStatus @default(PENDING)
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime  @updatedAt
-  payment           Payment   @relation(fields: [paymentId], references: [id], onDelete: Cascade)
-  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id             String       @id @default(uuid())
+  paymentId      String
+  userId         String
+  stripeRefundId String?      @unique // Stripe Refund ID
+  amount         Decimal      @db.Decimal(10, 2) // Refund amount in major units
+  currency       String       @default("usd")
+  reason         String?
+  status         RefundStatus @default(PENDING)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  payment        Payment      @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([paymentId])
   @@index([userId])

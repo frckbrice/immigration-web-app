@@ -24,9 +24,7 @@ async function handler(request: AuthenticatedRequest) {
     // If userId matches Firebase UID, it means custom claims aren't set yet, so query by firebaseId
     // Otherwise, userId is the database UUID from custom claims, so query by id
     const isFirebaseUid = userId === request.user?.uid;
-    const whereClause = isFirebaseUid
-      ? { firebaseId: userId }
-      : { id: userId };
+    const whereClause = isFirebaseUid ? { firebaseId: userId } : { id: userId };
 
     // Get user from database (single query)
     let user = await prisma.user.findUnique({
