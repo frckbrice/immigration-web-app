@@ -41,17 +41,20 @@ function FeatureCard({ icon, title, highlight, description }: FeatureCardProps) 
             {icon}
           </div>
           <div className="flex-1">
-            <CardTitle className="text-xl mb-2" style={{ color: '#ffffff' }}>
+            <CardTitle className="text-lg md:text-xl mb-2 font-bold" style={{ color: '#ffffff' }}>
               {title}
             </CardTitle>
-            <p className="text-lg font-semibold" style={{ color: '#ff4538' }}>
+            <p className="text-base font-semibold" style={{ color: '#ff4538' }}>
               {highlight}
             </p>
           </div>
         </div>
       </CardHeader>
       <CardContent>
-        <CardDescription className="text-base" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+        <CardDescription
+          className="text-sm md:text-base leading-[1.6] font-normal"
+          style={{ color: 'rgba(255, 255, 255, 0.75)' }}
+        >
           {description}
         </CardDescription>
       </CardContent>
@@ -114,11 +117,11 @@ export function FeatureGrid() {
   ];
 
   return (
-    <section className="relative py-12 md:py-16 lg:py-20" style={{ backgroundColor: '#091a24' }}>
+    <section className="relative py-8 md:py-12 lg:py-16" style={{ backgroundColor: '#091a24' }}>
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-10 md:mb-12">
+        <div className="text-center mb-8 md:mb-10">
           <h2
-            className="text-2xl sm:text-3xl md:text-4xl font-bold leading-tight mb-3 md:mb-4"
+            className="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight tracking-tight mb-4"
             style={{ color: '#ffffff' }}
           >
             <span suppressHydrationWarning>
@@ -126,8 +129,8 @@ export function FeatureGrid() {
             </span>
           </h2>
           <p
-            className="text-sm sm:text-base md:text-lg max-w-3xl mx-auto leading-relaxed"
-            style={{ color: 'rgba(255, 255, 255, 0.7)' }}
+            className="text-base md:text-lg max-w-3xl mx-auto leading-[1.7] font-normal"
+            style={{ color: 'rgba(255, 255, 255, 0.75)' }}
           >
             <span suppressHydrationWarning>
               {t('landing.featureGrid.subtitle') ||

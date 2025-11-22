@@ -9,18 +9,18 @@ export function GetStarted() {
   const { t } = useTranslation();
 
   return (
-    <section className="relative py-12 md:py-16 lg:py-20" style={{ backgroundColor: '#091a24' }}>
+    <section className="relative py-8 md:py-12 lg:py-16" style={{ backgroundColor: '#091a24' }}>
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="max-w-3xl mx-auto text-center space-y-6 md:space-y-8">
+        <div className="max-w-3xl mx-auto text-center space-y-5 md:space-y-6">
           <h2
-            className="text-2xl sm:text-3xl md:text-4xl font-bold leading-tight"
+            className="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight tracking-tight"
             style={{ color: '#ffffff' }}
           >
             <span suppressHydrationWarning>{t('landing.getStarted.title') || 'Get started'}</span>
           </h2>
           <p
-            className="text-sm sm:text-base md:text-lg leading-relaxed"
-            style={{ color: 'rgba(255, 255, 255, 0.7)' }}
+            className="text-base md:text-lg leading-[1.7] font-normal"
+            style={{ color: 'rgba(255, 255, 255, 0.75)' }}
           >
             <span suppressHydrationWarning>
               {t('landing.getStarted.subtitle') ||

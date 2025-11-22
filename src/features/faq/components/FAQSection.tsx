@@ -139,7 +139,7 @@ export function FAQSection({
   };
 
   return (
-    <section className="py-12 md:py-20" style={{ backgroundColor: '#091a24' }} id="faq">
+    <section className="py-8 md:py-12 lg:py-16" style={{ backgroundColor: '#091a24' }} id="faq">
       {/* Schema.org markup for Google FAQ rich snippets */}
       <script
         type="application/ld+json"
@@ -148,14 +148,17 @@ export function FAQSection({
 
       <div className="container mx-auto px-4">
         {/* Header */}
-        <div className="text-center mb-12">
+        <div className="text-center mb-8 md:mb-10">
           <h2
-            className="text-3xl md:text-4xl font-bold tracking-tight mb-4"
+            className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-4"
             style={{ color: '#ffffff' }}
           >
             {sectionTitle}
           </h2>
-          <p className="text-lg max-w-2xl mx-auto" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+          <p
+            className="text-base md:text-lg max-w-2xl mx-auto leading-[1.7] font-normal"
+            style={{ color: 'rgba(255, 255, 255, 0.75)' }}
+          >
             {sectionDescription}
           </p>
         </div>
