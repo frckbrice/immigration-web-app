@@ -802,12 +802,9 @@ See [UploadThing Documentation](https://docs.uploadthing.com) for more informati
 
 ## License
 
-This project is proprietary and confidential.
-
+MIT
 ##  Support
 
 For support and questions, please contact the me at https://maebrieporfolio.vercel.app.
 
----
 
-\*_Built with  by Avom Brice _ check at https://maebrieporfolio.vercel.app
