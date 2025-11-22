@@ -47,6 +47,8 @@ const withPWA = withPWAInit({
 const nextConfig: NextConfig = {
   /* config options here */
   output: 'standalone',
+  // Fix workspace root warning
+  outputFileTracingRoot: process.cwd(),
 
   // Enable instrumentation hook for cron initialization (enabled by default if instrumentation.ts exists)
   experimental: {
