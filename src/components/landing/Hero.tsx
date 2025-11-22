@@ -168,7 +168,8 @@ export function Hero() {
               <div
                 className="absolute top-0 right-0 w-32 h-32 z-20 pointer-events-none opacity-40"
                 style={{
-                  background: 'radial-gradient(circle, rgba(255, 69, 56, 0.15) 0%, transparent 70%)',
+                  background:
+                    'radial-gradient(circle, rgba(255, 69, 56, 0.15) 0%, transparent 70%)',
                   filter: 'blur(20px)',
                 }}
               />

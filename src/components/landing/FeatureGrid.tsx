@@ -51,7 +51,10 @@ function FeatureCard({ icon, title, highlight, description }: FeatureCardProps) 
         </div>
       </CardHeader>
       <CardContent>
-        <CardDescription className="text-sm md:text-base leading-[1.6] font-normal" style={{ color: 'rgba(255, 255, 255, 0.75)' }}>
+        <CardDescription
+          className="text-sm md:text-base leading-[1.6] font-normal"
+          style={{ color: 'rgba(255, 255, 255, 0.75)' }}
+        >
           {description}
         </CardDescription>
       </CardContent>

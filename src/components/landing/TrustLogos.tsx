@@ -57,12 +57,18 @@ export function TrustLogos() {
     >
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-8 md:mb-10">
-          <h2 className="text-3xl md:text-4xl font-bold mb-3 tracking-tight" style={{ color: '#ffffff' }}>
+          <h2
+            className="text-3xl md:text-4xl font-bold mb-3 tracking-tight"
+            style={{ color: '#ffffff' }}
+          >
             <span suppressHydrationWarning>
               {t('landing.trust.title') || 'Trusted by immigration authorities worldwide'}
             </span>
           </h2>
-          <p className="text-base md:text-lg mt-2 leading-[1.6] font-normal" style={{ color: 'rgba(255, 255, 255, 0.75)' }}>
+          <p
+            className="text-base md:text-lg mt-2 leading-[1.6] font-normal"
+            style={{ color: 'rgba(255, 255, 255, 0.75)' }}
+          >
             <span suppressHydrationWarning>
               {t('landing.trust.subtitle') ||
                 'Recognized partners with official immigration agencies'}

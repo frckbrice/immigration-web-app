@@ -155,7 +155,10 @@ export function FAQSection({
           >
             {sectionTitle}
           </h2>
-          <p className="text-base md:text-lg max-w-2xl mx-auto leading-[1.7] font-normal" style={{ color: 'rgba(255, 255, 255, 0.75)' }}>
+          <p
+            className="text-base md:text-lg max-w-2xl mx-auto leading-[1.7] font-normal"
+            style={{ color: 'rgba(255, 255, 255, 0.75)' }}
+          >
             {sectionDescription}
           </p>
         </div>

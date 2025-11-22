@@ -21,6 +21,7 @@
     "prisma:seed": "tsx prisma/seed.ts",
     "test:email": "tsx scripts/test-email.ts",
     "db:sync-local-to-neon": "tsx scripts/sync-local-to-neon.ts",
+    "check:env": "tsx scripts/check-env.ts",
     "pwa:generate-icons": "node scripts/generate-pwa-icons.js",
     "perf:optimize-images": "bash scripts/optimize-images.sh",
     "perf:analyze": "ANALYZE=true pnpm build",

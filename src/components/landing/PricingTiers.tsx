@@ -34,7 +34,10 @@ function PricingTier({ name, tagline, features, price, tier, highlight }: Pricin
         <CardTitle className="text-xl md:text-2xl mb-2 font-bold" style={{ color: '#ffffff' }}>
           {name}
         </CardTitle>
-        <CardDescription className="text-sm md:text-base leading-[1.6] font-normal" style={{ color: 'rgba(255, 255, 255, 0.75)' }}>
+        <CardDescription
+          className="text-sm md:text-base leading-[1.6] font-normal"
+          style={{ color: 'rgba(255, 255, 255, 0.75)' }}
+        >
           {tagline}
         </CardDescription>
         <div className="mt-4">
