@@ -10,8 +10,8 @@ export const metadata = {
     'Complete immigration services management platform for streamlined case management, document processing, and client communications',
 };
 
-// PERFORMANCE: Use auto for better client-side interactivity
-export const dynamic = 'auto';
+// PERFORMANCE: Force dynamic to prevent static generation issues with client components
+export const dynamic = 'force-dynamic';
 
 export default function HomePage() {
   return (
