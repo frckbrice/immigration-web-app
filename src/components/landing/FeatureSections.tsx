@@ -23,28 +23,28 @@ function FeatureSection({
   highlight,
 }: FeatureSectionProps) {
   return (
-    <section className="relative py-12 md:py-16 lg:py-20" style={{ backgroundColor: '#091a24' }}>
+    <section className="relative py-8 md:py-12 lg:py-16" style={{ backgroundColor: '#091a24' }}>
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto text-center space-y-6 md:space-y-8">
-          <div className="flex justify-center mb-6">
+        <div className="max-w-4xl mx-auto text-center space-y-5 md:space-y-6">
+          <div className="flex justify-center mb-5">
             <div className="p-4 rounded-2xl" style={{ backgroundColor: 'rgba(255, 69, 56, 0.1)' }}>
               {icon}
             </div>
           </div>
           <h2
-            className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold leading-tight"
+            className="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight tracking-tight"
             style={{ color: '#ffffff' }}
           >
             {title}
           </h2>
           {highlight && (
-            <p className="text-base md:text-lg lg:text-xl font-medium" style={{ color: '#ff4538' }}>
+            <p className="text-base md:text-lg font-semibold" style={{ color: '#ff4538' }}>
               {highlight}
             </p>
           )}
           <p
-            className="text-sm sm:text-base md:text-lg max-w-3xl mx-auto leading-relaxed"
-            style={{ color: 'rgba(255, 255, 255, 0.7)' }}
+            className="text-base md:text-lg max-w-3xl mx-auto leading-[1.7] font-normal"
+            style={{ color: 'rgba(255, 255, 255, 0.75)' }}
           >
             {description}
           </p>

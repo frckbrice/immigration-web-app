@@ -10,7 +10,7 @@ export function Hero() {
   const { t } = useTranslation();
 
   return (
-    <section className="relative w-full min-h-[90vh] flex items-center justify-center overflow-hidden pt-20 md:pt-24">
+    <section className="relative w-full min-h-[60vh] md:min-h-[70vh] flex items-center justify-center overflow-hidden pt-4 md:pt-6">
       {/* Background Gradient */}
       <div className="absolute inset-0 -z-10">
         <div className="absolute inset-0" style={{ backgroundColor: '#091a24' }} />
@@ -29,21 +29,21 @@ export function Hero() {
       </div>
 
       {/* Content Container */}
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20 lg:py-24">
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8 lg:py-10">
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
           {/* Left Column: Text Content */}
           <div className="space-y-6 md:space-y-8 text-center lg:text-left animate-in fade-in slide-in-from-bottom-6 duration-700">
             {/* Main Headline */}
-            <div className="space-y-4 md:space-y-6">
+            <div className="space-y-5 md:space-y-6">
               <h1
-                className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.1]"
+                className="text-4xl sm:text-5xl md:text-[64px] font-bold tracking-tight leading-[1.1]"
                 style={{ color: '#ffffff' }}
               >
                 <span suppressHydrationWarning>{t('landing.hero.title')}</span>
               </h1>
               <p
-                className="text-lg md:text-xl lg:text-2xl leading-relaxed font-light"
-                style={{ color: 'rgba(255, 255, 255, 0.7)' }}
+                className="text-base md:text-lg lg:text-xl leading-[1.6] font-normal"
+                style={{ color: 'rgba(255, 255, 255, 0.75)' }}
               >
                 <span suppressHydrationWarning>{t('landing.hero.subtitle')}</span>
               </p>
@@ -128,27 +128,26 @@ export function Hero() {
           </div>
 
           {/* Right Column: Dashboard Image */}
-          <div className="relative w-full h-[400px] sm:h-[500px] lg:h-[600px] animate-in fade-in slide-in-from-right duration-700 delay-200">
+          <div className="relative w-full h-[300px] sm:h-[350px] md:h-[400px] lg:h-[450px] animate-in fade-in slide-in-from-right duration-700 delay-200">
             {/* Image Container with Modern Styling */}
-            <div className="relative w-full h-full rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl">
-              {/* Gradient Overlay for better integration */}
+            <div className="relative w-full h-full rounded-xl md:rounded-2xl overflow-hidden shadow-xl border border-white/10">
+              {/* Modern Subtle Overlay - Top to bottom gradient */}
               <div
-                className="absolute inset-0 z-10"
+                className="absolute inset-0 z-10 pointer-events-none"
                 style={{
                   background:
-                    'linear-gradient(135deg, rgba(9, 26, 36, 0.3) 0%, rgba(255, 69, 56, 0.1) 50%, rgba(9, 26, 36, 0.3) 100%)',
+                    'linear-gradient(to bottom, rgba(9, 26, 36, 0.1) 0%, transparent 30%, transparent 70%, rgba(9, 26, 36, 0.15) 100%)',
                 }}
               />
 
-              {/* Border Effect */}
+              {/* Subtle Accent Border */}
               <div
-                className="absolute inset-0 rounded-2xl md:rounded-3xl z-20 pointer-events-none"
+                className="absolute inset-0 rounded-xl md:rounded-2xl z-20 pointer-events-none"
                 style={{
                   borderWidth: '1px',
                   borderStyle: 'solid',
-                  borderColor: 'rgba(255, 69, 56, 0.3)',
-                  boxShadow:
-                    '0 0 0 1px rgba(255, 69, 56, 0.2), 0 0 40px rgba(255, 69, 56, 0.1), inset 0 0 40px rgba(255, 69, 56, 0.05)',
+                  borderColor: 'rgba(255, 69, 56, 0.15)',
+                  boxShadow: 'inset 0 0 0 1px rgba(255, 255, 255, 0.05)',
                 }}
               />
 
@@ -161,32 +160,25 @@ export function Hero() {
                 className="object-cover object-center"
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
                 style={{
-                  filter: 'brightness(0.95) contrast(1.05)',
+                  filter: 'brightness(0.98) contrast(1.02) saturate(1.05)',
                 }}
               />
 
-              {/* Decorative Corner Accents */}
+              {/* Modern Corner Glow Effect */}
               <div
-                className="absolute top-0 left-0 w-20 h-20 z-20 pointer-events-none"
+                className="absolute top-0 right-0 w-32 h-32 z-20 pointer-events-none opacity-40"
                 style={{
-                  background: 'linear-gradient(135deg, rgba(255, 69, 56, 0.2) 0%, transparent 50%)',
-                  borderTopLeftRadius: '0.875rem',
-                }}
-              />
-              <div
-                className="absolute bottom-0 right-0 w-20 h-20 z-20 pointer-events-none md:block hidden"
-                style={{
-                  background: 'linear-gradient(315deg, rgba(255, 69, 56, 0.2) 0%, transparent 50%)',
-                  borderBottomRightRadius: '1.5rem',
+                  background: 'radial-gradient(circle, rgba(255, 69, 56, 0.15) 0%, transparent 70%)',
+                  filter: 'blur(20px)',
                 }}
               />
             </div>
 
-            {/* Floating Shadow Effect */}
+            {/* Subtle Floating Shadow Effect */}
             <div
-              className="absolute -inset-4 md:-inset-6 rounded-2xl md:rounded-3xl -z-10 blur-2xl opacity-30"
+              className="absolute -inset-2 md:-inset-3 rounded-xl md:rounded-2xl -z-10 blur-xl opacity-20"
               style={{
-                background: 'radial-gradient(circle, rgba(255, 69, 56, 0.4) 0%, transparent 70%)',
+                background: 'radial-gradient(circle, rgba(255, 69, 56, 0.3) 0%, transparent 70%)',
               }}
             />
           </div>
