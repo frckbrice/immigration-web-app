@@ -236,3 +236,8 @@ The project includes GitHub Actions workflow for:
 ## License
 
 MIT
+
+##  Support
+
+For support and questions, please contact the me at https://maebrieporfolio.vercel.app.
+
