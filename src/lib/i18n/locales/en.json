@@ -174,6 +174,24 @@
     "recentActivity": "Recent Activity",
     "viewAll": "View All",
     "navigation": "Navigation",
+    "nav": {
+      "dashboard": "Dashboard",
+      "myCases": "My Cases",
+      "cases": "Cases",
+      "documents": "Documents",
+      "resources": "Resources",
+      "messages": "Messages",
+      "notifications": "Notifications",
+      "clients": "Clients",
+      "users": "Users",
+      "inviteCodes": "Invite Codes",
+      "analytics": "Analytics",
+      "auditLogs": "Audit Logs",
+      "faq": "FAQ",
+      "templates": "Templates",
+      "profile": "Profile",
+      "settings": "Settings"
+    },
     "goBackToSite": "Go back to site",
     "redirectingToLogin": "Redirecting to login...",
     "admin": {
@@ -1779,7 +1797,15 @@
         "errorOccurred": "An error occurred",
         "paymentFailed": "Payment failed",
         "unexpectedError": "An unexpected error occurred. Please try again.",
-        "paymentSuccessful": "Payment successful! Redirecting to dashboard..."
+        "paymentSuccessful": "Payment successful! Redirecting to dashboard...",
+        "paymentRequiredTitle": "Payment Required to Access Dashboard",
+        "paymentRequiredMessage": "To access your dashboard and start using our services, please select and complete payment for a subscription plan below. Once your payment is confirmed, you will have full access to all dashboard features.",
+        "timeoutError": "Payment initialization timed out. Please try again or contact support if the problem persists.",
+        "paymentInitFailed": "Failed to initialize payment. Please try again.",
+        "paymentInitErrorTitle": "Payment Initialization Failed",
+        "serviceUnavailable": "Payment service is temporarily unavailable due to repeated failures. Please try again in a few moments.",
+        "networkError": "Network error occurred. Please check your connection and try again.",
+        "initializingDescription": "Setting up secure payment. This usually takes just a few seconds."
       }
     }
   },

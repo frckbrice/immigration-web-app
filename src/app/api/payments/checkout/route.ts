@@ -36,11 +36,38 @@ const postHandler = asyncHandler(async (request: NextRequest) => {
     throw new ApiError('Invalid tier. Must be basic, standard, or premium', HttpStatus.BAD_REQUEST);
   }
 
-  // Check if user already has a payment
-  const user = await prisma.user.findUnique({
-    where: { id: req.user.userId },
-    select: { hasPaid: true, subscriptionTier: true, role: true },
-  });
+  // PERFORMANCE: Optimize database queries - check user and existing payment in parallel
+  const [user, existingPayment] = await Promise.all([
+    prisma.user.findUnique({
+      where: { id: req.user.userId },
+      select: { hasPaid: true, subscriptionTier: true, role: true },
+    }),
+    // Check for existing pending/completed payment intents for this user and tier (idempotency)
+    prisma.payment.findFirst({
+      where: {
+        userId: req.user.userId,
+        status: {
+          in: ['PENDING', 'PROCESSING', 'COMPLETED'],
+        },
+        metadata: {
+          path: ['tier'],
+          equals: tier,
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+      select: {
+        id: true,
+        status: true,
+        clientSecret: true,
+        amount: true,
+        currency: true,
+        stripeIntentId: true,
+        createdAt: true,
+      },
+    }),
+  ]);
 
   if (!user) {
     throw new ApiError('User not found', HttpStatus.NOT_FOUND);
@@ -54,23 +81,6 @@ const postHandler = asyncHandler(async (request: NextRequest) => {
   if (user.hasPaid) {
     throw new ApiError('User has already paid for a subscription', HttpStatus.BAD_REQUEST);
   }
-
-  // Check for existing pending/completed payment intents for this user and tier (idempotency)
-  const existingPayment = await prisma.payment.findFirst({
-    where: {
-      userId: req.user.userId,
-      status: {
-        in: ['PENDING', 'PROCESSING', 'COMPLETED'],
-      },
-      metadata: {
-        path: ['tier'],
-        equals: tier,
-      },
-    },
-    orderBy: {
-      createdAt: 'desc',
-    },
-  });
 
   if (existingPayment) {
     // If payment is completed, user should have hasPaid set
@@ -109,22 +119,47 @@ const postHandler = asyncHandler(async (request: NextRequest) => {
   const tierName = getTierName(tier as SubscriptionTier);
 
   try {
-    // Create Stripe payment intent
-    const stripeIntent = await createPaymentIntent({
-      amount: tierPrice,
-      currency: 'usd',
-      description: `${tierName} Subscription - One-time payment`,
-      metadata: {
-        userId: req.user.userId,
-        tier: tier,
-        type: 'subscription',
-      },
+    const startTime = Date.now();
+    logger.info('Creating Stripe payment intent', {
+      userId: req.user.userId,
+      tier: tier,
+      tierPrice: tierPrice,
+      tierName: tierName,
     });
+
+    // Create Stripe payment intent with timeout protection
+    const stripeIntent = await Promise.race([
+      createPaymentIntent({
+        amount: tierPrice,
+        currency: 'usd',
+        description: `${tierName} Subscription - One-time payment`,
+        metadata: {
+          userId: req.user.userId,
+          tier: tier,
+          type: 'subscription',
+        },
+      }),
+      // Additional safety timeout (20 seconds) - Stripe client has 15s, this is backup
+      new Promise<never>((_, reject) => {
+        setTimeout(() => {
+          reject(new Error('Stripe API call exceeded maximum timeout'));
+        }, 20000);
+      }),
+    ]);
+
+    const stripeCallDuration = Date.now() - startTime;
 
     // Convert amount from Stripe (cents) to major units for storage
     const amountInMajorUnits = stripeIntent.amount / 100;
 
-    // Save payment intent to database
+    logger.info('Stripe payment intent created', {
+      stripeIntentId: stripeIntent.id,
+      amount: amountInMajorUnits,
+      currency: stripeIntent.currency,
+      duration: `${stripeCallDuration}ms`,
+    });
+
+    // PERFORMANCE: Save payment intent to database (non-blocking for response, but we wait for it)
     const payment = await prisma.payment.create({
       data: {
         userId: req.user.userId,
@@ -141,12 +176,15 @@ const postHandler = asyncHandler(async (request: NextRequest) => {
       },
     });
 
-    logger.info('Checkout payment intent created', {
+    const totalDuration = Date.now() - startTime;
+    logger.info('Checkout payment intent created successfully', {
       paymentId: payment.id,
       stripeIntentId: stripeIntent.id,
       userId: req.user.userId,
       tier: tier,
       amount: amountInMajorUnits,
+      totalDuration: `${totalDuration}ms`,
+      stripeCallDuration: `${stripeCallDuration}ms`,
     });
 
     return successResponse(
@@ -160,19 +198,50 @@ const postHandler = asyncHandler(async (request: NextRequest) => {
       'Payment intent created successfully'
     );
   } catch (error) {
-    logger.error('Failed to create checkout payment intent', error, {
+    // Enhanced error logging for diagnostics
+    const errorDetails: any = {
       userId: req.user.userId,
       tier: tier,
-    });
+      tierPrice,
+      tierName,
+    };
+
+    // Add Stripe-specific error details if available
+    const stripeError = error as any;
+    if (stripeError.type || stripeError.code) {
+      errorDetails.stripeErrorType = stripeError.type;
+      errorDetails.stripeErrorCode = stripeError.code;
+      errorDetails.stripeStatusCode = stripeError.statusCode;
+      errorDetails.stripeRequestId = stripeError.requestId;
+      errorDetails.stripeDeclineCode = stripeError.decline_code;
+    }
+
+    // Add network error details if available
+    if (stripeError.code === 'ECONNABORTED' || stripeError.code === 'ETIMEDOUT') {
+      errorDetails.networkError = true;
+      errorDetails.errorCode = stripeError.code;
+    }
+
+    logger.error('Failed to create checkout payment intent', error, errorDetails);
 
     if (error instanceof ApiError) {
       throw error;
     }
 
-    throw new ApiError(
-      error instanceof Error ? error.message : 'Failed to create payment intent',
-      HttpStatus.INTERNAL_SERVER_ERROR
-    );
+    // Provide more specific error messages based on error type
+    let errorMessage = 'Failed to create payment intent';
+    if (stripeError.type === 'StripeInvalidRequestError') {
+      errorMessage =
+        stripeError.message || 'Invalid payment request. Please check your payment details.';
+    } else if (stripeError.type === 'StripeAPIError') {
+      errorMessage = 'Payment service temporarily unavailable. Please try again.';
+    } else if (stripeError.code === 'ECONNABORTED' || stripeError.code === 'ETIMEDOUT') {
+      errorMessage = 'Payment request timed out. Please try again.';
+    } else if (stripeError.message) {
+      errorMessage = stripeError.message;
+    }
+
+    throw new ApiError(errorMessage, HttpStatus.INTERNAL_SERVER_ERROR);
   }
 });
 

@@ -57,6 +57,30 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
     return getNavigationForRole(user.role as UserRole);
   }, [user?.role]);
 
+  // Helper function to get translated navigation title
+  const getNavTitle = (title: string): string => {
+    const titleMap: Record<string, string> = {
+      Dashboard: 'dashboard.nav.dashboard',
+      'My Cases': 'dashboard.nav.myCases',
+      Cases: 'dashboard.nav.cases',
+      Documents: 'dashboard.nav.documents',
+      Resources: 'dashboard.nav.resources',
+      Messages: 'dashboard.nav.messages',
+      Notifications: 'dashboard.nav.notifications',
+      Clients: 'dashboard.nav.clients',
+      Users: 'dashboard.nav.users',
+      'Invite Codes': 'dashboard.nav.inviteCodes',
+      Analytics: 'dashboard.nav.analytics',
+      'Audit Logs': 'dashboard.nav.auditLogs',
+      FAQ: 'dashboard.nav.faq',
+      Templates: 'dashboard.nav.templates',
+      Profile: 'dashboard.nav.profile',
+      Settings: 'dashboard.nav.settings',
+    };
+    const translationKey = titleMap[title];
+    return translationKey ? t(translationKey) : title;
+  };
+
   useEffect(() => {
     // Only redirect if auth check is complete (not loading) and user is not authenticated
     if (!isLoading && !isAuthenticated) {
@@ -137,7 +161,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                   hasPaid: paymentData.hasPaid,
                   bypassed: paymentData.bypassed,
                 });
-                router.push('/checkout');
+                router.push('/checkout?paymentRequired=true');
               }
             } else {
               logger.info('[DashboardLayout] Payment verified - allowing access', {
@@ -160,7 +184,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
           });
           // On error, redirect to checkout to be safe
           if (pathname !== '/checkout' && !pathname.startsWith('/checkout/')) {
-            router.push('/checkout');
+            router.push('/checkout?paymentRequired=true');
           }
         }
       };
@@ -288,7 +312,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                         >
                           <div className="flex items-center space-x-3">
                             <item.icon className="h-4 w-4" />
-                            <span>{item.title}</span>
+                            <span>{getNavTitle(item.title)}</span>
                           </div>
                           {badgeCount && badgeCount > 0 && (
                             <Badge
@@ -454,7 +478,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                     isActive={isActive}
                     badge={badgeCount}
                   >
-                    {item.title}
+                    {getNavTitle(item.title)}
                   </NavLink>
                 );
               })}
