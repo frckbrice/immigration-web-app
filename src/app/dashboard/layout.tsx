@@ -248,11 +248,10 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   };
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#091a24' }}>
+    <div className="min-h-screen bg-background">
       {/* Top Navigation */}
       <header
-        className="sticky top-0 z-50 w-full border-b backdrop-blur supports-[backdrop-filter]:bg-opacity-60"
-        style={{ backgroundColor: '#091a24', borderColor: '#ff4538' }}
+        className="sticky top-0 z-50 w-full border-b backdrop-blur supports-[backdrop-filter]:bg-opacity-60 bg-[#091a24] dark:bg-[#091a24] border-border dark:border-primary"
       >
         <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
@@ -271,8 +270,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                 </SheetTrigger>
                 <SheetContent
                   side="left"
-                  className="w-64"
-                  style={{ backgroundColor: '#091a24', borderColor: 'rgba(255, 69, 56, 0.1)' }}
+                  className="w-64 bg-[#091a24] dark:bg-[#091a24] border-r border-border dark:border-primary/20"
                 >
                   <SheetHeader>
                     <SheetTitle className="text-left text-white">
@@ -452,8 +450,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
       <div className="flex">
         {/* Sidebar */}
         <aside
-          className="w-64 border-r min-h-[calc(100vh-4rem)] hidden md:block"
-          style={{ backgroundColor: '#091a24', borderColor: '#ff4538' }}
+          className="w-64 border-r min-h-[calc(100vh-4rem)] hidden md:block bg-[#091a24] dark:bg-[#091a24] border-border dark:border-primary"
         >
           <div className="w-full max-w-7xl mx-auto">
             <nav className="p-4 space-y-2">
@@ -487,11 +484,8 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
         </aside>
 
         {/* Main Content */}
-        <main
-          className="flex-1 p-4 sm:p-6 lg:p-8 overflow-x-hidden"
-          style={{ backgroundColor: '#0a1f2e' }}
-        >
-          <div className="mx-auto max-w-7xl w-full text-white">{children}</div>
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-x-hidden bg-background">
+          <div className="mx-auto max-w-7xl w-full">{children}</div>
         </main>
       </div>
     </div>

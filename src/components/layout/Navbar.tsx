@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { Menu, X, LayoutDashboard } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { LanguageSwitcher } from './LanguageSwitcher';
+import { ThemeSwitcher } from './ThemeSwitcher';
 import { useAuthStore } from '@/features/auth/store';
 
 // PERFORMANCE: Memoized Navbar component
@@ -26,17 +27,13 @@ export const Navbar = memo(function Navbar() {
   return (
     <>
       <nav
-        className="fixed top-0 left-0 right-0 z-50 w-full border-b"
-        style={{
-          backgroundColor: '#091a24',
-          borderColor: 'rgba(255, 255, 255, 0.1)',
-        }}
+        className="fixed top-0 left-0 right-0 z-50 w-full border-b bg-[#091a24] dark:bg-[#091a24] border-border dark:border-white/10"
       >
         <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex h-16 items-center justify-between">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-3">
+          {/* Logo - Reduced on mobile to make room for theme switcher */}
+          <Link href="/" className="flex items-center gap-2 sm:gap-3">
             {/* PERFORMANCE: Priority loading for logo (above the fold) */}
-            <div className="relative w-10 h-10 sm:w-12 sm:h-12 shrink-0 rounded-lg bg-white/40 p-1.5 flex items-center justify-center overflow-hidden">
+            <div className="relative w-8 h-8 sm:w-12 sm:h-12 shrink-0 rounded-lg bg-white/40 p-1 sm:p-1.5 flex items-center justify-center overflow-hidden">
               <Image
                 src="/images/app-logo.png"
                 alt="Patrick Travel Service"
@@ -46,7 +43,7 @@ export const Navbar = memo(function Navbar() {
                 priority
               />
             </div>
-            <span className="font-bold text-xl hidden sm:inline-block" style={{ color: '#ff4538' }}>
+            <span className="font-bold text-lg sm:text-xl hidden md:inline-block" style={{ color: '#ff4538' }}>
               Patrick Travel Service
             </span>
           </Link>
@@ -72,9 +69,14 @@ export const Navbar = memo(function Navbar() {
           </div>
 
           {/* Right Side Actions */}
-          <div className="flex items-center space-x-4">
-            <div className="hidden md:flex items-center space-x-2">
-              <LanguageSwitcher />
+          <div className="flex items-center space-x-2 sm:space-x-4">
+            <div className="flex items-center space-x-2">
+              <div className="flex-shrink-0">
+                <ThemeSwitcher />
+              </div>
+              <div className="hidden md:flex">
+                <LanguageSwitcher />
+              </div>
             </div>
 
             {/* SESSION AWARE: Show different buttons based on auth status */}
@@ -164,13 +166,7 @@ export const Navbar = memo(function Navbar() {
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div
-            className="md:hidden border-t"
-            style={{
-              backgroundColor: '#091a24',
-              borderColor: 'rgba(255, 255, 255, 0.1)',
-            }}
-          >
+          <div className="md:hidden border-t bg-[#091a24] dark:bg-[#091a24] border-border dark:border-white/10">
             <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 space-y-3">
               {navigation.map((item) => (
                 <Link
@@ -190,6 +186,7 @@ export const Navbar = memo(function Navbar() {
                 </Link>
               ))}
               <div className="flex items-center space-x-2 pt-2">
+                <ThemeSwitcher />
                 <LanguageSwitcher />
               </div>
               {/* SESSION AWARE: Show different buttons for mobile */}
