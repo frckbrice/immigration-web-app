@@ -19,32 +19,25 @@ function PricingTier({ name, tagline, features, price, tier, highlight }: Pricin
   const { t } = useTranslation();
   return (
     <Card
-      className={`relative overflow-hidden border-2 transition-all duration-200 hover:shadow-lg ${
-        highlight ? 'shadow-lg scale-105' : ''
+      className={`relative overflow-hidden border-2 transition-all duration-200 hover:shadow-lg bg-card dark:bg-[#091a24] ${
+        highlight ? 'shadow-lg scale-105 border-primary' : 'border-border'
       }`}
-      style={{
-        backgroundColor: '#091a24',
-        borderColor: highlight ? '#ff4538' : 'rgba(255, 255, 255, 0.1)',
-      }}
     >
       {highlight && (
-        <div className="absolute top-0 left-0 right-0 h-1" style={{ backgroundColor: '#ff4538' }} />
+        <div className="absolute top-0 left-0 right-0 h-1 bg-primary" />
       )}
       <CardHeader>
-        <CardTitle className="text-xl md:text-2xl mb-2 font-bold" style={{ color: '#ffffff' }}>
+        <CardTitle className="text-xl md:text-2xl mb-2 font-bold text-foreground/90">
           {name}
         </CardTitle>
-        <CardDescription
-          className="text-sm md:text-base leading-[1.6] font-normal"
-          style={{ color: 'rgba(255, 255, 255, 0.75)' }}
-        >
+        <CardDescription className="text-sm md:text-base leading-[1.6] font-normal text-foreground/70">
           {tagline}
         </CardDescription>
         <div className="mt-4">
-          <span className="text-4xl font-bold" style={{ color: '#ffffff' }}>
+          <span className="text-4xl font-bold text-foreground/90">
             ${price.toLocaleString()}
           </span>
-          <span className="text-sm ml-2" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+          <span className="text-sm ml-2 text-foreground/60">
             <span suppressHydrationWarning>{t('landing.pricing.oneTime') || 'one-time'}</span>
           </span>
         </div>
@@ -53,35 +46,20 @@ function PricingTier({ name, tagline, features, price, tier, highlight }: Pricin
         <ul className="space-y-3">
           {features.map((feature, index) => (
             <li key={index} className="flex items-start gap-2">
-              <Check className="h-5 w-5 mt-0.5 flex-shrink-0" style={{ color: '#ff4538' }} />
-              <span className="text-sm" style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
+              <Check className="h-5 w-5 mt-0.5 flex-shrink-0 text-primary" />
+              <span className="text-sm text-foreground/70">
                 {feature}
               </span>
             </li>
           ))}
         </ul>
         <Button
-          className="w-full mt-6 text-white"
-          style={{
-            backgroundColor: highlight ? '#ff4538' : 'transparent',
-            borderColor: '#ff4538',
-            borderWidth: highlight ? '0' : '1px',
-            color: highlight ? '#ffffff' : '#ff4538',
-          }}
-          onMouseEnter={(e) => {
-            if (highlight) {
-              e.currentTarget.style.backgroundColor = '#ff5c50';
-            } else {
-              e.currentTarget.style.backgroundColor = 'rgba(255, 69, 56, 0.1)';
-            }
-          }}
-          onMouseLeave={(e) => {
-            if (highlight) {
-              e.currentTarget.style.backgroundColor = '#ff4538';
-            } else {
-              e.currentTarget.style.backgroundColor = 'transparent';
-            }
-          }}
+          className={`w-full mt-6 ${
+            highlight
+              ? 'text-primary-foreground bg-primary hover:bg-primary/90'
+              : 'text-primary border-primary hover:bg-primary/10'
+          }`}
+          variant={highlight ? 'default' : 'outline'}
           asChild
         >
           <Link href={`/checkout?tier=${tier}`}>
@@ -136,21 +114,15 @@ export function PricingTiers() {
   ];
 
   return (
-    <section className="relative py-8 md:py-12 lg:py-16" style={{ backgroundColor: '#091a24' }}>
+    <section className="relative py-8 md:py-12 lg:py-16 bg-background dark:bg-[#091a24]">
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-8 md:mb-10">
-          <h2
-            className="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight tracking-tight mb-4"
-            style={{ color: '#ffffff' }}
-          >
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight tracking-tight mb-4 text-foreground/90">
             <span suppressHydrationWarning>
               {t('landing.pricing.title') || 'Fast, faster, and fastest'}
             </span>
           </h2>
-          <p
-            className="text-base md:text-lg max-w-3xl mx-auto leading-[1.7] font-normal"
-            style={{ color: 'rgba(255, 255, 255, 0.75)' }}
-          >
+          <p className="text-base md:text-lg max-w-3xl mx-auto leading-[1.7] font-normal text-foreground/70">
             <span suppressHydrationWarning>
               {t('landing.pricing.subtitle') ||
                 'A portfolio of subscriptions for you to choose from to tailor fit your real time needs.'}
@@ -169,13 +141,13 @@ export function PricingTiers() {
             </span>
           </p>
           <div className="flex flex-wrap items-center justify-center gap-6 mt-4 opacity-60">
-            <div className="text-sm font-semibold" style={{ color: '#ffffff' }}>
+            <div className="text-sm font-semibold text-foreground/80">
               {t('landing.pricing.partner1') || 'Student Visas'}
             </div>
-            <div className="text-sm font-semibold" style={{ color: '#ffffff' }}>
+            <div className="text-sm font-semibold text-foreground/80">
               {t('landing.pricing.partner2') || 'Work Permits'}
             </div>
-            <div className="text-sm font-semibold" style={{ color: '#ffffff' }}>
+            <div className="text-sm font-semibold text-foreground/80">
               {t('landing.pricing.partner3') || 'Family Sponsorship'}
             </div>
           </div>

@@ -9,29 +9,26 @@ export const dynamic = 'force-dynamic';
 
 export default function HomePage() {
   return (
-    <div
-      className="flex flex-col min-h-screen relative overflow-hidden"
-      style={{ backgroundColor: '#091a24' }}
-    >
+    <div className="flex flex-col min-h-screen relative overflow-hidden bg-background dark:bg-[#091a24]">
       {/* PERFORMANCE: Optimized gradient background */}
       <div className="fixed inset-0 -z-10" style={{ willChange: 'transform' }}>
-        {/* Base gradient layer - Redis Cloud background */}
-        <div className="absolute inset-0" style={{ backgroundColor: '#091a24' }} />
+        {/* Base gradient layer - Redis style for dark mode, theme-aware for light */}
+        <div className="absolute inset-0 bg-background dark:bg-[#091a24]" />
 
-        {/* PERFORMANCE: Reduced blur and opacity for better rendering */}
+        {/* PERFORMANCE: Reduced blur and opacity for better rendering - Theme-aware gradients */}
         <div
-          className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full opacity-20"
+          className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full opacity-20 dark:opacity-20"
           style={{
-            background: 'radial-gradient(circle, rgba(255, 69, 56, 0.15) 0%, transparent 70%)',
+            background: 'radial-gradient(circle, color-mix(in srgb, var(--primary) 15%, transparent) 0%, transparent 70%)',
             filter: 'blur(80px)',
             willChange: 'opacity',
           }}
         />
 
         <div
-          className="absolute bottom-0 left-0 w-[500px] h-[500px] rounded-full opacity-15"
+          className="absolute bottom-0 left-0 w-[500px] h-[500px] rounded-full opacity-15 dark:opacity-15"
           style={{
-            background: 'radial-gradient(circle, rgba(255, 69, 56, 0.1) 0%, transparent 70%)',
+            background: 'radial-gradient(circle, color-mix(in srgb, var(--primary) 10%, transparent) 0%, transparent 70%)',
             filter: 'blur(80px)',
             willChange: 'opacity',
           }}

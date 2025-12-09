@@ -77,49 +77,53 @@ export default function ServicesPage() {
   ];
 
   return (
-    <div
-      className="flex flex-col min-h-screen relative overflow-hidden"
-      style={{ backgroundColor: '#091a24' }}
-    >
-      {/* Background gradients */}
+    <div className="flex flex-col min-h-screen relative overflow-hidden bg-background dark:bg-[#091a24]">
+      {/* Theme-aware Background - Redis style for dark mode */}
       <div className="fixed inset-0 -z-10">
-        <div className="absolute inset-0" style={{ backgroundColor: '#091a24' }} />
+        {/* Base background */}
+        <div className="absolute inset-0 bg-background dark:bg-[#091a24]"></div>
+
+        {/* Subtle animated gradient orbs - Theme-aware */}
         <div
-          className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full blur-3xl opacity-20"
+          className="absolute top-0 right-0 w-[800px] h-[800px] rounded-full blur-3xl opacity-20 dark:opacity-20"
           style={{
-            background: 'radial-gradient(circle, rgba(255, 69, 56, 0.2) 0%, transparent 70%)',
+            background: 'radial-gradient(circle, color-mix(in srgb, var(--primary) 20%, transparent) 0%, transparent 70%)',
+            animation: 'pulse 8s cubic-bezier(0.4, 0, 0.6, 1) infinite',
           }}
-        />
+        ></div>
+
         <div
-          className="absolute bottom-0 left-0 w-[500px] h-[500px] rounded-full blur-3xl opacity-15"
+          className="absolute top-1/3 left-0 w-[600px] h-[600px] rounded-full blur-3xl opacity-15 dark:opacity-15"
           style={{
-            background: 'radial-gradient(circle, rgba(255, 69, 56, 0.15) 0%, transparent 70%)',
+            background: 'radial-gradient(circle, color-mix(in srgb, var(--primary) 15%, transparent) 0%, transparent 70%)',
+            animation: 'pulse 10s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            animationDelay: '2s',
           }}
-        />
+        ></div>
+
+        <div
+          className="absolute bottom-0 right-1/4 w-[700px] h-[700px] rounded-full blur-3xl opacity-15 dark:opacity-15"
+          style={{
+            background: 'radial-gradient(circle, color-mix(in srgb, var(--primary) 15%, transparent) 0%, transparent 70%)',
+            animation: 'pulse 12s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            animationDelay: '4s',
+          }}
+        ></div>
       </div>
 
       <Navbar />
 
       <main className="flex-1 w-full relative z-0">
-        <section
-          className="relative py-16 md:py-24 lg:py-32"
-          style={{ backgroundColor: '#091a24' }}
-        >
+        <section className="relative py-16 md:py-24 lg:py-32 bg-background dark:bg-[#091a24]">
           <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             {/* Header */}
             <div className="text-center mb-12 md:mb-16">
-              <h1
-                className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-4"
-                style={{ color: '#ffffff' }}
-              >
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-4 text-foreground/90">
                 <span suppressHydrationWarning>
                   {t('landing.services.title') || 'Our Services'}
                 </span>
               </h1>
-              <p
-                className="text-lg md:text-xl max-w-3xl mx-auto"
-                style={{ color: 'rgba(255, 255, 255, 0.7)' }}
-              >
+              <p className="text-lg md:text-xl max-w-3xl mx-auto text-foreground/70">
                 <span suppressHydrationWarning>
                   {t('landing.services.subtitle') ||
                     'Comprehensive immigration services to help you achieve your goals.'}
@@ -134,40 +138,18 @@ export default function ServicesPage() {
                 return (
                   <Card
                     key={index}
-                    className="group relative overflow-hidden border-2 transition-all duration-300 hover:shadow-xl"
-                    style={{
-                      backgroundColor: 'rgba(255, 255, 255, 0.03)',
-                      borderColor: 'rgba(255, 255, 255, 0.1)',
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.borderColor = '#ff4538';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
-                    }}
+                    className="group relative overflow-hidden border-2 transition-all duration-300 hover:shadow-xl bg-card dark:bg-[rgba(255,255,255,0.03)] border-border hover:border-primary"
                   >
                     <CardHeader>
                       <div className="flex items-start gap-4">
-                        <div
-                          className="p-3 rounded-xl transition-colors flex-shrink-0"
-                          style={{ backgroundColor: 'rgba(255, 69, 56, 0.1)' }}
-                          onMouseEnter={(e) => {
-                            e.currentTarget.style.backgroundColor = 'rgba(255, 69, 56, 0.2)';
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.backgroundColor = 'rgba(255, 69, 56, 0.1)';
-                          }}
-                        >
-                          <Icon className="h-6 w-6" style={{ color: '#ff4538' }} />
+                        <div className="p-3 rounded-xl transition-colors flex-shrink-0 bg-primary/10 group-hover:bg-primary/20">
+                          <Icon className="h-6 w-6 text-primary" />
                         </div>
                         <div className="flex-1">
-                          <CardTitle className="text-xl mb-2" style={{ color: '#ffffff' }}>
+                          <CardTitle className="text-xl mb-2 text-foreground/90">
                             {service.title}
                           </CardTitle>
-                          <CardDescription
-                            className="text-base"
-                            style={{ color: 'rgba(255, 255, 255, 0.7)' }}
-                          >
+                          <CardDescription className="text-base text-foreground/70">
                             {service.description}
                           </CardDescription>
                         </div>
@@ -177,11 +159,8 @@ export default function ServicesPage() {
                       <ul className="space-y-2 mb-6">
                         {service.features.map((feature, idx) => (
                           <li key={idx} className="flex items-center gap-2">
-                            <CheckCircle2
-                              className="h-4 w-4 flex-shrink-0"
-                              style={{ color: '#ff4538' }}
-                            />
-                            <span className="text-sm" style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
+                            <CheckCircle2 className="h-4 w-4 flex-shrink-0 text-primary" />
+                            <span className="text-sm text-foreground/70">
                               {feature}
                             </span>
                           </li>
@@ -189,18 +168,7 @@ export default function ServicesPage() {
                       </ul>
                       <Button
                         variant="outline"
-                        className="w-full transition-all duration-200"
-                        style={{
-                          borderColor: '#ff4538',
-                          color: '#ff4538',
-                          backgroundColor: 'transparent',
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.backgroundColor = 'rgba(255, 69, 56, 0.1)';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.backgroundColor = 'transparent';
-                        }}
+                        className="w-full transition-all duration-200 text-primary border-primary hover:bg-primary/10"
                         asChild
                       >
                         <Link href={service.href}>
@@ -216,20 +184,14 @@ export default function ServicesPage() {
 
             {/* CTA Section */}
             <div className="mt-16 text-center">
-              <Card
-                className="max-w-3xl mx-auto border-2"
-                style={{
-                  backgroundColor: 'rgba(255, 255, 255, 0.03)',
-                  borderColor: 'rgba(255, 255, 255, 0.1)',
-                }}
-              >
+              <Card className="max-w-3xl mx-auto border-2 bg-card dark:bg-[rgba(255,255,255,0.03)] border-border">
                 <CardContent className="p-8 md:p-12">
-                  <h2 className="text-2xl md:text-3xl font-bold mb-4" style={{ color: '#ffffff' }}>
+                  <h2 className="text-2xl md:text-3xl font-bold mb-4 text-foreground/90">
                     <span suppressHydrationWarning>
                       {t('landing.services.ctaTitle') || 'Ready to Get Started?'}
                     </span>
                   </h2>
-                  <p className="text-lg mb-6" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+                  <p className="text-lg mb-6 text-foreground/70">
                     <span suppressHydrationWarning>
                       {t('landing.services.ctaDescription') ||
                         'Contact us today to discuss your immigration needs.'}
@@ -238,14 +200,7 @@ export default function ServicesPage() {
                   <div className="flex flex-col sm:flex-row gap-4 justify-center">
                     <Button
                       size="lg"
-                      className="text-white"
-                      style={{ backgroundColor: '#ff4538' }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.backgroundColor = '#ff5c50';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor = '#ff4538';
-                      }}
+                      className="text-primary-foreground bg-primary hover:bg-primary/90"
                       asChild
                     >
                       <Link href="/contact">
@@ -256,18 +211,7 @@ export default function ServicesPage() {
                     <Button
                       size="lg"
                       variant="outline"
-                      className="transition-all duration-200"
-                      style={{
-                        borderColor: '#ff4538',
-                        color: '#ff4538',
-                        backgroundColor: 'transparent',
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.backgroundColor = 'rgba(255, 69, 56, 0.1)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor = 'transparent';
-                      }}
+                      className="transition-all duration-200 text-primary border-primary hover:bg-primary/10"
                       asChild
                     >
                       <Link href="/register">

@@ -23,29 +23,23 @@ function FeatureSection({
   highlight,
 }: FeatureSectionProps) {
   return (
-    <section className="relative py-8 md:py-12 lg:py-16" style={{ backgroundColor: '#091a24' }}>
+    <section className="relative py-8 md:py-12 lg:py-16 bg-background dark:bg-[#091a24]">
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto text-center space-y-5 md:space-y-6">
           <div className="flex justify-center mb-5">
-            <div className="p-4 rounded-2xl" style={{ backgroundColor: 'rgba(255, 69, 56, 0.1)' }}>
+            <div className="p-4 rounded-2xl bg-primary/10">
               {icon}
             </div>
           </div>
-          <h2
-            className="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight tracking-tight"
-            style={{ color: '#ffffff' }}
-          >
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight tracking-tight text-foreground/90">
             {title}
           </h2>
           {highlight && (
-            <p className="text-base md:text-lg font-semibold" style={{ color: '#ff4538' }}>
+            <p className="text-base md:text-lg font-semibold text-primary">
               {highlight}
             </p>
           )}
-          <p
-            className="text-base md:text-lg max-w-3xl mx-auto leading-[1.7] font-normal"
-            style={{ color: 'rgba(255, 255, 255, 0.75)' }}
-          >
+          <p className="text-base md:text-lg max-w-3xl mx-auto leading-[1.7] font-normal text-foreground/70">
             {description}
           </p>
           {ctaText && ctaLink && (
@@ -53,18 +47,7 @@ function FeatureSection({
               <Button
                 variant="outline"
                 size="lg"
-                className="transition-all duration-200"
-                style={{
-                  borderColor: '#ff4538',
-                  color: '#ff4538',
-                  backgroundColor: 'transparent',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = 'rgba(255, 69, 56, 0.1)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = 'transparent';
-                }}
+                className="transition-all duration-200 text-primary border-primary hover:bg-primary/10"
                 asChild
               >
                 <Link href={ctaLink}>
@@ -87,7 +70,7 @@ export function FeatureSections() {
     <>
       {/* Start your journey in minutes */}
       <FeatureSection
-        icon={<Rocket className="h-12 w-12" style={{ color: '#ff4538' }} />}
+        icon={<Rocket className="h-12 w-12 text-primary" />}
         title={t('landing.features.startJourney.title') || 'Start your journey in minutes'}
         description={
           t('landing.features.startJourney.description') ||
@@ -99,7 +82,7 @@ export function FeatureSections() {
 
       {/* Fast processing that scales */}
       <FeatureSection
-        icon={<Zap className="h-12 w-12" style={{ color: '#ff4538' }} />}
+        icon={<Zap className="h-12 w-12 text-primary" />}
         title={t('landing.features.fastProcessing.title') || 'Fast processing that scales'}
         highlight={
           t('landing.features.fastProcessing.highlight') ||
@@ -115,7 +98,7 @@ export function FeatureSections() {
 
       {/* Comprehensive immigration services */}
       <FeatureSection
-        icon={<Sparkles className="h-12 w-12" style={{ color: '#ff4538' }} />}
+        icon={<Sparkles className="h-12 w-12 text-primary" />}
         title={t('landing.features.comprehensive.title') || 'Comprehensive immigration services'}
         description={
           t('landing.features.comprehensive.description') ||
@@ -127,7 +110,7 @@ export function FeatureSections() {
 
       {/* Expert guidance and support */}
       <FeatureSection
-        icon={<Search className="h-12 w-12" style={{ color: '#ff4538' }} />}
+        icon={<Search className="h-12 w-12 text-primary" />}
         title={t('landing.features.expertGuidance.title') || 'Expert guidance and support'}
         description={
           t('landing.features.expertGuidance.description') ||
@@ -139,7 +122,7 @@ export function FeatureSections() {
 
       {/* Secure and confidential */}
       <FeatureSection
-        icon={<Shield className="h-12 w-12" style={{ color: '#ff4538' }} />}
+        icon={<Shield className="h-12 w-12 text-primary" />}
         title={t('landing.features.secure.title') || 'Secure and confidential processing'}
         description={
           t('landing.features.secure.description') ||

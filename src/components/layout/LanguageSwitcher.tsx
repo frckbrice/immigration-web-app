@@ -42,38 +42,17 @@ export function LanguageSwitcher({ variant = 'light' }: LanguageSwitcherProps) {
     }
   };
 
-  // Determine text color based on variant
-  const textColor = variant === 'light' ? 'rgba(255, 255, 255, 0.8)' : 'rgba(0, 0, 0, 0.8)';
-
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
           size="sm"
-          className="gap-1.5 sm:gap-2 transition-all duration-200 border hover:border-[#ff4538]/50 h-8 sm:h-9 px-2 sm:px-3"
-          style={{
-            backgroundColor: 'transparent',
-            borderColor: 'rgba(255, 69, 56, 0.3)',
-            borderWidth: '1px',
-            borderStyle: 'solid',
-            color: textColor,
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.borderColor = 'rgba(255, 69, 56, 0.5)';
-            e.currentTarget.style.color = '#ff4538';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.borderColor = 'rgba(255, 69, 56, 0.3)';
-            e.currentTarget.style.color = textColor;
-          }}
+          className="gap-1.5 sm:gap-2 transition-all duration-200 border border-primary/30 hover:border-primary/50 h-8 sm:h-9 px-2 sm:px-3 text-foreground/80 hover:text-primary"
         >
-          <Globe className="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0" style={{ color: '#ff4538' }} />
+          <Globe className="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0 text-primary" />
           {mounted && (
-            <span
-              className="text-xs sm:text-sm font-medium whitespace-nowrap"
-              style={{ color: textColor }}
-            >
+            <span className="text-xs sm:text-sm font-medium whitespace-nowrap">
               {currentLanguage.code.toUpperCase()}
             </span>
           )}

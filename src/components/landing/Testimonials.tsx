@@ -108,10 +108,7 @@ export function Testimonials() {
   ];
 
   return (
-    <section
-      className="relative py-8 md:py-12 lg:py-16 overflow-hidden"
-      style={{ backgroundColor: '#091a24' }}
-    >
+    <section className="relative py-8 md:py-12 lg:py-16 overflow-hidden bg-background dark:bg-[#091a24]">
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute top-10 left-[-60px] w-72 h-72 bg-linear-to-trr from-purple-500/20 via-pink-500/20 to-transparent blur-3xl animate-pulse opacity-30"></div>
         <div className="absolute bottom-0 right-[-40px] w-80 h-80 bg-linear-to-trl from-cyan-500/20 via-blue-500/20 to-transparent blur-3xl animate-pulse opacity-30"></div>
@@ -119,18 +116,12 @@ export function Testimonials() {
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center mb-8 md:mb-10">
-          <h2
-            className="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight tracking-tight mb-4"
-            style={{ color: '#ffffff' }}
-          >
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight tracking-tight mb-4 text-foreground/90">
             <span suppressHydrationWarning>
               {t('landing.testimonials.title') || 'What Our Clients Say'}
             </span>
           </h2>
-          <p
-            className="text-base md:text-lg max-w-3xl mx-auto leading-[1.7] font-normal"
-            style={{ color: 'rgba(255, 255, 255, 0.75)' }}
-          >
+          <p className="text-base md:text-lg max-w-3xl mx-auto leading-[1.7] font-normal text-foreground/70">
             <span suppressHydrationWarning>
               {t('landing.testimonials.subtitle') ||
                 "Real stories from people we've helped achieve their immigration goals"}
@@ -179,28 +170,16 @@ export function Testimonials() {
         {/* Stats Row */}
         <div className="mt-8 md:mt-10 grid sm:grid-cols-3 gap-3 md:gap-4">
           {stats.map((stat) => (
-            <div
-              key={stat.label}
-              className="relative overflow-hidden rounded-xl border p-4 md:p-5 text-center"
-              style={{
-                backgroundColor: '#091a24',
-                borderColor: 'rgba(255, 69, 56, 0.3)',
-                borderWidth: '1px',
-                borderStyle: 'solid',
-              }}
-            >
-              <div className="absolute inset-0 bg-linear-to-tr from-[rgba(255,69,56,0.05)] via-transparent to-[rgba(255,69,56,0.05)]"></div>
+            <div className="relative overflow-hidden rounded-xl border p-4 md:p-5 text-center bg-card dark:bg-[#091a24] border-primary/30">
+              <div className="absolute inset-0 bg-linear-to-tr from-primary/5 via-transparent to-primary/5"></div>
               <div className="relative space-y-1.5 md:space-y-2">
-                <p className="text-2xl md:text-3xl font-black" style={{ color: '#ff4538' }}>
+                <p className="text-2xl md:text-3xl font-black text-primary">
                   {stat.value}
                 </p>
-                <p
-                  className="text-xs md:text-sm font-semibold uppercase tracking-wide"
-                  style={{ color: 'rgba(255, 255, 255, 0.9)' }}
-                >
+                <p className="text-xs md:text-sm font-semibold uppercase tracking-wide text-foreground/90">
                   <span suppressHydrationWarning>{stat.label}</span>
                 </p>
-                <p className="text-[10px] md:text-xs" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+                <p className="text-[10px] md:text-xs text-foreground/60">
                   <span suppressHydrationWarning>{stat.caption}</span>
                 </p>
               </div>
@@ -214,15 +193,7 @@ export function Testimonials() {
 
 function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
   return (
-    <Card
-      className="relative overflow-hidden shadow-lg transition-transform duration-300 hover:-translate-y-1"
-      style={{
-        backgroundColor: '#091a24',
-        borderColor: 'rgba(255, 69, 56, 0.3)',
-        borderWidth: '1px',
-        borderStyle: 'solid',
-      }}
-    >
+    <Card className="relative overflow-hidden shadow-lg transition-transform duration-300 hover:-translate-y-1 bg-card dark:bg-[#091a24] border-primary/30">
       <div
         className={`absolute inset-0 opacity-20 bg-linear-to-br ${testimonial.gradient} pointer-events-none`}
         aria-hidden
@@ -233,10 +204,7 @@ function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
           style={{ color: '#ff4538' }}
           aria-hidden="true"
         />
-        <p
-          className="text-sm md:text-base leading-relaxed"
-          style={{ color: 'rgba(255, 255, 255, 0.8)' }}
-        >
+        <p className="text-sm md:text-base leading-relaxed text-foreground/70">
           <span suppressHydrationWarning>&ldquo;{testimonial.content}&rdquo;</span>
         </p>
         <div
@@ -258,13 +226,13 @@ function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
             </AvatarFallback>
           </Avatar>
           <div className="space-y-0.5 md:space-y-1">
-            <p className="font-semibold text-sm md:text-base" style={{ color: '#ffffff' }}>
+            <p className="font-semibold text-sm md:text-base text-foreground/90">
               {testimonial.name}
             </p>
-            <p className="text-xs md:text-sm" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+            <p className="text-xs md:text-sm text-foreground/70">
               <span suppressHydrationWarning>{testimonial.role}</span>
             </p>
-            <p className="text-[10px] md:text-xs" style={{ color: 'rgba(255, 255, 255, 0.6)' }}>
+            <p className="text-[10px] md:text-xs text-foreground/60">
               <span suppressHydrationWarning>{testimonial.location}</span>
             </p>
           </div>
@@ -277,15 +245,7 @@ function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
 function SpotlightCard({ testimonial }: { testimonial: Testimonial }) {
   const { t } = useTranslation();
   return (
-    <Card
-      className="relative isolate overflow-hidden text-white shadow-[0_20px_80px_rgba(15,23,42,0.55)]"
-      style={{
-        backgroundColor: '#091a24',
-        borderColor: '#ff4538',
-        borderWidth: '1px',
-        borderStyle: 'solid',
-      }}
-    >
+    <Card className="relative isolate overflow-hidden text-foreground shadow-[0_20px_80px_rgba(15,23,42,0.55)] bg-card dark:bg-[#091a24] border-primary">
       <div className="absolute inset-[-40%] bg-linear-to-br from-blue-500/20 via-cyan-500/15 to-purple-500/15 blur-3xl opacity-40" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,69,56,0.1),transparent_70%)]" />
       <CardContent className="relative flex h-full flex-col gap-4 md:gap-6 p-6 md:p-8 lg:p-10">
@@ -304,17 +264,11 @@ function SpotlightCard({ testimonial }: { testimonial: Testimonial }) {
           style={{ color: 'rgba(255, 69, 56, 0.3)' }}
           aria-hidden="true"
         />
-        <p
-          className="text-base md:text-lg lg:text-xl leading-relaxed font-medium"
-          style={{ color: 'rgba(255, 255, 255, 0.9)' }}
-        >
+        <p className="text-base md:text-lg lg:text-xl leading-relaxed font-medium text-foreground/90">
           <span suppressHydrationWarning>&ldquo;{testimonial.content}&rdquo;</span>
         </p>
-        <div
-          className="flex items-center gap-3 md:gap-4 pt-4 md:pt-6 border-t"
-          style={{ borderColor: 'rgba(255, 69, 56, 0.2)' }}
-        >
-          <Avatar className="h-16 w-16 md:h-20 md:w-20 ring-2 md:ring-4 ring-[rgba(255,69,56,0.3)]">
+        <div className="flex items-center gap-3 md:gap-4 pt-4 md:pt-6 border-t border-primary/20">
+          <Avatar className="h-16 w-16 md:h-20 md:w-20 ring-2 md:ring-4 ring-primary/30">
             <AvatarImage
               src={testimonial.avatarSrc}
               alt={testimonial.name}
@@ -329,13 +283,13 @@ function SpotlightCard({ testimonial }: { testimonial: Testimonial }) {
             </AvatarFallback>
           </Avatar>
           <div>
-            <p className="text-base md:text-lg font-semibold" style={{ color: '#ffffff' }}>
+            <p className="text-base md:text-lg font-semibold text-foreground/90">
               {testimonial.name}
             </p>
-            <p className="text-xs md:text-sm" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+            <p className="text-xs md:text-sm text-foreground/70">
               <span suppressHydrationWarning>{testimonial.role}</span>
             </p>
-            <p className="text-[10px] md:text-xs" style={{ color: 'rgba(255, 255, 255, 0.6)' }}>
+            <p className="text-[10px] md:text-xs text-foreground/60">
               <span suppressHydrationWarning>{testimonial.location}</span>
             </p>
           </div>

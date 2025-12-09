@@ -27,7 +27,7 @@ export const Navbar = memo(function Navbar() {
   return (
     <>
       <nav
-        className="fixed top-0 left-0 right-0 z-50 w-full border-b bg-[#091a24] dark:bg-[#091a24] border-border dark:border-white/10"
+        className="fixed top-0 left-0 right-0 z-50 w-full border-b bg-background border-border backdrop-blur-sm bg-background/95"
       >
         <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex h-16 items-center justify-between">
           {/* Logo - Reduced on mobile to make room for theme switcher */}
@@ -43,7 +43,7 @@ export const Navbar = memo(function Navbar() {
                 priority
               />
             </div>
-            <span className="font-bold text-lg sm:text-xl hidden md:inline-block" style={{ color: '#ff4538' }}>
+            <span className="font-bold text-lg sm:text-xl hidden md:inline-block text-primary">
               Patrick Travel Service
             </span>
           </Link>
@@ -54,14 +54,7 @@ export const Navbar = memo(function Navbar() {
               <Link
                 key={item.nameKey}
                 href={item.href}
-                className="text-md font-medium transition-colors"
-                style={{ color: 'rgba(255, 255, 255, 0.8)' }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.color = '#ff4538';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.color = 'rgba(255, 255, 255, 0.8)';
-                }}
+                className="text-md font-medium transition-colors text-foreground/80 hover:text-primary"
               >
                 <span suppressHydrationWarning>{t(item.nameKey)}</span>
               </Link>
@@ -83,14 +76,7 @@ export const Navbar = memo(function Navbar() {
             <div className="hidden md:flex items-center space-x-2">
               {isAuthenticated ? (
                 <Button
-                  className="text-white"
-                  style={{ backgroundColor: '#ff4538' }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = '#ff5c50';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = '#ff4538';
-                  }}
+                  className="text-primary-foreground bg-primary hover:bg-primary/90"
                   asChild
                 >
                   <Link href="/dashboard">
@@ -102,22 +88,7 @@ export const Navbar = memo(function Navbar() {
                 <>
                   <Button
                     variant="outline"
-                    className="transition-colors"
-                    style={{
-                      color: 'rgba(255, 255, 255, 0.8)',
-                      borderColor: 'rgba(255, 255, 255, 0.2)',
-                      backgroundColor: 'transparent',
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.color = '#ff4538';
-                      e.currentTarget.style.borderColor = '#ff4538';
-                      e.currentTarget.style.backgroundColor = 'rgba(255, 69, 56, 0.1)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.color = 'rgba(255, 255, 255, 0.8)';
-                      e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
-                      e.currentTarget.style.backgroundColor = 'transparent';
-                    }}
+                    className="transition-colors text-foreground/80 border-border hover:text-primary hover:border-primary hover:bg-primary/10"
                     asChild
                   >
                     <Link href="/login">
@@ -125,14 +96,7 @@ export const Navbar = memo(function Navbar() {
                     </Link>
                   </Button>
                   <Button
-                    className="text-white"
-                    style={{ backgroundColor: '#ff4538' }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = '#ff5c50';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = '#ff4538';
-                    }}
+                    className="text-primary-foreground bg-primary hover:bg-primary/90"
                     asChild
                   >
                     <Link href="/register">
@@ -147,16 +111,7 @@ export const Navbar = memo(function Navbar() {
             <Button
               variant="ghost"
               size="icon"
-              className="md:hidden"
-              style={{ color: '#ffffff' }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.color = '#ff4538';
-                e.currentTarget.style.backgroundColor = 'rgba(255, 69, 56, 0.1)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.color = '#ffffff';
-                e.currentTarget.style.backgroundColor = 'transparent';
-              }}
+              className="md:hidden text-foreground hover:text-primary hover:bg-primary/10"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
               {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -166,20 +121,13 @@ export const Navbar = memo(function Navbar() {
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="md:hidden border-t bg-[#091a24] dark:bg-[#091a24] border-border dark:border-white/10">
+          <div className="md:hidden border-t bg-background border-border">
             <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 space-y-3">
               {navigation.map((item) => (
                 <Link
                   key={item.nameKey}
                   href={item.href}
-                  className="block py-2 text-md font-medium transition-colors"
-                  style={{ color: 'rgba(255, 255, 255, 0.8)' }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.color = '#ff4538';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.color = 'rgba(255, 255, 255, 0.8)';
-                  }}
+                  className="block py-2 text-md font-medium transition-colors text-foreground/80 hover:text-primary"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   <span suppressHydrationWarning>{t(item.nameKey)}</span>
@@ -193,14 +141,7 @@ export const Navbar = memo(function Navbar() {
               <div className="flex flex-col space-y-2 pt-2">
                 {isAuthenticated ? (
                   <Button
-                    className="w-full text-white"
-                    style={{ backgroundColor: '#ff4538' }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = '#ff5c50';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = '#ff4538';
-                    }}
+                    className="w-full text-primary-foreground bg-primary hover:bg-primary/90"
                     asChild
                   >
                     <Link href="/dashboard">
@@ -212,18 +153,7 @@ export const Navbar = memo(function Navbar() {
                   <>
                     <Button
                       variant="outline"
-                      className="w-full transition-colors"
-                      style={{
-                        borderColor: '#ff4538',
-                        color: '#ff4538',
-                        backgroundColor: 'transparent',
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.backgroundColor = 'rgba(255, 69, 56, 0.1)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor = 'transparent';
-                      }}
+                      className="w-full transition-colors text-primary border-primary hover:bg-primary/10"
                       asChild
                     >
                       <Link href="/login">
@@ -231,14 +161,7 @@ export const Navbar = memo(function Navbar() {
                       </Link>
                     </Button>
                     <Button
-                      className="w-full text-white"
-                      style={{ backgroundColor: '#ff4538' }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.backgroundColor = '#ff5c50';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor = '#ff4538';
-                      }}
+                      className="w-full text-primary-foreground bg-primary hover:bg-primary/90"
                       asChild
                     >
                       <Link href="/register">

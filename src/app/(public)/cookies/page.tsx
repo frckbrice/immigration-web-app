@@ -11,7 +11,7 @@ export default function CookiesPage() {
 
   return (
     <LegalPageLayout titleKey="legal.cookies.title" lastUpdated="January 20, 2025">
-      <p className="text-lg mb-6" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+      <p className="text-lg mb-6 text-foreground/70">
         {t('legal.cookies.description')}
       </p>
 
@@ -63,82 +63,54 @@ export default function CookiesPage() {
         title={`3. ${t('legal.cookies.types.title')}`}
       >
         <div className="space-y-4">
-          <Card
-            className="p-4 border-l-4 border-2"
-            style={{
-              backgroundColor: 'rgba(255, 255, 255, 0.03)',
-              borderColor: 'rgba(255, 255, 255, 0.1)',
-              borderLeftColor: '#ff4538',
-            }}
-          >
-            <h3 className="text-lg font-semibold mb-2" style={{ color: '#ffffff' }}>
+          <Card className="p-4 border-l-4 border-2 bg-card dark:bg-[rgba(255,255,255,0.03)] border-border border-l-primary">
+            <h3 className="text-lg font-semibold mb-2 text-foreground/90">
               {t('legal.cookies.types.essential.title')}
             </h3>
-            <p className="text-sm" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+            <p className="text-sm text-foreground/70">
               {t('legal.cookies.types.essential.desc')}
             </p>
-            <div className="mt-2 text-xs" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
-              <strong style={{ color: '#ffffff' }}>Examples:</strong>{' '}
+            <div className="mt-2 text-xs text-foreground/70">
+              <strong className="text-foreground/90">Examples:</strong>{' '}
               {t('legal.cookies.types.essential.examples')}
             </div>
           </Card>
 
-          <Card
-            className="p-4 border-l-4 border-2"
-            style={{
-              backgroundColor: 'rgba(255, 255, 255, 0.03)',
-              borderColor: 'rgba(255, 255, 255, 0.1)',
-              borderLeftColor: '#ff4538',
-            }}
-          >
-            <h3 className="text-lg font-semibold mb-2" style={{ color: '#ffffff' }}>
+          <Card className="p-4 border-l-4 border-2 bg-card dark:bg-[rgba(255,255,255,0.03)] border-border border-l-primary">
+            <h3 className="text-lg font-semibold mb-2 text-foreground/90">
               {t('legal.cookies.types.functional.title')}
             </h3>
-            <p className="text-sm" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+            <p className="text-sm text-foreground/70">
               {t('legal.cookies.types.functional.desc')}
             </p>
-            <div className="mt-2 text-xs" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
-              <strong style={{ color: '#ffffff' }}>Examples:</strong>{' '}
+            <div className="mt-2 text-xs text-foreground/70">
+              <strong className="text-foreground/90">Examples:</strong>{' '}
               {t('legal.cookies.types.functional.examples')}
             </div>
           </Card>
 
-          <Card
-            className="p-4 border-l-4 border-2"
-            style={{
-              backgroundColor: 'rgba(255, 255, 255, 0.03)',
-              borderColor: 'rgba(255, 255, 255, 0.1)',
-              borderLeftColor: '#ff4538',
-            }}
-          >
-            <h3 className="text-lg font-semibold mb-2" style={{ color: '#ffffff' }}>
+          <Card className="p-4 border-l-4 border-2 bg-card dark:bg-[rgba(255,255,255,0.03)] border-border border-l-primary">
+            <h3 className="text-lg font-semibold mb-2 text-foreground/90">
               {t('legal.cookies.types.analytics.title')}
             </h3>
-            <p className="text-sm" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+            <p className="text-sm text-foreground/70">
               {t('legal.cookies.types.analytics.desc')}
             </p>
-            <div className="mt-2 text-xs" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
-              <strong style={{ color: '#ffffff' }}>Examples:</strong>{' '}
+            <div className="mt-2 text-xs text-foreground/70">
+              <strong className="text-foreground/90">Examples:</strong>{' '}
               {t('legal.cookies.types.analytics.examples')}
             </div>
           </Card>
 
-          <Card
-            className="p-4 border-l-4 border-2"
-            style={{
-              backgroundColor: 'rgba(255, 255, 255, 0.03)',
-              borderColor: 'rgba(255, 255, 255, 0.1)',
-              borderLeftColor: '#ff4538',
-            }}
-          >
-            <h3 className="text-lg font-semibold mb-2" style={{ color: '#ffffff' }}>
+          <Card className="p-4 border-l-4 border-2 bg-card dark:bg-[rgba(255,255,255,0.03)] border-border border-l-primary">
+            <h3 className="text-lg font-semibold mb-2 text-foreground/90">
               {t('legal.cookies.types.performance.title')}
             </h3>
-            <p className="text-sm" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+            <p className="text-sm text-foreground/70">
               {t('legal.cookies.types.performance.desc')}
             </p>
-            <div className="mt-2 text-xs" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
-              <strong style={{ color: '#ffffff' }}>Examples:</strong>{' '}
+            <div className="mt-2 text-xs text-foreground/70">
+              <strong className="text-foreground/90">Examples:</strong>{' '}
               {t('legal.cookies.types.performance.examples')}
             </div>
           </Card>
@@ -153,91 +125,52 @@ export default function CookiesPage() {
       >
         <p>{t('legal.cookies.thirdParty.desc')}</p>
         <div className="mt-4 space-y-3">
-          <Card
-            className="p-4 border-2"
-            style={{
-              backgroundColor: 'rgba(255, 255, 255, 0.03)',
-              borderColor: 'rgba(255, 255, 255, 0.1)',
-            }}
-          >
-            <h3 className="font-semibold mb-1" style={{ color: '#ffffff' }}>
+          <Card className="p-4 border-2 bg-card dark:bg-[rgba(255,255,255,0.03)] border-border">
+            <h3 className="font-semibold mb-1 text-foreground/90">
               {t('legal.cookies.thirdParty.firebase.title')}
             </h3>
-            <p className="text-sm" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+            <p className="text-sm text-foreground/70">
               {t('legal.cookies.thirdParty.firebase.desc')}
             </p>
             <a
               href="https://policies.google.com/privacy"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-xs hover:underline mt-1 inline-block transition-colors"
-              style={{ color: '#ff4538' }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.color = '#ff5c50';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.color = '#ff4538';
-              }}
+              className="text-xs hover:underline mt-1 inline-block transition-colors text-primary hover:text-primary/90"
             >
               {t('legal.cookies.thirdParty.firebase.link')} →
             </a>
           </Card>
 
-          <Card
-            className="p-4 border-2"
-            style={{
-              backgroundColor: 'rgba(255, 255, 255, 0.03)',
-              borderColor: 'rgba(255, 255, 255, 0.1)',
-            }}
-          >
-            <h3 className="font-semibold mb-1" style={{ color: '#ffffff' }}>
+          <Card className="p-4 border-2 bg-card dark:bg-[rgba(255,255,255,0.03)] border-border">
+            <h3 className="font-semibold mb-1 text-foreground/90">
               {t('legal.cookies.thirdParty.uploadthing.title')}
             </h3>
-            <p className="text-sm" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+            <p className="text-sm text-foreground/70">
               {t('legal.cookies.thirdParty.uploadthing.desc')}
             </p>
             <a
               href="https://uploadthing.com/privacy"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-xs hover:underline mt-1 inline-block transition-colors"
-              style={{ color: '#ff4538' }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.color = '#ff5c50';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.color = '#ff4538';
-              }}
+              className="text-xs hover:underline mt-1 inline-block transition-colors text-primary hover:text-primary/90"
             >
               {t('legal.cookies.thirdParty.uploadthing.link')} →
             </a>
           </Card>
 
-          <Card
-            className="p-4 border-2"
-            style={{
-              backgroundColor: 'rgba(255, 255, 255, 0.03)',
-              borderColor: 'rgba(255, 255, 255, 0.1)',
-            }}
-          >
-            <h3 className="font-semibold mb-1" style={{ color: '#ffffff' }}>
+          <Card className="p-4 border-2 bg-card dark:bg-[rgba(255,255,255,0.03)] border-border">
+            <h3 className="font-semibold mb-1 text-foreground/90">
               {t('legal.cookies.thirdParty.expo.title')}
             </h3>
-            <p className="text-sm" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+            <p className="text-sm text-foreground/70">
               {t('legal.cookies.thirdParty.expo.desc')}
             </p>
             <a
               href="https://expo.dev/privacy"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-xs hover:underline mt-1 inline-block transition-colors"
-              style={{ color: '#ff4538' }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.color = '#ff5c50';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.color = '#ff4538';
-              }}
+              className="text-xs hover:underline mt-1 inline-block transition-colors text-primary hover:text-primary/90"
             >
               {t('legal.cookies.thirdParty.expo.link')} →
             </a>
@@ -251,10 +184,10 @@ export default function CookiesPage() {
         iconColor="text-amber-700 dark:text-amber-300"
         title={`5. ${t('legal.cookies.manage.title')}`}
       >
-        <h3 className="text-xl font-semibold mb-3 mt-4">
+        <h3 className="text-xl font-semibold mb-3 mt-4 text-foreground/90">
           {t('legal.cookies.manage.browserSettings')}
         </h3>
-        <p>{t('legal.cookies.manage.browserDesc')}</p>
+        <p className="text-foreground/70">{t('legal.cookies.manage.browserDesc')}</p>
         <ul className="list-disc pl-6 mt-2 space-y-2">
           <li>{t('legal.cookies.manage.viewDelete')}</li>
           <li>{t('legal.cookies.manage.blockThirdParty')}</li>
@@ -263,10 +196,10 @@ export default function CookiesPage() {
           <li>{t('legal.cookies.manage.deleteOnClose')}</li>
         </ul>
 
-        <h3 className="text-xl font-semibold mb-3 mt-6">
+        <h3 className="text-xl font-semibold mb-3 mt-6 text-foreground/90">
           {t('legal.cookies.manage.browserSpecific')}
         </h3>
-        <div className="space-y-2 text-sm">
+        <div className="space-y-2 text-sm text-foreground/70">
           <p>
             <strong>Google Chrome:</strong>{' '}
             <a
@@ -313,15 +246,9 @@ export default function CookiesPage() {
           </p>
         </div>
 
-        <Card
-          className="mt-4 p-4 border-2"
-          style={{
-            backgroundColor: 'rgba(255, 255, 255, 0.03)',
-            borderColor: 'rgba(255, 69, 56, 0.3)',
-          }}
-        >
-          <p className="text-sm" style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
-            <strong style={{ color: '#ffffff' }}>⚠️ Important:</strong>{' '}
+        <Card className="mt-4 p-4 border-2 bg-card dark:bg-[rgba(255,255,255,0.03)] border-primary/30">
+          <p className="text-sm text-foreground/70">
+            <strong className="text-foreground/90">⚠️ Important:</strong>{' '}
             {t('legal.cookies.manage.important')}
           </p>
         </Card>
@@ -333,40 +260,34 @@ export default function CookiesPage() {
         iconColor="text-cyan-700 dark:text-cyan-300"
         title={`6. ${t('legal.cookies.updates.title')}`}
       >
-        <p>{t('legal.cookies.updates.desc1')}</p>
-        <p className="mt-4">{t('legal.cookies.updates.desc2')}</p>
+        <p className="text-foreground/70">{t('legal.cookies.updates.desc1')}</p>
+        <p className="mt-4 text-foreground/70">{t('legal.cookies.updates.desc2')}</p>
       </LegalSection>
 
       <section className="mb-8">
-        <h2 className="text-2xl font-semibold mb-4">7. {t('legal.cookies.contact.title')}</h2>
-        <p>{t('legal.cookies.contact.desc')}</p>
-        <div className="mt-4 space-y-1">
+        <h2 className="text-2xl font-semibold mb-4 text-foreground/90">7. {t('legal.cookies.contact.title')}</h2>
+        <p className="text-foreground/70">{t('legal.cookies.contact.desc')}</p>
+        <div className="mt-4 space-y-1 text-foreground/70">
           <p>
-            <strong>Email:</strong> {t('legal.contactEmail')}
+            <strong className="text-foreground/90">Email:</strong> {t('legal.contactEmail')}
           </p>
           <p>
-            <strong>Address:</strong> {t('legal.address')}
+            <strong className="text-foreground/90">Address:</strong> {t('legal.address')}
           </p>
           <p>
-            <strong>Response Time:</strong> {t('legal.responseTime')}
+            <strong className="text-foreground/90">Response Time:</strong> {t('legal.responseTime')}
           </p>
         </div>
       </section>
 
-      <Card
-        className="p-6 border-2"
-        style={{
-          backgroundColor: 'rgba(255, 255, 255, 0.03)',
-          borderColor: 'rgba(255, 255, 255, 0.1)',
-        }}
-      >
+      <Card className="p-6 border-2 bg-card dark:bg-[rgba(255,255,255,0.03)] border-border">
         <div className="flex items-start gap-4">
-          <Cookie className="h-6 w-6 flex-shrink-0 mt-1" style={{ color: '#ff4538' }} />
+          <Cookie className="h-6 w-6 flex-shrink-0 mt-1 text-primary" />
           <div>
-            <h3 className="font-semibold mb-2" style={{ color: '#ffffff' }}>
+            <h3 className="font-semibold mb-2 text-foreground/90">
               {t('legal.cookies.privacyMatters.title')}
             </h3>
-            <p className="text-sm" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+            <p className="text-sm text-foreground/70">
               {t('legal.cookies.privacyMatters.desc')}
             </p>
           </div>

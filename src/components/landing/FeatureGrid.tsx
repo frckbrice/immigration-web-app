@@ -13,48 +13,24 @@ interface FeatureCardProps {
 
 function FeatureCard({ icon, title, highlight, description }: FeatureCardProps) {
   return (
-    <Card
-      className="group relative overflow-hidden border-2 transition-all duration-200 hover:shadow-lg"
-      style={{
-        backgroundColor: '#091a24',
-        borderColor: 'rgba(255, 255, 255, 0.1)',
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.borderColor = '#ff4538';
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
-      }}
-    >
+    <Card className="group relative overflow-hidden border-2 transition-all duration-200 hover:shadow-lg bg-card dark:bg-[#091a24] border-border hover:border-primary">
       <CardHeader>
         <div className="flex items-start gap-4">
-          <div
-            className="p-3 rounded-xl transition-colors"
-            style={{ backgroundColor: 'rgba(255, 69, 56, 0.1)' }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = 'rgba(255, 69, 56, 0.2)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = 'rgba(255, 69, 56, 0.1)';
-            }}
-          >
+          <div className="p-3 rounded-xl transition-colors bg-primary/10 group-hover:bg-primary/20">
             {icon}
           </div>
-          <div className="flex-1">
-            <CardTitle className="text-lg md:text-xl mb-2 font-bold" style={{ color: '#ffffff' }}>
+                        <div className="flex-1">
+            <CardTitle className="text-lg md:text-xl mb-2 font-bold text-foreground/90">
               {title}
             </CardTitle>
-            <p className="text-base font-semibold" style={{ color: '#ff4538' }}>
+            <p className="text-base font-semibold text-primary">
               {highlight}
             </p>
           </div>
         </div>
       </CardHeader>
       <CardContent>
-        <CardDescription
-          className="text-sm md:text-base leading-[1.6] font-normal"
-          style={{ color: 'rgba(255, 255, 255, 0.75)' }}
-        >
+        <CardDescription className="text-sm md:text-base leading-[1.6] font-normal text-foreground/70">
           {description}
         </CardDescription>
       </CardContent>
@@ -67,7 +43,7 @@ export function FeatureGrid() {
 
   const features = [
     {
-      icon: <Database className="h-6 w-6" style={{ color: '#ff4538' }} />,
+      icon: <Database className="h-6 w-6 text-primary" />,
       title: t('landing.featureGrid.expertTeam.title') || 'Expert Team',
       highlight: t('landing.featureGrid.expertTeam.highlight') || 'Licensed professionals',
       description:
@@ -75,7 +51,7 @@ export function FeatureGrid() {
         'Our team of licensed immigration consultants brings years of experience and expertise to guide you through every step.',
     },
     {
-      icon: <Zap className="h-6 w-6" style={{ color: '#ff4538' }} />,
+      icon: <Zap className="h-6 w-6 text-primary" />,
       title: t('landing.featureGrid.successRate.title') || 'High Success Rate',
       highlight: t('landing.featureGrid.successRate.highlight') || '94% success rate',
       description:
@@ -83,7 +59,7 @@ export function FeatureGrid() {
         'With thousands of successful visa applications processed, we maintain one of the highest success rates in the industry.',
     },
     {
-      icon: <Handshake className="h-6 w-6" style={{ color: '#ff4538' }} />,
+      icon: <Handshake className="h-6 w-6 text-primary" />,
       title: t('landing.featureGrid.support.title') || '24/7 Support',
       highlight: t('landing.featureGrid.support.highlight') || 'Always here for you',
       description:
@@ -91,7 +67,7 @@ export function FeatureGrid() {
         'Our dedicated support team is available around the clock to answer your questions and provide guidance when you need it.',
     },
     {
-      icon: <Layers className="h-6 w-6" style={{ color: '#ff4538' }} />,
+      icon: <Layers className="h-6 w-6 text-primary" />,
       title: t('landing.featureGrid.documentManagement.title') || 'Document Management',
       highlight: t('landing.featureGrid.documentManagement.highlight') || 'Secure & organized',
       description:
@@ -99,7 +75,7 @@ export function FeatureGrid() {
         'Keep all your immigration documents organized and secure in one place. Access them anytime, anywhere.',
     },
     {
-      icon: <Lock className="h-6 w-6" style={{ color: '#ff4538' }} />,
+      icon: <Lock className="h-6 w-6 text-primary" />,
       title: t('landing.featureGrid.security.title') || 'Secure & Confidential',
       highlight: t('landing.featureGrid.security.highlight') || 'Your privacy matters',
       description:
@@ -107,7 +83,7 @@ export function FeatureGrid() {
         'We protect your personal information with industry-leading security measures and maintain strict confidentiality.',
     },
     {
-      icon: <Cloud className="h-6 w-6" style={{ color: '#ff4538' }} />,
+      icon: <Cloud className="h-6 w-6 text-primary" />,
       title: t('landing.featureGrid.globalReach.title') || 'Global Reach',
       highlight: t('landing.featureGrid.globalReach.highlight') || '50+ countries',
       description:
@@ -117,21 +93,15 @@ export function FeatureGrid() {
   ];
 
   return (
-    <section className="relative py-8 md:py-12 lg:py-16" style={{ backgroundColor: '#091a24' }}>
+    <section className="relative py-8 md:py-12 lg:py-16 bg-background dark:bg-[#091a24]">
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-8 md:mb-10">
-          <h2
-            className="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight tracking-tight mb-4"
-            style={{ color: '#ffffff' }}
-          >
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight tracking-tight mb-4 text-foreground/90">
             <span suppressHydrationWarning>
               {t('landing.featureGrid.title') || 'Why Choose Us'}
             </span>
           </h2>
-          <p
-            className="text-base md:text-lg max-w-3xl mx-auto leading-[1.7] font-normal"
-            style={{ color: 'rgba(255, 255, 255, 0.75)' }}
-          >
+          <p className="text-base md:text-lg max-w-3xl mx-auto leading-[1.7] font-normal text-foreground/70">
             <span suppressHydrationWarning>
               {t('landing.featureGrid.subtitle') ||
                 'Discover what makes us the trusted choice for immigration services'}
