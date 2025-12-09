@@ -16,7 +16,7 @@ const resetPasswordSchema = z.object({
 
 /**
  * Reset Password API Endpoint
- * Verifies Firebase oobCode and updates user password using Firebase REST API
+ * Resets user password using Firebase REST API with oobCode and newPassword
  */
 export async function POST(request: NextRequest) {
   try {
@@ -50,59 +50,8 @@ export async function POST(request: NextRequest) {
     }
 
     try {
-      // First, verify the reset code to get the email (validates code is still valid)
-      const verifyResponse = await fetch(
-        `https://identitytoolkit.googleapis.com/v1/accounts:resetPassword?key=${apiKey}`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            oobCode,
-          }),
-        }
-      );
-
-      const verifyPayload = (await verifyResponse.json().catch(() => undefined)) as
-        | { email?: string; error?: { message?: string } }
-        | undefined;
-
-      if (!verifyResponse.ok || !verifyPayload?.email) {
-        const errorMessage = verifyPayload?.error?.message || 'Invalid reset code';
-
-        // Handle specific Firebase errors
-        if (
-          errorMessage.includes('EXPIRED_OOB_CODE') ||
-          errorMessage.includes('INVALID_OOB_CODE') ||
-          errorMessage.includes('INVALID_CODE')
-        ) {
-          return NextResponse.json(
-            {
-              success: false,
-              error: 'Invalid or expired reset link. Please request a new one.',
-            },
-            { status: 400 }
-          );
-        }
-
-        logger.error('Failed to verify password reset code', {
-          error: errorMessage,
-          code: verifyPayload?.error,
-        });
-
-        return NextResponse.json(
-          {
-            success: false,
-            error: 'Invalid or expired reset link',
-          },
-          { status: 400 }
-        );
-      }
-
-      const email = verifyPayload.email;
-
-      // Now reset the password with the verified oobCode
+      // Reset password with oobCode and newPassword in a single call
+      // Firebase's resetPassword endpoint requires both parameters together
       const resetResponse = await fetch(
         `https://identitytoolkit.googleapis.com/v1/accounts:resetPassword?key=${apiKey}`,
         {
@@ -149,7 +98,7 @@ export async function POST(request: NextRequest) {
           );
         }
 
-        logger.error('Failed to reset password', { error: errorMessage, email });
+        logger.error('Failed to reset password', { error: errorMessage });
 
         return NextResponse.json(
           {
@@ -159,6 +108,9 @@ export async function POST(request: NextRequest) {
           { status: 500 }
         );
       }
+
+      // Extract email from successful reset response
+      const email = resetPayload?.email || 'unknown';
 
       // Note: Password is managed by Firebase Auth, not stored in database
       // The password field in the database is not used for authentication

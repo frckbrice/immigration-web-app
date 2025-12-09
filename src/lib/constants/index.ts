@@ -187,7 +187,7 @@ export const NOTIFICATION_ACTION_URLS = {
     `/dashboard/cases/${caseId}?appointmentId=${appointmentId}`,
 
   // Document-related notifications
-  DOCUMENTS_PAGE: '/dashboard/documents',
+  DOCUMENTS_PAGE: '/dashboard/cases?tab=documents',
 
   // Message-related notifications
   MESSAGES_PAGE: '/dashboard/messages',

@@ -3,14 +3,8 @@ import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { LandingView } from '@/components/landing/LandingView';
 
-// PERFORMANCE: Add metadata for SEO
-export const metadata = {
-  title: 'Patrick Travel Services - Immigration Management Platform',
-  description:
-    'Complete immigration services management platform for streamlined case management, document processing, and client communications',
-};
-
 // PERFORMANCE: Force dynamic to prevent static generation issues with client components
+// Note: metadata export is removed to avoid conflict with force-dynamic rendering mode
 export const dynamic = 'force-dynamic';
 
 export default function HomePage() {

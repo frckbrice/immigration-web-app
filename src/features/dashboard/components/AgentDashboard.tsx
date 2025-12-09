@@ -358,7 +358,7 @@ export const AgentDashboard = memo(function AgentDashboard() {
                 e.currentTarget.style.borderColor = 'rgba(255, 69, 56, 0.3)';
               }}
             >
-              <Link href="/dashboard/documents" className="flex items-center">
+              <Link href="/dashboard/cases?tab=documents" className="flex items-center">
                 <FileCheck
                   className="mr-2 h-3 w-3 sm:h-3.5 sm:w-3.5 flex-shrink-0"
                   style={{ color: '#ff4538' }}

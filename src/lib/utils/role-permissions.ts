@@ -51,14 +51,7 @@ export const navigationItems: NavItem[] = [
     description: 'Manage immigration cases',
   },
   {
-    title: 'Documents',
-    href: '/dashboard/documents',
-    icon: FileText,
-    roles: ['CLIENT', 'AGENT', 'ADMIN'],
-    description: 'Manage documents',
-  },
-  {
-    title: 'Resources',
+    title: 'Templates',
     href: '/dashboard/resources',
     icon: FileCheck,
     roles: ['CLIENT'],

@@ -7,6 +7,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useLogout } from '@/features/auth/api/useAuth';
 import { LanguageSwitcher } from '@/components/layout/LanguageSwitcher';
+import { ThemeSwitcher } from '@/components/layout/ThemeSwitcher';
 import { useTranslation } from 'react-i18next';
 import {
   LogOut,
@@ -64,7 +65,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
       'My Cases': 'dashboard.nav.myCases',
       Cases: 'dashboard.nav.cases',
       Documents: 'dashboard.nav.documents',
-      Resources: 'dashboard.nav.resources',
+      // Templates: 'dashboard.nav.templates',
       Messages: 'dashboard.nav.messages',
       Notifications: 'dashboard.nav.notifications',
       Clients: 'dashboard.nav.clients',
@@ -330,6 +331,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                   />
                   <div className="space-y-3">
                     <div className="flex items-center space-x-2 px-4 text-white">
+                      <ThemeSwitcher />
                       <LanguageSwitcher />
                     </div>
                   </div>
@@ -361,6 +363,10 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
 
             {/* Right Section - Language & User Info */}
             <div className="flex items-center space-x-2 sm:space-x-4">
+              {/* Theme Switcher - Visible on all screen sizes */}
+              <div className="flex items-center text-white">
+                <ThemeSwitcher />
+              </div>
               {/* Language Switcher - Visible on all screen sizes */}
               <div className="flex items-center text-white">
                 <LanguageSwitcher variant="light" />

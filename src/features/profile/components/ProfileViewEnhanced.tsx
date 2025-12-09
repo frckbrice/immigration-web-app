@@ -42,32 +42,15 @@ import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import { useUpdateProfile, useUploadAvatar } from '../api/mutations';
 
-const profileSchema = z.object({
-  firstName: z.string().min(2, 'First name must be at least 2 characters'),
-  lastName: z.string().min(2, 'Last name must be at least 2 characters'),
-  phone: z
-    .string()
-    .transform((val) => {
-      // Handle empty values
-      if (!val || val.trim() === '') return '';
-
-      // Strip formatting characters (spaces, hyphens, parentheses) while preserving leading '+'
-      const trimmed = val.trim();
-      const hasLeadingPlus = trimmed.startsWith('+');
-      const digitsOnly = trimmed.replace(/[\s\-()]/g, '');
-
-      // Ensure '+' is preserved if it was present
-      return hasLeadingPlus && !digitsOnly.startsWith('+') ? '+' + digitsOnly : digitsOnly;
-    })
-    .refine((val) => val === '' || /^(\+\d{7,15}|0\d{6,14})$/.test(val), {
-      message: 'Phone must be international (+1234567890) or national (0123456789) format',
-    }),
-  street: z.string().max(255, 'Street must be 255 characters or less').optional(),
-  city: z.string().max(255, 'City must be 255 characters or less').optional(),
-  country: z.string().max(255, 'Country must be 255 characters or less').optional(),
-});
-
-type ProfileInput = z.infer<typeof profileSchema>;
+// Profile input type
+type ProfileInput = {
+  firstName: string;
+  lastName: string;
+  phone: string;
+  street?: string;
+  city?: string;
+  country?: string;
+};
 
 export function ProfileView() {
   const { user } = useAuthStore();
@@ -77,6 +60,32 @@ export function ProfileView() {
   const avatarInputRef = useRef<HTMLInputElement>(null);
   const updateProfileMutation = useUpdateProfile();
   const uploadAvatarMutation = useUploadAvatar();
+
+  // Create schema with translations
+  const profileSchema = z.object({
+    firstName: z.string().min(2, t('profile.validation.firstNameMin')),
+    lastName: z.string().min(2, t('profile.validation.lastNameMin')),
+    phone: z
+      .string()
+      .transform((val) => {
+        // Handle empty values
+        if (!val || val.trim() === '') return '';
+
+        // Strip formatting characters (spaces, hyphens, parentheses) while preserving leading '+'
+        const trimmed = val.trim();
+        const hasLeadingPlus = trimmed.startsWith('+');
+        const digitsOnly = trimmed.replace(/[\s\-()]/g, '');
+
+        // Ensure '+' is preserved if it was present
+        return hasLeadingPlus && !digitsOnly.startsWith('+') ? '+' + digitsOnly : digitsOnly;
+      })
+      .refine((val) => val === '' || /^(\+\d{7,15}|0\d{6,14})$/.test(val), {
+        message: t('profile.validation.phoneFormat'),
+      }),
+    street: z.string().max(255, t('profile.validation.streetMax')).optional(),
+    city: z.string().max(255, t('profile.validation.cityMax')).optional(),
+    country: z.string().max(255, t('profile.validation.countryMax')).optional(),
+  });
 
   const form = useForm<ProfileInput>({
     resolver: zodResolver(profileSchema),
@@ -126,12 +135,8 @@ export function ProfileView() {
   };
 
   const getRoleDisplayName = () => {
-    const names: Record<string, string> = {
-      ADMIN: 'Administrator',
-      AGENT: 'Agent',
-      CLIENT: 'Client',
-    };
-    return names[user?.role || ''] || user?.role || 'Unknown';
+    const role = user?.role || '';
+    return t(`profile.roles.${role}`) || t('profile.roles.unknown');
   };
 
   const handleAvatarClick = () => {
@@ -144,8 +149,8 @@ export function ProfileView() {
 
     // Validate file type
     if (!file.type.startsWith('image/')) {
-      toast.error('Invalid file type', {
-        description: 'Please select an image file (JPEG, PNG, GIF, etc.)',
+      toast.error(t('profile.invalidFileType'), {
+        description: t('profile.invalidFileTypeDescription'),
       });
       return;
     }
@@ -153,8 +158,8 @@ export function ProfileView() {
     // Validate file size (4MB max)
     const maxSize = 4 * 1024 * 1024; // 4MB
     if (file.size > maxSize) {
-      toast.error('File too large', {
-        description: 'Image size must be less than 4MB',
+      toast.error(t('profile.fileTooLarge'), {
+        description: t('profile.fileTooLargeDescription'),
       });
       return;
     }
@@ -184,9 +189,9 @@ export function ProfileView() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Profile</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">{t('profile.title')}</h1>
           <p className="text-xs sm:text-sm text-muted-foreground mt-1 sm:mt-2">
-            Manage your personal information
+            {t('profile.description')}
           </p>
         </div>
         {!isEditing && (
@@ -201,7 +206,7 @@ export function ProfileView() {
             }}
           >
             <Edit2 className="mr-2 h-4 w-4" />
-            Edit Profile
+            {t('profile.editProfile')}
           </Button>
         )}
       </div>
@@ -251,7 +256,7 @@ export function ProfileView() {
                     type="file"
                     accept="image/*"
                     className="hidden"
-                    aria-label="Upload avatar"
+                    aria-label={t('profile.uploadAvatar')}
                     onChange={handleAvatarChange}
                   />
                 </>
@@ -282,13 +287,13 @@ export function ProfileView() {
               <Separator style={{ backgroundColor: 'rgba(255, 69, 56, 0.2)' }} />
               <div className="grid grid-cols-2 gap-1.5 sm:gap-2">
                 <ProfileStatusBadge
-                  label="Status"
-                  value={user?.isActive ? 'Active' : 'Inactive'}
+                  label={t('profile.status')}
+                  value={user?.isActive ? t('profile.active') : t('profile.inactive')}
                   isActive={user?.isActive}
                 />
                 <ProfileStatusBadge
-                  label="Verified"
-                  value={user?.isVerified ? 'Yes' : 'No'}
+                  label={t('profile.verified')}
+                  value={user?.isVerified ? t('profile.yes') : t('profile.no')}
                   isActive={user?.isVerified}
                 />
               </div>
@@ -304,10 +309,10 @@ export function ProfileView() {
           <CardHeader className="pb-3 sm:pb-6">
             <CardTitle className="text-base sm:text-lg flex items-center gap-2">
               <User className="h-4 w-4 sm:h-5 sm:w-5" style={{ color: '#ff4538' }} />
-              Personal Information
+              {t('profile.personalInfo')}
             </CardTitle>
             <CardDescription className="text-xs sm:text-sm mt-1">
-              {isEditing ? 'Edit your account details' : 'Your account details and information'}
+              {isEditing ? t('profile.editDescription') : t('profile.viewDescription')}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -319,10 +324,10 @@ export function ProfileView() {
                     name="firstName"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-xs sm:text-sm">First Name</FormLabel>
+                        <FormLabel className="text-xs sm:text-sm">{t('profile.firstName')}</FormLabel>
                         <FormControl>
                           <Input
-                            placeholder="John"
+                            placeholder={t('auth.placeholders.firstName')}
                             {...field}
                             className="h-10 sm:h-11 text-sm sm:text-base"
                           />
@@ -336,10 +341,10 @@ export function ProfileView() {
                     name="lastName"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-xs sm:text-sm">Last Name</FormLabel>
+                        <FormLabel className="text-xs sm:text-sm">{t('profile.lastName')}</FormLabel>
                         <FormControl>
                           <Input
-                            placeholder="Doe"
+                            placeholder={t('auth.placeholders.lastName')}
                             {...field}
                             className="h-10 sm:h-11 text-sm sm:text-base"
                           />
@@ -355,11 +360,11 @@ export function ProfileView() {
                       <FormItem>
                         <FormLabel className="text-xs sm:text-sm flex items-center gap-1.5">
                           <Phone className="h-3.5 w-3.5" style={{ color: '#ff4538' }} />
-                          Phone
+                          {t('profile.phone')}
                         </FormLabel>
                         <FormControl>
                           <Input
-                            placeholder="+1234567890"
+                            placeholder={t('auth.placeholders.phone')}
                             {...field}
                             className="h-10 sm:h-11 text-sm sm:text-base"
                           />
@@ -375,11 +380,11 @@ export function ProfileView() {
                       <FormItem>
                         <FormLabel className="text-xs sm:text-sm flex items-center gap-1.5">
                           <MapPin className="h-3.5 w-3.5" style={{ color: '#ff4538' }} />
-                          Street address
+                          {t('profile.street')}
                         </FormLabel>
                         <FormControl>
                           <Input
-                            placeholder="123 Main St"
+                            placeholder={t('auth.placeholders.street')}
                             {...field}
                             className="h-10 sm:h-11 text-sm sm:text-base"
                           />
@@ -395,11 +400,11 @@ export function ProfileView() {
                       <FormItem>
                         <FormLabel className="text-xs sm:text-sm flex items-center gap-1.5">
                           <MapPin className="h-3.5 w-3.5" style={{ color: '#ff4538' }} />
-                          City
+                          {t('profile.city')}
                         </FormLabel>
                         <FormControl>
                           <Input
-                            placeholder="Paris"
+                            placeholder={t('auth.placeholders.city')}
                             {...field}
                             className="h-10 sm:h-11 text-sm sm:text-base"
                           />
@@ -415,11 +420,11 @@ export function ProfileView() {
                       <FormItem>
                         <FormLabel className="text-xs sm:text-sm flex items-center gap-1.5">
                           <Globe className="h-3.5 w-3.5" style={{ color: '#ff4538' }} />
-                          Country
+                          {t('profile.country')}
                         </FormLabel>
                         <FormControl>
                           <Input
-                            placeholder="France"
+                            placeholder={t('auth.placeholders.country')}
                             {...field}
                             className="h-10 sm:h-11 text-sm sm:text-base"
                           />
@@ -441,7 +446,7 @@ export function ProfileView() {
                       }}
                     >
                       <Save className="mr-2 h-4 w-4" />
-                      {updateProfileMutation.isPending ? 'Saving...' : 'Save Changes'}
+                      {updateProfileMutation.isPending ? t('profile.saving') : t('profile.saveChanges')}
                     </Button>
                     <Button
                       type="button"
@@ -460,23 +465,23 @@ export function ProfileView() {
                       }}
                     >
                       <X className="mr-2 h-4 w-4" />
-                      Cancel
+                      {t('profile.cancel')}
                     </Button>
                   </div>
                 </form>
               </Form>
             ) : (
               <div className="space-y-2 sm:space-y-3">
-                <ProfileField icon={User} label="First Name" value={user?.firstName || ''} />
-                <ProfileField icon={User} label="Last Name" value={user?.lastName || ''} />
-                <ProfileField icon={Mail} label="Email" value={user?.email || ''} />
-                <ProfileField icon={Phone} label="Phone" value={user?.phone || 'Not provided'} />
-                <ProfileField icon={MapPin} label="Street" value={user?.street || 'Not provided'} />
-                <ProfileField icon={MapPin} label="City" value={user?.city || 'Not provided'} />
+                <ProfileField icon={User} label={t('profile.firstName')} value={user?.firstName || ''} />
+                <ProfileField icon={User} label={t('profile.lastName')} value={user?.lastName || ''} />
+                <ProfileField icon={Mail} label={t('profile.email')} value={user?.email || ''} />
+                <ProfileField icon={Phone} label={t('profile.phone')} value={user?.phone || t('profile.notProvided')} />
+                <ProfileField icon={MapPin} label={t('profile.street')} value={user?.street || t('profile.notProvided')} />
+                <ProfileField icon={MapPin} label={t('profile.city')} value={user?.city || t('profile.notProvided')} />
                 <ProfileField
                   icon={Globe}
-                  label="Country"
-                  value={user?.country || 'Not provided'}
+                  label={t('profile.country')}
+                  value={user?.country || t('profile.notProvided')}
                 />
               </div>
             )}

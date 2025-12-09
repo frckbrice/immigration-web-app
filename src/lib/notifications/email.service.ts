@@ -88,7 +88,7 @@ export async function sendDocumentVerifiedEmail(
             <p>Dear ${escapeHtml(clientName)},</p>
             <p>Your document <strong>${escapeHtml(documentName)}</strong> has been verified and approved.</p>
             <p>Login to your dashboard to continue with your application.</p>
-            <a href="${process.env.NEXT_PUBLIC_APP_URL}/dashboard/documents">View Documents</a>
+            <a href="${process.env.NEXT_PUBLIC_APP_URL}/dashboard/cases?tab=documents">View Documents</a>
             <br><br>
             <p>Best regards,<br>Patrick Travel Services</p>
         `,
@@ -110,7 +110,7 @@ export async function sendDocumentRejectedEmail(
             <p>Your document <strong>${escapeHtml(documentName)}</strong> requires reupload.</p>
             <p><strong>Reason:</strong> ${escapeHtml(reason)}</p>
             <p>Please upload a corrected version at your earliest convenience.</p>
-            <a href="${process.env.NEXT_PUBLIC_APP_URL}/dashboard/documents">Upload Document</a>
+            <a href="${process.env.NEXT_PUBLIC_APP_URL}/dashboard/cases?tab=documents">Upload Document</a>
             <br><br>
             <p>Best regards,<br>Patrick Travel Services</p>
         `,

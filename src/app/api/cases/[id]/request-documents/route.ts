@@ -92,7 +92,7 @@ const handler = asyncHandler(
                 <p>To proceed with your case <strong>${escapeHtml(caseData.referenceNumber)}</strong>, we need:</p>
                 <ul style="margin: 16px 0;">${docList}</ul>
                 ${message ? `<p><strong>Note:</strong> ${escapeHtml(message)}</p>` : ''}
-                <a href="${process.env.NEXT_PUBLIC_APP_URL}/dashboard/documents">Upload Documents</a>
+                <a href="${process.env.NEXT_PUBLIC_APP_URL}/dashboard/cases?tab=documents">Upload Documents</a>
                 <p>Best regards,<br>Patrick Travel Services</p>
             `,
       });
@@ -107,7 +107,7 @@ const handler = asyncHandler(
         type: 'DOCUMENT_REQUESTED',
         title: 'Documents Required',
         message: `Please upload: ${documentTypes.join(', ')}`,
-        actionUrl: '/dashboard/documents',
+        actionUrl: '/dashboard/cases?tab=documents',
       });
     } catch (error) {
       logger.warn('Realtime notification failed', { caseId: params.id, error });

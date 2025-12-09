@@ -201,17 +201,18 @@ function CheckoutContent() {
     const createPaymentIntent = async () => {
       // Create payment intent with retry, exponential backoff, and circuit breaker
       try {
-        // PERFORMANCE: Reduced client-side timeout to 25 seconds (Stripe has 15s, API has 30s)
-        // This provides faster feedback to users
-        const timeoutPromise = new Promise((_, reject) => {
-          setTimeout(() => {
-            reject(new Error('Request timeout - payment initialization took too long'));
-          }, 25000);
-        });
-
         // Use retry with circuit breaker for resilient payment initialization
         const response = await retryWithCircuitBreaker(
           async () => {
+            // PERFORMANCE: Reduced client-side timeout to 25 seconds (Stripe has 15s, API has 30s)
+            // This provides faster feedback to users
+            // Create a fresh timeout promise for each retry attempt
+            const timeoutPromise = new Promise((_, reject) => {
+              setTimeout(() => {
+                reject(new Error('Request timeout - payment initialization took too long'));
+              }, 25000);
+            });
+
             const result = await Promise.race([
               apiClient.post('/api/payments/checkout', {
                 tier: tierParam,
@@ -622,16 +623,17 @@ function CheckoutContent() {
                     setLoading(true);
                     // Retry with circuit breaker and exponential backoff
                     try {
-                      const timeoutPromise = new Promise((_, reject) => {
-                        setTimeout(() => {
-                          reject(
-                            new Error('Request timeout - payment initialization took too long')
-                          );
-                        }, 25000);
-                      });
-
                       const response = await retryWithCircuitBreaker(
                         async () => {
+                      // Create a fresh timeout promise for each retry attempt
+                          const timeoutPromise = new Promise((_, reject) => {
+                            setTimeout(() => {
+                              reject(
+                                new Error('Request timeout - payment initialization took too long')
+                              );
+                            }, 25000);
+                          });
+
                           const result = await Promise.race([
                             apiClient.post('/api/payments/checkout', {
                               tier: tierParam,

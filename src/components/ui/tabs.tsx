@@ -33,7 +33,8 @@ function TabsTrigger({ className, ...props }: React.ComponentProps<typeof TabsPr
         "focus-visible:ring-ring/50 focus-visible:outline-ring inline-flex h-full flex-1 items-center justify-center gap-1.5 rounded-md px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium transition-all cursor-pointer disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
         'text-muted-foreground hover:text-foreground border border-transparent',
         'data-[state=active]:text-white data-[state=active]:bg-[#361d22] data-[state=active]:border-[#ff4538]',
-        'data-[state=inactive]:border-[rgba(255,255,255,0.1)]',
+        // Use theme border color for inactive tabs so they remain visible in light mode
+        'data-[state=inactive]:border-border/60',
         className
       )}
       {...props}
