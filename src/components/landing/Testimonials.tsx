@@ -170,7 +170,10 @@ export function Testimonials() {
         {/* Stats Row */}
         <div className="mt-8 md:mt-10 grid sm:grid-cols-3 gap-3 md:gap-4">
           {stats.map((stat) => (
-            <div key={stat.label} className="relative overflow-hidden rounded-xl border p-4 md:p-5 text-center bg-card dark:bg-[#091a24] border-primary/30">
+            <div
+              key={stat.label}
+              className="relative overflow-hidden rounded-xl border p-4 md:p-5 text-center bg-card dark:bg-[#091a24] border-primary/30"
+            >
               <div className="absolute inset-0 bg-linear-to-tr from-primary/5 via-transparent to-primary/5"></div>
               <div className="relative space-y-1.5 md:space-y-2">
                 <p className="text-2xl md:text-3xl font-black text-primary">{stat.value}</p>
