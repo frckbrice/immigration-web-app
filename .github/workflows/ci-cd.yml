@@ -7,8 +7,8 @@ on:
     branches: [main, develop]
 
 env:
-  NODE_VERSION: "22.x"
-  PNPM_VERSION: "8.x"
+  NODE_VERSION: '22.x'
+  PNPM_VERSION: '8.x'
 
 jobs:
   quality:
@@ -143,7 +143,6 @@ jobs:
   #             NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=${{ secrets.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID }}
   #             NEXT_PUBLIC_FIREBASE_DATABASE_URL=${{ secrets.NEXT_PUBLIC_FIREBASE_DATABASE_URL }}
   #             FIREBASE_DATABASE_URL=${{ secrets.FIREBASE_DATABASE_URL }}
-
 
   deploy:
     name: Deploy to Vercel (Production)
