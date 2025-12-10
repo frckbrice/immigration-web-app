@@ -57,15 +57,15 @@ export function CasesPageWithTabs({ initialTab = 'cases' }: CasesPageWithTabsPro
           style={
             isCasesActive
               ? {
-                backgroundColor: '#361d22',
-                borderBottomColor: '#ff4538',
-                borderBottomWidth: '2px',
-                color: 'white',
-              }
+                  backgroundColor: '#361d22',
+                  borderBottomColor: '#ff4538',
+                  borderBottomWidth: '2px',
+                  color: 'white',
+                }
               : {
-                borderBottomColor: 'transparent',
-                borderBottomWidth: '2px',
-              }
+                  borderBottomColor: 'transparent',
+                  borderBottomWidth: '2px',
+                }
           }
         >
           <Briefcase className="h-4 w-4 flex-shrink-0" />
@@ -85,15 +85,15 @@ export function CasesPageWithTabs({ initialTab = 'cases' }: CasesPageWithTabsPro
           style={
             isDocumentsActive
               ? {
-                backgroundColor: '#361d22',
-                borderBottomColor: '#ff4538',
-                borderBottomWidth: '2px',
-                color: 'white',
-              }
+                  backgroundColor: '#361d22',
+                  borderBottomColor: '#ff4538',
+                  borderBottomWidth: '2px',
+                  color: 'white',
+                }
               : {
-                borderBottomColor: 'transparent',
-                borderBottomWidth: '2px',
-              }
+                  borderBottomColor: 'transparent',
+                  borderBottomWidth: '2px',
+                }
           }
         >
           <FileText className="h-4 w-4 flex-shrink-0" />
@@ -110,4 +110,3 @@ export function CasesPageWithTabs({ initialTab = 'cases' }: CasesPageWithTabsPro
     </div>
   );
 }
-

@@ -87,7 +87,8 @@ export default function ServicesPage() {
         <div
           className="absolute top-0 right-0 w-[800px] h-[800px] rounded-full blur-3xl opacity-20 dark:opacity-20"
           style={{
-            background: 'radial-gradient(circle, color-mix(in srgb, var(--primary) 20%, transparent) 0%, transparent 70%)',
+            background:
+              'radial-gradient(circle, color-mix(in srgb, var(--primary) 20%, transparent) 0%, transparent 70%)',
             animation: 'pulse 8s cubic-bezier(0.4, 0, 0.6, 1) infinite',
           }}
         ></div>
@@ -95,7 +96,8 @@ export default function ServicesPage() {
         <div
           className="absolute top-1/3 left-0 w-[600px] h-[600px] rounded-full blur-3xl opacity-15 dark:opacity-15"
           style={{
-            background: 'radial-gradient(circle, color-mix(in srgb, var(--primary) 15%, transparent) 0%, transparent 70%)',
+            background:
+              'radial-gradient(circle, color-mix(in srgb, var(--primary) 15%, transparent) 0%, transparent 70%)',
             animation: 'pulse 10s cubic-bezier(0.4, 0, 0.6, 1) infinite',
             animationDelay: '2s',
           }}
@@ -104,7 +106,8 @@ export default function ServicesPage() {
         <div
           className="absolute bottom-0 right-1/4 w-[700px] h-[700px] rounded-full blur-3xl opacity-15 dark:opacity-15"
           style={{
-            background: 'radial-gradient(circle, color-mix(in srgb, var(--primary) 15%, transparent) 0%, transparent 70%)',
+            background:
+              'radial-gradient(circle, color-mix(in srgb, var(--primary) 15%, transparent) 0%, transparent 70%)',
             animation: 'pulse 12s cubic-bezier(0.4, 0, 0.6, 1) infinite',
             animationDelay: '4s',
           }}
@@ -160,9 +163,7 @@ export default function ServicesPage() {
                         {service.features.map((feature, idx) => (
                           <li key={idx} className="flex items-center gap-2">
                             <CheckCircle2 className="h-4 w-4 flex-shrink-0 text-primary" />
-                            <span className="text-sm text-foreground/70">
-                              {feature}
-                            </span>
+                            <span className="text-sm text-foreground/70">{feature}</span>
                           </li>
                         ))}
                       </ul>

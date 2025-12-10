@@ -251,9 +251,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen bg-background">
       {/* Top Navigation */}
-      <header
-        className="sticky top-0 z-50 w-full border-b backdrop-blur supports-[backdrop-filter]:bg-opacity-60 bg-background dark:bg-[#091a24] border-border"
-      >
+      <header className="sticky top-0 z-50 w-full border-b backdrop-blur supports-[backdrop-filter]:bg-opacity-60 bg-background dark:bg-[#091a24] border-border">
         <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
             {/* Logo Section */}
@@ -434,9 +432,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
 
       <div className="flex">
         {/* Sidebar */}
-        <aside
-          className="w-64 border-r min-h-[calc(100vh-4rem)] hidden md:block bg-background dark:bg-[#091a24] border-border"
-        >
+        <aside className="w-64 border-r min-h-[calc(100vh-4rem)] hidden md:block bg-background dark:bg-[#091a24] border-border">
           <div className="w-full max-w-7xl mx-auto">
             <nav className="p-4 space-y-2">
               {/* Role-Based Navigation */}

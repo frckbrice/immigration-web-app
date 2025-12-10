@@ -23,9 +23,7 @@ function PricingTier({ name, tagline, features, price, tier, highlight }: Pricin
         highlight ? 'shadow-lg scale-105 border-primary' : 'border-border'
       }`}
     >
-      {highlight && (
-        <div className="absolute top-0 left-0 right-0 h-1 bg-primary" />
-      )}
+      {highlight && <div className="absolute top-0 left-0 right-0 h-1 bg-primary" />}
       <CardHeader>
         <CardTitle className="text-xl md:text-2xl mb-2 font-bold text-foreground/90">
           {name}
@@ -34,9 +32,7 @@ function PricingTier({ name, tagline, features, price, tier, highlight }: Pricin
           {tagline}
         </CardDescription>
         <div className="mt-4">
-          <span className="text-4xl font-bold text-foreground/90">
-            ${price.toLocaleString()}
-          </span>
+          <span className="text-4xl font-bold text-foreground/90">${price.toLocaleString()}</span>
           <span className="text-sm ml-2 text-foreground/60">
             <span suppressHydrationWarning>{t('landing.pricing.oneTime') || 'one-time'}</span>
           </span>
@@ -47,9 +43,7 @@ function PricingTier({ name, tagline, features, price, tier, highlight }: Pricin
           {features.map((feature, index) => (
             <li key={index} className="flex items-start gap-2">
               <Check className="h-5 w-5 mt-0.5 flex-shrink-0 text-primary" />
-              <span className="text-sm text-foreground/70">
-                {feature}
-              </span>
+              <span className="text-sm text-foreground/70">{feature}</span>
             </li>
           ))}
         </ul>

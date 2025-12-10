@@ -324,7 +324,9 @@ export function ProfileView() {
                     name="firstName"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-xs sm:text-sm">{t('profile.firstName')}</FormLabel>
+                        <FormLabel className="text-xs sm:text-sm">
+                          {t('profile.firstName')}
+                        </FormLabel>
                         <FormControl>
                           <Input
                             placeholder={t('auth.placeholders.firstName')}
@@ -341,7 +343,9 @@ export function ProfileView() {
                     name="lastName"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-xs sm:text-sm">{t('profile.lastName')}</FormLabel>
+                        <FormLabel className="text-xs sm:text-sm">
+                          {t('profile.lastName')}
+                        </FormLabel>
                         <FormControl>
                           <Input
                             placeholder={t('auth.placeholders.lastName')}
@@ -446,7 +450,9 @@ export function ProfileView() {
                       }}
                     >
                       <Save className="mr-2 h-4 w-4" />
-                      {updateProfileMutation.isPending ? t('profile.saving') : t('profile.saveChanges')}
+                      {updateProfileMutation.isPending
+                        ? t('profile.saving')
+                        : t('profile.saveChanges')}
                     </Button>
                     <Button
                       type="button"
@@ -472,12 +478,32 @@ export function ProfileView() {
               </Form>
             ) : (
               <div className="space-y-2 sm:space-y-3">
-                <ProfileField icon={User} label={t('profile.firstName')} value={user?.firstName || ''} />
-                <ProfileField icon={User} label={t('profile.lastName')} value={user?.lastName || ''} />
+                <ProfileField
+                  icon={User}
+                  label={t('profile.firstName')}
+                  value={user?.firstName || ''}
+                />
+                <ProfileField
+                  icon={User}
+                  label={t('profile.lastName')}
+                  value={user?.lastName || ''}
+                />
                 <ProfileField icon={Mail} label={t('profile.email')} value={user?.email || ''} />
-                <ProfileField icon={Phone} label={t('profile.phone')} value={user?.phone || t('profile.notProvided')} />
-                <ProfileField icon={MapPin} label={t('profile.street')} value={user?.street || t('profile.notProvided')} />
-                <ProfileField icon={MapPin} label={t('profile.city')} value={user?.city || t('profile.notProvided')} />
+                <ProfileField
+                  icon={Phone}
+                  label={t('profile.phone')}
+                  value={user?.phone || t('profile.notProvided')}
+                />
+                <ProfileField
+                  icon={MapPin}
+                  label={t('profile.street')}
+                  value={user?.street || t('profile.notProvided')}
+                />
+                <ProfileField
+                  icon={MapPin}
+                  label={t('profile.city')}
+                  value={user?.city || t('profile.notProvided')}
+                />
                 <ProfileField
                   icon={Globe}
                   label={t('profile.country')}

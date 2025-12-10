@@ -275,9 +275,7 @@ export function AboutView() {
                       <div className="relative">
                         <div className="w-28 h-28 rounded-full p-1 shadow-xl group-hover:scale-110 transition-transform duration-500 bg-primary">
                           <div className="w-full h-full rounded-full flex items-center justify-center bg-background dark:bg-[#091a24]">
-                            <span className="text-3xl font-bold text-primary">
-                              {member.avatar}
-                            </span>
+                            <span className="text-3xl font-bold text-primary">{member.avatar}</span>
                           </div>
                         </div>
 
@@ -323,13 +321,15 @@ export function AboutView() {
             <div
               className="absolute top-0 right-0 w-96 h-96 rounded-full blur-3xl opacity-10"
               style={{
-                background: 'radial-gradient(circle, color-mix(in srgb, var(--primary) 30%, transparent) 0%, transparent 70%)',
+                background:
+                  'radial-gradient(circle, color-mix(in srgb, var(--primary) 30%, transparent) 0%, transparent 70%)',
               }}
             ></div>
             <div
               className="absolute bottom-0 left-0 w-96 h-96 rounded-full blur-3xl opacity-10"
               style={{
-                background: 'radial-gradient(circle, color-mix(in srgb, var(--primary) 30%, transparent) 0%, transparent 70%)',
+                background:
+                  'radial-gradient(circle, color-mix(in srgb, var(--primary) 30%, transparent) 0%, transparent 70%)',
               }}
             ></div>
 

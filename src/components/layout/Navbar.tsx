@@ -26,9 +26,7 @@ export const Navbar = memo(function Navbar() {
 
   return (
     <>
-      <nav
-        className="fixed top-0 left-0 right-0 z-50 w-full border-b bg-background border-border backdrop-blur-sm bg-background/95"
-      >
+      <nav className="fixed top-0 left-0 right-0 z-50 w-full border-b bg-background border-border backdrop-blur-sm bg-background/95">
         <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex h-16 items-center justify-between">
           {/* Logo - Reduced on mobile to make room for theme switcher */}
           <Link href="/" className="flex items-center gap-2 sm:gap-3">
@@ -75,10 +73,7 @@ export const Navbar = memo(function Navbar() {
             {/* SESSION AWARE: Show different buttons based on auth status */}
             <div className="hidden md:flex items-center space-x-2">
               {isAuthenticated ? (
-                <Button
-                  className="text-primary-foreground bg-primary hover:bg-primary/90"
-                  asChild
-                >
+                <Button className="text-primary-foreground bg-primary hover:bg-primary/90" asChild>
                   <Link href="/dashboard">
                     <LayoutDashboard className="mr-2 h-4 w-4" />
                     <span suppressHydrationWarning>{t('common.dashboard') || 'Dashboard'}</span>

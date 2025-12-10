@@ -42,9 +42,7 @@ export default function TermsPage() {
         </div>
       ) : (
         <>
-          <p className="text-lg mb-6 text-foreground/70">
-            {t('legal.terms.description')}
-          </p>
+          <p className="text-lg mb-6 text-foreground/70">{t('legal.terms.description')}</p>
 
           <LegalSection
             icon={FileText}
@@ -113,9 +111,7 @@ export default function TermsPage() {
               <li>{t('legal.terms.services.additionalDocs')}</li>
             </ul>
             <Card className="mt-4 p-4 border-2 bg-card dark:bg-[rgba(255,255,255,0.03)] border-border">
-              <p className="text-sm text-foreground/70">
-                {t('legal.terms.services.ourRole')}
-              </p>
+              <p className="text-sm text-foreground/70">{t('legal.terms.services.ourRole')}</p>
             </Card>
           </LegalSection>
 
@@ -191,13 +187,17 @@ export default function TermsPage() {
           </LegalSection>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold mb-4 text-foreground/90">10. {t('legal.terms.governing.title')}</h2>
+            <h2 className="text-2xl font-semibold mb-4 text-foreground/90">
+              10. {t('legal.terms.governing.title')}
+            </h2>
             <p className="text-foreground/70">{t('legal.terms.governing.desc')}</p>
             <p className="mt-2 text-foreground/70">{t('legal.terms.governing.disputes')}</p>
           </section>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold mb-4 text-foreground/90">11. {t('legal.terms.contact.title')}</h2>
+            <h2 className="text-2xl font-semibold mb-4 text-foreground/90">
+              11. {t('legal.terms.contact.title')}
+            </h2>
             <p className="text-foreground/70">{t('legal.terms.contact.desc')}</p>
             <div className="mt-4 space-y-1 text-foreground/70">
               <p>Email: {t('legal.supportEmail')}</p>
@@ -213,9 +213,7 @@ export default function TermsPage() {
                 <h3 className="font-semibold mb-2 text-foreground/90">
                   {t('legal.terms.acknowledgment.title')}
                 </h3>
-                <p className="text-sm text-foreground/70">
-                  {t('legal.terms.acknowledgment.desc')}
-                </p>
+                <p className="text-sm text-foreground/70">{t('legal.terms.acknowledgment.desc')}</p>
               </div>
             </div>
           </Card>

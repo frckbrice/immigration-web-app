@@ -625,7 +625,7 @@ function CheckoutContent() {
                     try {
                       const response = await retryWithCircuitBreaker(
                         async () => {
-                      // Create a fresh timeout promise for each retry attempt
+                          // Create a fresh timeout promise for each retry attempt
                           const timeoutPromise = new Promise((_, reject) => {
                             setTimeout(() => {
                               reject(

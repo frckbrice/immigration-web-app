@@ -292,9 +292,7 @@ export function RegisterForm() {
                           className="bg-background border-border text-foreground focus:border-primary"
                         />
                       </FormControl>
-                      <p className="text-xs text-muted-foreground">
-                        {t('auth.inviteCode.helper')}
-                      </p>
+                      <p className="text-xs text-muted-foreground">{t('auth.inviteCode.helper')}</p>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -302,9 +300,7 @@ export function RegisterForm() {
 
                 {/* GDPR Consent Section */}
                 <div className="space-y-4 pt-4 border-t border-border">
-                  <p className="text-sm font-medium text-foreground">
-                    {t('auth.privacy.title')}
-                  </p>
+                  <p className="text-sm font-medium text-foreground">{t('auth.privacy.title')}</p>
 
                   {/* Terms & Conditions Checkbox */}
                   <FormField

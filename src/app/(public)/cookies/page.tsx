@@ -11,9 +11,7 @@ export default function CookiesPage() {
 
   return (
     <LegalPageLayout titleKey="legal.cookies.title" lastUpdated="January 20, 2025">
-      <p className="text-lg mb-6 text-foreground/70">
-        {t('legal.cookies.description')}
-      </p>
+      <p className="text-lg mb-6 text-foreground/70">{t('legal.cookies.description')}</p>
 
       <LegalSection
         icon={Cookie}
@@ -67,9 +65,7 @@ export default function CookiesPage() {
             <h3 className="text-lg font-semibold mb-2 text-foreground/90">
               {t('legal.cookies.types.essential.title')}
             </h3>
-            <p className="text-sm text-foreground/70">
-              {t('legal.cookies.types.essential.desc')}
-            </p>
+            <p className="text-sm text-foreground/70">{t('legal.cookies.types.essential.desc')}</p>
             <div className="mt-2 text-xs text-foreground/70">
               <strong className="text-foreground/90">Examples:</strong>{' '}
               {t('legal.cookies.types.essential.examples')}
@@ -80,9 +76,7 @@ export default function CookiesPage() {
             <h3 className="text-lg font-semibold mb-2 text-foreground/90">
               {t('legal.cookies.types.functional.title')}
             </h3>
-            <p className="text-sm text-foreground/70">
-              {t('legal.cookies.types.functional.desc')}
-            </p>
+            <p className="text-sm text-foreground/70">{t('legal.cookies.types.functional.desc')}</p>
             <div className="mt-2 text-xs text-foreground/70">
               <strong className="text-foreground/90">Examples:</strong>{' '}
               {t('legal.cookies.types.functional.examples')}
@@ -93,9 +87,7 @@ export default function CookiesPage() {
             <h3 className="text-lg font-semibold mb-2 text-foreground/90">
               {t('legal.cookies.types.analytics.title')}
             </h3>
-            <p className="text-sm text-foreground/70">
-              {t('legal.cookies.types.analytics.desc')}
-            </p>
+            <p className="text-sm text-foreground/70">{t('legal.cookies.types.analytics.desc')}</p>
             <div className="mt-2 text-xs text-foreground/70">
               <strong className="text-foreground/90">Examples:</strong>{' '}
               {t('legal.cookies.types.analytics.examples')}
@@ -163,9 +155,7 @@ export default function CookiesPage() {
             <h3 className="font-semibold mb-1 text-foreground/90">
               {t('legal.cookies.thirdParty.expo.title')}
             </h3>
-            <p className="text-sm text-foreground/70">
-              {t('legal.cookies.thirdParty.expo.desc')}
-            </p>
+            <p className="text-sm text-foreground/70">{t('legal.cookies.thirdParty.expo.desc')}</p>
             <a
               href="https://expo.dev/privacy"
               target="_blank"
@@ -265,7 +255,9 @@ export default function CookiesPage() {
       </LegalSection>
 
       <section className="mb-8">
-        <h2 className="text-2xl font-semibold mb-4 text-foreground/90">7. {t('legal.cookies.contact.title')}</h2>
+        <h2 className="text-2xl font-semibold mb-4 text-foreground/90">
+          7. {t('legal.cookies.contact.title')}
+        </h2>
         <p className="text-foreground/70">{t('legal.cookies.contact.desc')}</p>
         <div className="mt-4 space-y-1 text-foreground/70">
           <p>
@@ -287,9 +279,7 @@ export default function CookiesPage() {
             <h3 className="font-semibold mb-2 text-foreground/90">
               {t('legal.cookies.privacyMatters.title')}
             </h3>
-            <p className="text-sm text-foreground/70">
-              {t('legal.cookies.privacyMatters.desc')}
-            </p>
+            <p className="text-sm text-foreground/70">{t('legal.cookies.privacyMatters.desc')}</p>
           </div>
         </div>
       </Card>

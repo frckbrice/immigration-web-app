@@ -27,17 +27,13 @@ function FeatureSection({
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto text-center space-y-5 md:space-y-6">
           <div className="flex justify-center mb-5">
-            <div className="p-4 rounded-2xl bg-primary/10">
-              {icon}
-            </div>
+            <div className="p-4 rounded-2xl bg-primary/10">{icon}</div>
           </div>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight tracking-tight text-foreground/90">
             {title}
           </h2>
           {highlight && (
-            <p className="text-base md:text-lg font-semibold text-primary">
-              {highlight}
-            </p>
+            <p className="text-base md:text-lg font-semibold text-primary">{highlight}</p>
           )}
           <p className="text-base md:text-lg max-w-3xl mx-auto leading-[1.7] font-normal text-foreground/70">
             {description}

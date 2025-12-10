@@ -19,13 +19,11 @@ function FeatureCard({ icon, title, highlight, description }: FeatureCardProps) 
           <div className="p-3 rounded-xl transition-colors bg-primary/10 group-hover:bg-primary/20">
             {icon}
           </div>
-                        <div className="flex-1">
+          <div className="flex-1">
             <CardTitle className="text-lg md:text-xl mb-2 font-bold text-foreground/90">
               {title}
             </CardTitle>
-            <p className="text-base font-semibold text-primary">
-              {highlight}
-            </p>
+            <p className="text-base font-semibold text-primary">{highlight}</p>
           </div>
         </div>
       </CardHeader>

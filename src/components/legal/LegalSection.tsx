@@ -22,9 +22,7 @@ export function LegalSection({
         <div className="w-10 h-10 rounded-lg flex items-center justify-center bg-primary/10">
           <Icon className="h-5 w-5 text-primary" />
         </div>
-        <h2 className="text-2xl font-semibold text-foreground/90">
-          {title}
-        </h2>
+        <h2 className="text-2xl font-semibold text-foreground/90">{title}</h2>
       </div>
       <div className="text-foreground/70">{children}</div>
     </section>

@@ -51,9 +51,7 @@ export function Footer() {
                 height={40}
                 className="object-contain"
               />
-              <span className="font-bold text-lg text-primary">
-                Patrick Travel Services
-              </span>
+              <span className="font-bold text-lg text-primary">Patrick Travel Services</span>
             </Link>
             <p className="text-sm mb-4 max-w-sm text-muted-foreground">
               {t('landing.footer.description')}
@@ -70,10 +68,7 @@ export function Footer() {
               </div>
               <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                 <Phone className="h-4 w-4" />
-                <a
-                  href="tel:+237600000000"
-                  className="transition-colors hover:text-primary"
-                >
+                <a href="tel:+237600000000" className="transition-colors hover:text-primary">
                   +237600000000
                 </a>
               </div>
@@ -86,9 +81,7 @@ export function Footer() {
 
           {/* Services */}
           <div>
-            <h3 className="font-semibold mb-4 text-foreground">
-              {t('landing.footer.services')}
-            </h3>
+            <h3 className="font-semibold mb-4 text-foreground">{t('landing.footer.services')}</h3>
             <ul className="space-y-2">
               {services.map((service) => (
                 <li key={service.name}>
@@ -105,9 +98,7 @@ export function Footer() {
 
           {/* Company */}
           <div>
-            <h3 className="font-semibold mb-4 text-foreground">
-              {t('landing.footer.company')}
-            </h3>
+            <h3 className="font-semibold mb-4 text-foreground">{t('landing.footer.company')}</h3>
             <ul className="space-y-2">
               {company.map((item) => (
                 <li key={item.name}>
@@ -124,9 +115,7 @@ export function Footer() {
 
           {/* Legal */}
           <div>
-            <h3 className="font-semibold mb-4 text-foreground">
-              {t('landing.footer.legal')}
-            </h3>
+            <h3 className="font-semibold mb-4 text-foreground">{t('landing.footer.legal')}</h3>
             <ul className="space-y-2">
               {legal.map((item) => (
                 <li key={item.name}>

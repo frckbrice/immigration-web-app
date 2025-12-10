@@ -105,12 +105,8 @@ export function TrustLogos() {
                         <h3 className="text-lg font-bold mb-1 text-foreground/90">
                           {authority.name}
                         </h3>
-                        <p className="text-xs mb-2 text-foreground/60">
-                          {authority.fullName}
-                        </p>
-                        <p className="text-xs font-medium text-primary">
-                          {authority.country}
-                        </p>
+                        <p className="text-xs mb-2 text-foreground/60">{authority.fullName}</p>
+                        <p className="text-xs font-medium text-primary">{authority.country}</p>
                       </div>
 
                       {/* Verified Badge */}

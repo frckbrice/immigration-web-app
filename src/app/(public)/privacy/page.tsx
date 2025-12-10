@@ -33,12 +33,8 @@ export default function PrivacyPage() {
         </div>
       ) : (
         <>
-          <p className="text-lg mb-6 text-foreground/70">
-            {t('legal.privacy.description')}
-          </p>
-          <p className="mb-6 text-foreground/70">
-            {t('legal.privacy.intro')}
-          </p>
+          <p className="text-lg mb-6 text-foreground/70">{t('legal.privacy.description')}</p>
+          <p className="mb-6 text-foreground/70">{t('legal.privacy.intro')}</p>
 
           <LegalSection
             icon={Database}

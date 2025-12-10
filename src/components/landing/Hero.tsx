@@ -17,13 +17,15 @@ export function Hero() {
         <div
           className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full blur-3xl opacity-20 dark:opacity-20"
           style={{
-            background: 'radial-gradient(circle, color-mix(in srgb, var(--primary) 20%, transparent) 0%, transparent 70%)',
+            background:
+              'radial-gradient(circle, color-mix(in srgb, var(--primary) 20%, transparent) 0%, transparent 70%)',
           }}
         />
         <div
           className="absolute bottom-0 left-0 w-[500px] h-[500px] rounded-full blur-3xl opacity-15 dark:opacity-15"
           style={{
-            background: 'radial-gradient(circle, color-mix(in srgb, var(--primary) 15%, transparent) 0%, transparent 70%)',
+            background:
+              'radial-gradient(circle, color-mix(in srgb, var(--primary) 15%, transparent) 0%, transparent 70%)',
           }}
         />
       </div>
@@ -108,7 +110,8 @@ export function Hero() {
               <div
                 className="absolute inset-0 rounded-xl md:rounded-2xl z-20 pointer-events-none border border-primary/15"
                 style={{
-                  boxShadow: 'inset 0 0 0 1px color-mix(in srgb, var(--foreground) 5%, transparent)',
+                  boxShadow:
+                    'inset 0 0 0 1px color-mix(in srgb, var(--foreground) 5%, transparent)',
                 }}
               />
 
@@ -140,7 +143,8 @@ export function Hero() {
             <div
               className="absolute -inset-2 md:-inset-3 rounded-xl md:rounded-2xl -z-10 blur-xl opacity-20"
               style={{
-                background: 'radial-gradient(circle, color-mix(in srgb, var(--primary) 30%, transparent) 0%, transparent 70%)',
+                background:
+                  'radial-gradient(circle, color-mix(in srgb, var(--primary) 30%, transparent) 0%, transparent 70%)',
               }}
             />
           </div>

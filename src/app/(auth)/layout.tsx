@@ -9,13 +9,15 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
         <div
           className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full blur-3xl opacity-20 dark:opacity-20"
           style={{
-            background: 'radial-gradient(circle, color-mix(in srgb, var(--primary) 20%, transparent) 0%, transparent 70%)',
+            background:
+              'radial-gradient(circle, color-mix(in srgb, var(--primary) 20%, transparent) 0%, transparent 70%)',
           }}
         />
         <div
           className="absolute bottom-0 left-0 w-[500px] h-[500px] rounded-full blur-3xl opacity-15 dark:opacity-15"
           style={{
-            background: 'radial-gradient(circle, color-mix(in srgb, var(--primary) 15%, transparent) 0%, transparent 70%)',
+            background:
+              'radial-gradient(circle, color-mix(in srgb, var(--primary) 15%, transparent) 0%, transparent 70%)',
           }}
         />
       </div>
@@ -34,12 +36,8 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
               />
             </div>
           </div>
-          <h1 className="text-3xl font-bold text-primary">
-            Patrick Travel Services
-          </h1>
-          <p className="mt-2 text-muted-foreground">
-            Immigration Services Management Platform
-          </p>
+          <h1 className="text-3xl font-bold text-primary">Patrick Travel Services</h1>
+          <p className="mt-2 text-muted-foreground">Immigration Services Management Platform</p>
         </div>
 
         {/* Content */}

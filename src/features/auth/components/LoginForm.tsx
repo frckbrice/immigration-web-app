@@ -102,9 +102,7 @@ export function LoginForm() {
               className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"
               aria-label={statusLabel}
             />
-            <p className="text-sm text-muted-foreground">
-              {statusLabel}
-            </p>
+            <p className="text-sm text-muted-foreground">{statusLabel}</p>
           </CardContent>
         </Card>
       </div>

@@ -24,7 +24,8 @@ export default function StudentVisaPage() {
         <div
           className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full blur-3xl opacity-20 dark:opacity-20"
           style={{
-            background: 'radial-gradient(circle, color-mix(in srgb, var(--primary) 20%, transparent) 0%, transparent 70%)',
+            background:
+              'radial-gradient(circle, color-mix(in srgb, var(--primary) 20%, transparent) 0%, transparent 70%)',
           }}
         />
       </div>
@@ -78,9 +79,7 @@ export default function StudentVisaPage() {
                   {features.map((feature, index) => (
                     <li key={index} className="flex items-start gap-3">
                       <CheckCircle2 className="h-5 w-5 flex-shrink-0 mt-0.5 text-primary" />
-                      <span className="text-base text-foreground/80">
-                        {feature}
-                      </span>
+                      <span className="text-base text-foreground/80">{feature}</span>
                     </li>
                   ))}
                 </ul>
