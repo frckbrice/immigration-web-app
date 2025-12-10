@@ -1,6 +1,7 @@
 // Next.js Instrumentation Hook
 // This file runs once when the server starts
 // Used to initialize cron jobs and other server-side services
+// Ensures proper formatting for CI/CD pipeline
 
 export async function register() {
   // Only run on server-side
