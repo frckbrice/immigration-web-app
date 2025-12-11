@@ -1,7 +1,7 @@
 {
   "rules": {
     ".read": false,
-    ".write": "auth != null",
+    ".write": false,
 
     "chats": {
       ".read": "auth != null",
