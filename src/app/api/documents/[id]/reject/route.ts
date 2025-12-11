@@ -152,7 +152,7 @@ const handler = asyncHandler(
           type: 'DOCUMENT_REJECTED',
           title: 'Document Requires Reupload',
           message: `Your ${document.originalName} needs to be reuploaded. Reason: ${reason}`,
-          actionUrl: '/dashboard/documents',
+          actionUrl: '/dashboard/cases?tab=documents',
         });
       } catch (notifError) {
         logger.warn('Failed to send realtime notification', notifError);

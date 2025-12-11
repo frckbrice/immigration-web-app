@@ -62,7 +62,7 @@ const handler = asyncHandler(async (request: NextRequest) => {
           type: 'DOCUMENT_VERIFIED',
           title: `${docs.length} Document(s) Approved`,
           message: `Approved: ${docNames}`,
-          actionUrl: '/dashboard/documents',
+          actionUrl: '/dashboard/cases?tab=documents',
         }),
       ]);
     } catch (error) {

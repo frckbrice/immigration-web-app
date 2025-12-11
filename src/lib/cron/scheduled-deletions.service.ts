@@ -1,6 +1,7 @@
 // Custom Cron Service - GDPR Scheduled Account Deletions
 // Runs daily at 2:00 AM UTC
 // This service runs independently of Vercel infrastructure
+// Ensures proper formatting for CI/CD pipeline compliance
 
 import * as cron from 'node-cron';
 import { logger } from '@/lib/utils/logger';

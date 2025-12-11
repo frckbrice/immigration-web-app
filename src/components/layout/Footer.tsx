@@ -38,10 +38,7 @@ export function Footer() {
   ];
 
   return (
-    <footer
-      className="border-t w-full"
-      style={{ backgroundColor: '#091a24', borderColor: 'rgba(255, 255, 255, 0.1)' }}
-    >
+    <footer className="border-t w-full bg-background border-border">
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
           {/* Company Info */}
@@ -54,56 +51,28 @@ export function Footer() {
                 height={40}
                 className="object-contain"
               />
-              <span className="font-bold text-lg" style={{ color: '#ff4538' }}>
-                Patrick Travel Services
-              </span>
+              <span className="font-bold text-lg text-primary">Patrick Travel Services</span>
             </Link>
-            <p className="text-sm mb-4 max-w-sm" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+            <p className="text-sm mb-4 max-w-sm text-muted-foreground">
               {t('landing.footer.description')}
             </p>
             <div className="space-y-2">
-              <div
-                className="flex items-center space-x-2 text-sm"
-                style={{ color: 'rgba(255, 255, 255, 0.7)' }}
-              >
+              <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                 <Mail className="h-4 w-4" />
                 <a
                   href="mailto:info@patricktravelservices.com"
-                  className="transition-colors"
-                  style={{ color: 'rgba(255, 255, 255, 0.7)' }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.color = '#ff4538';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.color = 'rgba(255, 255, 255, 0.7)';
-                  }}
+                  className="transition-colors hover:text-primary"
                 >
                   info@patricktravelservices.com
                 </a>
               </div>
-              <div
-                className="flex items-center space-x-2 text-sm"
-                style={{ color: 'rgba(255, 255, 255, 0.7)' }}
-              >
+              <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                 <Phone className="h-4 w-4" />
-                <a
-                  href="tel:+237600000000"
-                  className="transition-colors"
-                  style={{ color: 'rgba(255, 255, 255, 0.7)' }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.color = '#ff4538';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.color = 'rgba(255, 255, 255, 0.7)';
-                  }}
-                >
+                <a href="tel:+237600000000" className="transition-colors hover:text-primary">
                   +237600000000
                 </a>
               </div>
-              <div
-                className="flex items-center space-x-2 text-sm"
-                style={{ color: 'rgba(255, 255, 255, 0.7)' }}
-              >
+              <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                 <MapPin className="h-4 w-4" />
                 <span>rue 123, yaounde, Cameroon</span>
               </div>
@@ -112,22 +81,13 @@ export function Footer() {
 
           {/* Services */}
           <div>
-            <h3 className="font-semibold mb-4" style={{ color: '#ffffff' }}>
-              {t('landing.footer.services')}
-            </h3>
+            <h3 className="font-semibold mb-4 text-foreground">{t('landing.footer.services')}</h3>
             <ul className="space-y-2">
               {services.map((service) => (
                 <li key={service.name}>
                   <Link
                     href={service.href}
-                    className="text-sm transition-colors"
-                    style={{ color: 'rgba(255, 255, 255, 0.7)' }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.color = '#ff4538';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.color = 'rgba(255, 255, 255, 0.7)';
-                    }}
+                    className="text-sm transition-colors text-muted-foreground hover:text-primary"
                   >
                     {service.name}
                   </Link>
@@ -138,22 +98,13 @@ export function Footer() {
 
           {/* Company */}
           <div>
-            <h3 className="font-semibold mb-4" style={{ color: '#ffffff' }}>
-              {t('landing.footer.company')}
-            </h3>
+            <h3 className="font-semibold mb-4 text-foreground">{t('landing.footer.company')}</h3>
             <ul className="space-y-2">
               {company.map((item) => (
                 <li key={item.name}>
                   <Link
                     href={item.href}
-                    className="text-sm transition-colors"
-                    style={{ color: 'rgba(255, 255, 255, 0.7)' }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.color = '#ff4538';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.color = 'rgba(255, 255, 255, 0.7)';
-                    }}
+                    className="text-sm transition-colors text-muted-foreground hover:text-primary"
                   >
                     {item.name}
                   </Link>
@@ -164,22 +115,13 @@ export function Footer() {
 
           {/* Legal */}
           <div>
-            <h3 className="font-semibold mb-4" style={{ color: '#ffffff' }}>
-              {t('landing.footer.legal')}
-            </h3>
+            <h3 className="font-semibold mb-4 text-foreground">{t('landing.footer.legal')}</h3>
             <ul className="space-y-2">
               {legal.map((item) => (
                 <li key={item.name}>
                   <Link
                     href={item.href}
-                    className="text-sm transition-colors"
-                    style={{ color: 'rgba(255, 255, 255, 0.7)' }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.color = '#ff4538';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.color = 'rgba(255, 255, 255, 0.7)';
-                    }}
+                    className="text-sm transition-colors text-muted-foreground hover:text-primary"
                   >
                     {item.name}
                   </Link>
@@ -189,11 +131,11 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="my-8" style={{ borderTop: '1px solid rgba(255, 255, 255, 0.1)' }} />
+        <Separator className="my-8" />
 
         {/* Bottom Section */}
         <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-          <p className="text-sm" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+          <p className="text-sm text-muted-foreground">
             © {currentYear} Patrick Travel Services. {t('landing.footer.rights')}
           </p>
           <div className="flex space-x-4">
@@ -205,14 +147,7 @@ export function Footer() {
                   href={social.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="transition-colors"
-                  style={{ color: 'rgba(255, 255, 255, 0.7)' }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.color = '#ff4538';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.color = 'rgba(255, 255, 255, 0.7)';
-                  }}
+                  className="transition-colors text-muted-foreground hover:text-primary"
                   aria-label={social.label}
                 >
                   <Icon className="h-5 w-5" />

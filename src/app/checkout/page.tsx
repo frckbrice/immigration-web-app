@@ -10,11 +10,13 @@ import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Loader2, ArrowLeft, CheckCircle2, Check } from 'lucide-react';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Loader2, ArrowLeft, CheckCircle2, Check, AlertCircle } from 'lucide-react';
 import { apiClient } from '@/lib/utils/axios';
 import { isValidTier, getTierPrice, getTierName, SubscriptionTier } from '@/lib/utils/payment';
 import { logger } from '@/lib/utils/logger';
 import { sanitizeMessage } from '@/lib/utils/sanitize';
+import { retryWithCircuitBreaker } from '@/lib/utils/retry-with-circuit-breaker';
 import { toast } from 'sonner';
 import Link from 'next/link';
 
@@ -165,8 +167,17 @@ function CheckoutContent() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const tierParam = searchParams.get('tier') || '';
+  const paymentRequired = searchParams.get('paymentRequired') === 'true';
 
   useEffect(() => {
+    // Reset error and clientSecret when tier changes (but keep loading state)
+    // This ensures clean state when user selects a plan
+    if (tierParam) {
+      setError(null);
+      setClientSecret(null);
+      setLoading(true);
+    }
+
     // Redirect to login if not authenticated
     if (!authLoading && !isAuthenticated) {
       router.push(`/login?redirect=/checkout?tier=${tierParam}`);
@@ -178,51 +189,120 @@ function CheckoutContent() {
       return;
     }
 
-    // Validate tier
+    // If no tier selected, show plan selection (don't set error, don't show loading)
     if (!tierParam || !isValidTier(tierParam)) {
-      setError(
-        t('landing.checkout.page.invalidTier') ||
-          'Invalid subscription tier. Please select a valid plan.'
-      );
       setLoading(false);
-      return;
+      setError(null); // Clear any previous errors
+      return; // This will show the plan selection UI
     }
 
-    // Check if user already paid
-    const checkExistingPayment = async () => {
+    // PERFORMANCE: Skip redundant payment status check - checkout API already validates hasPaid
+    // This eliminates an extra API call and improves performance
+    const createPaymentIntent = async () => {
+      // Create payment intent with retry, exponential backoff, and circuit breaker
       try {
-        const statusResponse = await apiClient.get('/api/payments/status');
-        if (statusResponse.data.success) {
-          const paymentData = statusResponse.data.data;
-          if (paymentData.hasPaid || paymentData.bypassed) {
-            // User already paid, redirect to dashboard
-            router.push('/dashboard');
-            return;
-          }
-        }
-      } catch (err) {
-        // Continue to create payment intent if status check fails
-        logger.error('Failed to check payment status', err);
-      }
+        // Use retry with circuit breaker for resilient payment initialization
+        const response = await retryWithCircuitBreaker(
+          async () => {
+            // PERFORMANCE: Reduced client-side timeout to 25 seconds (Stripe has 15s, API has 30s)
+            // This provides faster feedback to users
+            // Create a fresh timeout promise for each retry attempt
+            const timeoutPromise = new Promise((_, reject) => {
+              setTimeout(() => {
+                reject(new Error('Request timeout - payment initialization took too long'));
+              }, 25000);
+            });
 
-      // Create payment intent
-      try {
-        const response = await apiClient.post('/api/payments/checkout', {
-          tier: tierParam,
-        });
+            const result = await Promise.race([
+              apiClient.post('/api/payments/checkout', {
+                tier: tierParam,
+              }),
+              timeoutPromise,
+            ]);
+            return result as any;
+          },
+          {
+            operationName: 'payment-initialization',
+            maxRetries: 2, // Reduced from 3 to 2 for faster failure (Stripe has its own retries)
+            initialDelayMs: 500, // Reduced from 1000ms for faster retry
+            maxDelayMs: 5000, // Reduced from 10000ms for faster recovery
+            backoffMultiplier: 2, // Exponential: 0.5s, 1s
+            failureThreshold: 5, // Open circuit after 5 failures
+            resetTimeoutMs: 30000, // Reduced from 60s to 30s for faster recovery
+            halfOpenRetries: 2, // Need 2 successes to close circuit
+            retryableStatusCodes: [408, 429, 500, 502, 503, 504],
+            retryableErrors: [
+              'timeout',
+              'network',
+              'econnrefused',
+              'econnreset',
+              'etimedout',
+              'request aborted',
+              'StripeConnectionError', // Add Stripe-specific errors
+            ],
+          }
+        );
 
         const { clientSecret: secret, amount } = response.data.data;
         setClientSecret(secret);
         setLoading(false);
       } catch (err: any) {
-        const errorMessage =
-          err.response?.data?.error || err.message || 'Failed to initialize payment';
-        setError(errorMessage);
+        // Always stop loading on error
         setLoading(false);
+
+        // Detect different error types for user-friendly messages
+        const isTimeoutError =
+          err.message?.includes('timeout') ||
+          err.message?.includes('Request timeout') ||
+          err.code === 'ECONNABORTED' ||
+          err.response?.status === 504 ||
+          err.response?.status === 408;
+
+        const isCircuitBreakerOpen =
+          err.message?.includes('Circuit breaker') ||
+          err.message?.includes('Service is temporarily unavailable');
+
+        const isNetworkError =
+          err.message?.includes('network') ||
+          err.code === 'ECONNREFUSED' ||
+          err.code === 'ETIMEDOUT' ||
+          err.response?.status === 502 ||
+          err.response?.status === 503;
+
+        let errorMessage: string;
+        if (isCircuitBreakerOpen) {
+          errorMessage =
+            t('landing.checkout.page.serviceUnavailable') ||
+            'Payment service is temporarily unavailable due to repeated failures. Please try again in a few moments.';
+        } else if (isTimeoutError) {
+          errorMessage =
+            t('landing.checkout.page.timeoutError') ||
+            'Payment initialization timed out. Please try again or contact support if the problem persists.';
+        } else if (isNetworkError) {
+          errorMessage =
+            t('landing.checkout.page.networkError') ||
+            'Network error occurred. Please check your connection and try again.';
+        } else {
+          // Extract error message from response or use default
+          errorMessage =
+            err.response?.data?.error ||
+            err.response?.data?.message ||
+            err.message ||
+            t('landing.checkout.page.paymentInitFailed') ||
+            'Failed to initialize payment. Please try again.';
+        }
+
+        setError(errorMessage);
+        logger.error('Failed to create payment intent in checkout', err, {
+          tier: tierParam,
+          isTimeout: isTimeoutError,
+          isCircuitBreakerOpen,
+          isNetworkError,
+        });
       }
     };
 
-    checkExistingPayment();
+    createPaymentIntent();
   }, [isAuthenticated, authLoading, tierParam, router]);
 
   // Check if Stripe is configured
@@ -343,6 +423,34 @@ function CheckoutContent() {
         <Navbar />
         <main className="flex-1 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
           <div className="w-full max-w-7xl">
+            {/* Payment Required Alert */}
+            {paymentRequired && (
+              <Alert
+                className="mb-8 max-w-4xl mx-auto"
+                style={{
+                  backgroundColor: 'rgba(255, 69, 56, 0.1)',
+                  borderColor: '#ff4538',
+                  borderWidth: '1px',
+                }}
+              >
+                <AlertCircle className="h-5 w-5" style={{ color: '#ff4538' }} />
+                <AlertTitle className="text-lg font-semibold mb-2" style={{ color: '#ffffff' }}>
+                  <span suppressHydrationWarning>
+                    {t('landing.checkout.page.paymentRequiredTitle') ||
+                      'Payment Required to Access Dashboard'}
+                  </span>
+                </AlertTitle>
+                <AlertDescription
+                  className="text-base leading-relaxed"
+                  style={{ color: 'rgba(255, 255, 255, 0.9)' }}
+                >
+                  <span suppressHydrationWarning>
+                    {t('landing.checkout.page.paymentRequiredMessage') ||
+                      'To access your dashboard and start using our services, please select and complete payment for a subscription plan below. Once your payment is confirmed, you will have full access to all dashboard features.'}
+                  </span>
+                </AlertDescription>
+              </Alert>
+            )}
             <div className="text-center mb-12 md:mb-16">
               <h1
                 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-4"
@@ -484,7 +592,184 @@ function CheckoutContent() {
   const tierName = getTierName(tier);
   const tierPrice = getTierPrice(tier);
 
-  if (!clientSecret) {
+  // Show error state if there's an error (don't show loading spinner)
+  if (error) {
+    return (
+      <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#091a24' }}>
+        <Navbar />
+        <main className="flex-1 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+          <Card
+            className="max-w-md w-full"
+            style={{
+              backgroundColor: 'rgba(255, 255, 255, 0.03)',
+              borderColor: 'rgba(255, 255, 255, 0.1)',
+            }}
+          >
+            <CardContent className="p-6 text-center">
+              <AlertCircle className="h-12 w-12 mx-auto mb-4" style={{ color: '#ff4538' }} />
+              <h2 className="text-xl font-semibold mb-4" style={{ color: '#ffffff' }}>
+                <span suppressHydrationWarning>
+                  {t('landing.checkout.page.paymentInitErrorTitle') ||
+                    'Payment Initialization Failed'}
+                </span>
+              </h2>
+              <p className="text-base mb-6" style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
+                {error}
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                <Button
+                  onClick={async () => {
+                    setError(null);
+                    setLoading(true);
+                    // Retry with circuit breaker and exponential backoff
+                    try {
+                      const response = await retryWithCircuitBreaker(
+                        async () => {
+                          // Create a fresh timeout promise for each retry attempt
+                          const timeoutPromise = new Promise((_, reject) => {
+                            setTimeout(() => {
+                              reject(
+                                new Error('Request timeout - payment initialization took too long')
+                              );
+                            }, 25000);
+                          });
+
+                          const result = await Promise.race([
+                            apiClient.post('/api/payments/checkout', {
+                              tier: tierParam,
+                            }),
+                            timeoutPromise,
+                          ]);
+                          return result as any;
+                        },
+                        {
+                          operationName: 'payment-initialization',
+                          maxRetries: 2,
+                          initialDelayMs: 500,
+                          maxDelayMs: 5000,
+                          backoffMultiplier: 2,
+                          failureThreshold: 5,
+                          resetTimeoutMs: 30000,
+                          halfOpenRetries: 2,
+                          retryableStatusCodes: [408, 429, 500, 502, 503, 504],
+                          retryableErrors: [
+                            'timeout',
+                            'network',
+                            'econnrefused',
+                            'econnreset',
+                            'etimedout',
+                            'request aborted',
+                            'StripeConnectionError',
+                          ],
+                        }
+                      );
+
+                      const { clientSecret: secret } = response.data.data;
+                      setClientSecret(secret);
+                      setLoading(false);
+                    } catch (err: any) {
+                      setLoading(false);
+                      const isTimeoutError =
+                        err.message?.includes('timeout') ||
+                        err.message?.includes('Request timeout') ||
+                        err.code === 'ECONNABORTED' ||
+                        err.response?.status === 504 ||
+                        err.response?.status === 408;
+                      const isCircuitBreakerOpen =
+                        err.message?.includes('Circuit breaker') ||
+                        err.message?.includes('Service is temporarily unavailable');
+                      const isNetworkError =
+                        err.message?.includes('network') ||
+                        err.code === 'ECONNREFUSED' ||
+                        err.code === 'ETIMEDOUT' ||
+                        err.response?.status === 502 ||
+                        err.response?.status === 503;
+
+                      let errorMsg: string;
+                      if (isCircuitBreakerOpen) {
+                        errorMsg =
+                          t('landing.checkout.page.serviceUnavailable') ||
+                          'Payment service is temporarily unavailable due to repeated failures. Please try again in a few moments.';
+                      } else if (isTimeoutError) {
+                        errorMsg =
+                          t('landing.checkout.page.timeoutError') ||
+                          'Payment initialization timed out. Please try again or contact support if the problem persists.';
+                      } else if (isNetworkError) {
+                        errorMsg =
+                          t('landing.checkout.page.networkError') ||
+                          'Network error occurred. Please check your connection and try again.';
+                      } else {
+                        errorMsg =
+                          err.response?.data?.error ||
+                          err.response?.data?.message ||
+                          err.message ||
+                          t('landing.checkout.page.paymentInitFailed') ||
+                          'Failed to initialize payment. Please try again.';
+                      }
+                      setError(errorMsg);
+                    }
+                  }}
+                  style={{ backgroundColor: '#ff4538' }}
+                  className="text-white"
+                >
+                  <span suppressHydrationWarning>{t('common.tryAgain') || 'Try Again'}</span>
+                </Button>
+                <Button
+                  asChild
+                  variant="outline"
+                  style={{
+                    borderColor: '#ff4538',
+                    color: '#ff4538',
+                    backgroundColor: 'transparent',
+                  }}
+                >
+                  <Link href="/checkout">
+                    <span suppressHydrationWarning>
+                      {t('landing.checkout.page.selectPlan') || 'Select Plan'}
+                    </span>
+                  </Link>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  // Show loading state only if no error and no clientSecret yet, and we have a valid tier
+  // This means we're actively initializing payment
+  if (!clientSecret && loading && tierParam && isValidTier(tierParam) && !error) {
+    return (
+      <div
+        className="min-h-screen flex items-center justify-center"
+        style={{ backgroundColor: '#091a24' }}
+      >
+        <div className="text-center max-w-md px-4">
+          <Loader2 className="h-12 w-12 animate-spin mx-auto mb-4" style={{ color: '#ff4538' }} />
+          <p className="text-lg font-medium mb-2" style={{ color: '#ffffff' }}>
+            <span suppressHydrationWarning>
+              {t('landing.checkout.page.initializing') || 'Initializing payment...'}
+            </span>
+          </p>
+          <p className="text-sm" style={{ color: 'rgba(255, 255, 255, 0.6)' }}>
+            <span suppressHydrationWarning>
+              {t('landing.checkout.page.initializingDescription') ||
+                'Setting up secure payment. This usually takes just a few seconds.'}
+            </span>
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // Remove this fallback - it was causing error card to show prematurely
+  // Error card should only show when there's an explicit error state (handled above)
+  // If we have a valid tier but no clientSecret and not loading, show loading instead
+  // to give initialization a chance
+  if (!clientSecret && !loading && tierParam && isValidTier(tierParam) && !error) {
+    // Show loading to allow initialization to complete
     return (
       <div
         className="min-h-screen flex items-center justify-center"
@@ -507,6 +792,34 @@ function CheckoutContent() {
       <Navbar />
       <main className="flex-1 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 xl:px-12">
         <div className="w-full max-w-6xl">
+          {/* Payment Required Alert */}
+          {paymentRequired && (
+            <Alert
+              className="mb-8"
+              style={{
+                backgroundColor: 'rgba(255, 69, 56, 0.1)',
+                borderColor: '#ff4538',
+                borderWidth: '1px',
+              }}
+            >
+              <AlertCircle className="h-5 w-5" style={{ color: '#ff4538' }} />
+              <AlertTitle className="text-lg font-semibold mb-2" style={{ color: '#ffffff' }}>
+                <span suppressHydrationWarning>
+                  {t('landing.checkout.page.paymentRequiredTitle') ||
+                    'Payment Required to Access Dashboard'}
+                </span>
+              </AlertTitle>
+              <AlertDescription
+                className="text-base leading-relaxed"
+                style={{ color: 'rgba(255, 255, 255, 0.9)' }}
+              >
+                <span suppressHydrationWarning>
+                  {t('landing.checkout.page.paymentRequiredMessage') ||
+                    'To access your dashboard and start using our services, please complete payment for your selected plan below. Once your payment is confirmed, you will have full access to all dashboard features.'}
+                </span>
+              </AlertDescription>
+            </Alert>
+          )}
           <Button
             variant="ghost"
             className="mb-8 text-base"
@@ -624,7 +937,7 @@ function CheckoutContent() {
                 <Elements
                   stripe={stripePromise}
                   options={{
-                    clientSecret,
+                    clientSecret: clientSecret ?? undefined,
                     appearance: {
                       theme: 'night',
                       variables: {
@@ -639,7 +952,7 @@ function CheckoutContent() {
                     },
                   }}
                 >
-                  <CheckoutForm tier={tier} clientSecret={clientSecret} amount={tierPrice} />
+                  <CheckoutForm tier={tier} clientSecret={clientSecret!} amount={tierPrice} />
                 </Elements>
               </CardContent>
             </Card>

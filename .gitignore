@@ -75,7 +75,6 @@ IMPLEMENTATION_SUMMARY.md
 CHAT_MIGRATION_SOLUTION.md
 test-messaging-manual.md
 
-docs/
 logs/
 
 *.log*

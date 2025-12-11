@@ -10,11 +10,13 @@ if (!process.env.STRIPE_SECRET_KEY) {
   logger.warn('STRIPE_SECRET_KEY is not set. Payment functionality will be disabled.');
 }
 
-// Initialize Stripe client
+// Initialize Stripe client with optimized configuration for performance
 export const stripe = process.env.STRIPE_SECRET_KEY
   ? new Stripe(process.env.STRIPE_SECRET_KEY, {
       apiVersion: '2025-02-24.acacia',
       typescript: true,
+      timeout: 15000, // 15 seconds timeout (instead of default 80s) - fail fast for better UX
+      maxNetworkRetries: 2, // Retry up to 2 times on network errors (automatic retry)
     })
   : null;
 
@@ -57,7 +59,19 @@ export async function createPaymentIntent(params: {
 
     return paymentIntent;
   } catch (error) {
-    logger.error('Failed to create payment intent', error);
+    // Enhanced error logging for diagnostics
+    const stripeError = error as any;
+    logger.error('Failed to create payment intent', error, {
+      errorType: stripeError.type,
+      errorCode: stripeError.code,
+      errorMessage: stripeError.message,
+      statusCode: stripeError.statusCode,
+      requestId: stripeError.requestId,
+      amount: params.amount,
+      currency: params.currency || 'usd',
+      hasStripeKey: !!process.env.STRIPE_SECRET_KEY,
+      stripeKeyPrefix: process.env.STRIPE_SECRET_KEY?.substring(0, 7) || 'missing',
+    });
     throw error;
   }
 }

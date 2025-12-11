@@ -44,7 +44,7 @@ export default function ContactPage() {
       toast.success(
         data.data?.message || t('landing.contact.success') || 'Message sent successfully!',
         {
-          icon: <CheckCircle2 className="h-5 w-5" style={{ color: '#ff4538' }} />,
+          icon: <CheckCircle2 className="h-5 w-5 text-primary" />,
         }
       );
 
@@ -72,7 +72,7 @@ export default function ContactPage() {
       }
 
       toast.error(errorMessage, {
-        icon: <AlertCircle className="h-5 w-5" style={{ color: '#ff4538' }} />,
+        icon: <AlertCircle className="h-5 w-5 text-primary" />,
       });
     } finally {
       setIsSubmitting(false);
@@ -87,23 +87,53 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen" style={{ backgroundColor: '#091a24' }}>
+    <div className="flex flex-col min-h-screen relative overflow-hidden bg-background dark:bg-[#091a24]">
+      {/* Theme-aware Background - Redis style for dark mode */}
+      <div className="fixed inset-0 -z-10">
+        {/* Base background */}
+        <div className="absolute inset-0 bg-background dark:bg-[#091a24]"></div>
+
+        {/* Subtle animated gradient orbs - Theme-aware */}
+        <div
+          className="absolute top-0 right-0 w-[800px] h-[800px] rounded-full blur-3xl opacity-20 dark:opacity-20"
+          style={{
+            background:
+              'radial-gradient(circle, color-mix(in srgb, var(--primary) 20%, transparent) 0%, transparent 70%)',
+            animation: 'pulse 8s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+          }}
+        ></div>
+
+        <div
+          className="absolute top-1/3 left-0 w-[600px] h-[600px] rounded-full blur-3xl opacity-15 dark:opacity-15"
+          style={{
+            background:
+              'radial-gradient(circle, color-mix(in srgb, var(--primary) 15%, transparent) 0%, transparent 70%)',
+            animation: 'pulse 10s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            animationDelay: '2s',
+          }}
+        ></div>
+
+        <div
+          className="absolute bottom-0 right-1/4 w-[700px] h-[700px] rounded-full blur-3xl opacity-15 dark:opacity-15"
+          style={{
+            background:
+              'radial-gradient(circle, color-mix(in srgb, var(--primary) 15%, transparent) 0%, transparent 70%)',
+            animation: 'pulse 12s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            animationDelay: '4s',
+          }}
+        ></div>
+      </div>
+
       <Navbar />
-      <main className="flex-1 w-full">
+      <main className="flex-1 w-full relative z-0">
         {/* Hero Section */}
         <section className="relative py-16 md:py-24 lg:py-32">
           <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-3xl mx-auto text-center mb-12">
-              <h1
-                className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight mb-6"
-                style={{ color: '#ffffff' }}
-              >
+              <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight mb-6 text-foreground/90">
                 <span suppressHydrationWarning>{t('landing.contact.title') || 'Get in Touch'}</span>
               </h1>
-              <p
-                className="text-xl md:text-2xl max-w-2xl mx-auto"
-                style={{ color: 'rgba(255, 255, 255, 0.7)' }}
-              >
+              <p className="text-xl md:text-2xl max-w-2xl mx-auto text-foreground/70">
                 <span suppressHydrationWarning>
                   {t('landing.contact.subtitle') ||
                     "Have questions? We're here to help you with your immigration journey"}
@@ -115,33 +145,23 @@ export default function ContactPage() {
               {/* Contact Information */}
               <div className="space-y-8">
                 <div>
-                  <h2 className="text-2xl font-semibold mb-6" style={{ color: '#ffffff' }}>
+                  <h2 className="text-2xl font-semibold mb-6 text-foreground/90">
                     <span suppressHydrationWarning>
                       {t('landing.contact.badge') || 'Contact Information'}
                     </span>
                   </h2>
                   <div className="space-y-6">
                     <div className="flex items-start gap-4">
-                      <div
-                        className="p-3 rounded-xl flex-shrink-0"
-                        style={{ backgroundColor: 'rgba(255, 69, 56, 0.1)' }}
-                      >
-                        <Mail className="h-6 w-6" style={{ color: '#ff4538' }} />
+                      <div className="p-3 rounded-xl flex-shrink-0 bg-primary/10">
+                        <Mail className="h-6 w-6 text-primary" />
                       </div>
                       <div>
-                        <h3 className="font-semibold mb-1" style={{ color: '#ffffff' }}>
+                        <h3 className="font-semibold mb-1 text-foreground/90">
                           {t('landing.contact.email') || 'Email'}
                         </h3>
                         <a
                           href="mailto:info@patricktravelservices.com"
-                          className="transition-colors"
-                          style={{ color: 'rgba(255, 255, 255, 0.7)' }}
-                          onMouseEnter={(e) => {
-                            e.currentTarget.style.color = '#ff4538';
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.color = 'rgba(255, 255, 255, 0.7)';
-                          }}
+                          className="transition-colors text-foreground/70 hover:text-primary"
                         >
                           info@patricktravelservices.com
                         </a>
@@ -149,26 +169,16 @@ export default function ContactPage() {
                     </div>
 
                     <div className="flex items-start gap-4">
-                      <div
-                        className="p-3 rounded-xl flex-shrink-0"
-                        style={{ backgroundColor: 'rgba(255, 69, 56, 0.1)' }}
-                      >
-                        <Phone className="h-6 w-6" style={{ color: '#ff4538' }} />
+                      <div className="p-3 rounded-xl flex-shrink-0 bg-primary/10">
+                        <Phone className="h-6 w-6 text-primary" />
                       </div>
                       <div>
-                        <h3 className="font-semibold mb-1" style={{ color: '#ffffff' }}>
+                        <h3 className="font-semibold mb-1 text-foreground/90">
                           {t('landing.contact.phone') || 'Phone'}
                         </h3>
                         <a
                           href="tel:+237600000000"
-                          className="transition-colors"
-                          style={{ color: 'rgba(255, 255, 255, 0.7)' }}
-                          onMouseEnter={(e) => {
-                            e.currentTarget.style.color = '#ff4538';
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.color = 'rgba(255, 255, 255, 0.7)';
-                          }}
+                          className="transition-colors text-foreground/70 hover:text-primary"
                         >
                           +237600000000
                         </a>
@@ -176,29 +186,24 @@ export default function ContactPage() {
                     </div>
 
                     <div className="flex items-start gap-4">
-                      <div
-                        className="p-3 rounded-xl flex-shrink-0"
-                        style={{ backgroundColor: 'rgba(255, 69, 56, 0.1)' }}
-                      >
-                        <MapPin className="h-6 w-6" style={{ color: '#ff4538' }} />
+                      <div className="p-3 rounded-xl flex-shrink-0 bg-primary/10">
+                        <MapPin className="h-6 w-6 text-primary" />
                       </div>
                       <div>
-                        <h3 className="font-semibold mb-1" style={{ color: '#ffffff' }}>
+                        <h3 className="font-semibold mb-1 text-foreground/90">
                           {t('landing.contact.address') || 'Address'}
                         </h3>
-                        <p style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
-                          rue 123, yaounde, Cameroon
-                        </p>
+                        <p className="text-foreground/70">rue 123, yaounde, Cameroon</p>
                       </div>
                     </div>
                   </div>
                 </div>
 
-                <div className="pt-6 border-t" style={{ borderColor: 'rgba(255, 255, 255, 0.1)' }}>
-                  <h3 className="font-semibold mb-4" style={{ color: '#ffffff' }}>
+                <div className="pt-6 border-t border-border">
+                  <h3 className="font-semibold mb-4 text-foreground/90">
                     {t('landing.contact.hours') || 'Office Hours'}
                   </h3>
-                  <div className="space-y-2 text-sm" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+                  <div className="space-y-2 text-sm text-foreground/70">
                     <div className="flex justify-between">
                       <span>{t('landing.contact.weekdays') || 'Mon - Fri'}</span>
                       <span>9:00 AM - 6:00 PM</span>
@@ -209,7 +214,7 @@ export default function ContactPage() {
                     </div>
                     <div className="flex justify-between">
                       <span>{t('landing.contact.sunday') || 'Sunday'}</span>
-                      <span style={{ color: '#ff4538' }}>
+                      <span className="text-primary">
                         {t('landing.contact.closed') || 'Closed'}
                       </span>
                     </div>
@@ -219,19 +224,13 @@ export default function ContactPage() {
 
               {/* Contact Form */}
               <div>
-                <div
-                  className="rounded-xl p-8"
-                  style={{
-                    backgroundColor: 'rgba(255, 255, 255, 0.03)',
-                    border: '1px solid rgba(255, 255, 255, 0.1)',
-                  }}
-                >
-                  <h2 className="text-2xl font-semibold mb-2" style={{ color: '#ffffff' }}>
+                <div className="rounded-xl p-8 bg-card dark:bg-[rgba(255,255,255,0.03)] border border-border">
+                  <h2 className="text-2xl font-semibold mb-2 text-foreground/90">
                     <span suppressHydrationWarning>
                       {t('landing.contact.formTitle') || 'Send us a message'}
                     </span>
                   </h2>
-                  <p className="mb-6" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+                  <p className="mb-6 text-foreground/70">
                     <span suppressHydrationWarning>
                       {t('landing.contact.formSubtitle') ||
                         "Fill out the form below and we'll get back to you within 24 hours"}
@@ -240,11 +239,11 @@ export default function ContactPage() {
 
                   <form onSubmit={handleSubmit} className="space-y-6">
                     <div>
-                      <Label htmlFor="name" style={{ color: '#ffffff' }}>
+                      <Label htmlFor="name" className="text-foreground/90">
                         <span suppressHydrationWarning>
                           {t('landing.contact.name') || 'Full Name'}
                         </span>
-                        <span className="text-red-500 ml-1">*</span>
+                        <span className="text-destructive ml-1">*</span>
                       </Label>
                       <Input
                         id="name"
@@ -253,27 +252,16 @@ export default function ContactPage() {
                         required
                         value={formData.name}
                         onChange={handleChange}
-                        className="mt-2"
-                        style={{
-                          backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                          borderColor: 'rgba(255, 255, 255, 0.2)',
-                          color: '#ffffff',
-                        }}
-                        onFocus={(e) => {
-                          e.currentTarget.style.borderColor = '#ff4538';
-                        }}
-                        onBlur={(e) => {
-                          e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
-                        }}
+                        className="mt-2 bg-input dark:bg-[rgba(255,255,255,0.05)] border-input dark:border-[rgba(255,255,255,0.2)] text-foreground focus:border-primary"
                       />
                     </div>
 
                     <div>
-                      <Label htmlFor="email" style={{ color: '#ffffff' }}>
+                      <Label htmlFor="email" className="text-foreground/90">
                         <span suppressHydrationWarning>
                           {t('landing.contact.emailLabel') || 'Email Address'}
                         </span>
-                        <span className="text-red-500 ml-1">*</span>
+                        <span className="text-destructive ml-1">*</span>
                       </Label>
                       <Input
                         id="email"
@@ -282,23 +270,12 @@ export default function ContactPage() {
                         required
                         value={formData.email}
                         onChange={handleChange}
-                        className="mt-2"
-                        style={{
-                          backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                          borderColor: 'rgba(255, 255, 255, 0.2)',
-                          color: '#ffffff',
-                        }}
-                        onFocus={(e) => {
-                          e.currentTarget.style.borderColor = '#ff4538';
-                        }}
-                        onBlur={(e) => {
-                          e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
-                        }}
+                        className="mt-2 bg-input dark:bg-[rgba(255,255,255,0.05)] border-input dark:border-[rgba(255,255,255,0.2)] text-foreground focus:border-primary"
                       />
                     </div>
 
                     <div>
-                      <Label htmlFor="phone" style={{ color: '#ffffff' }}>
+                      <Label htmlFor="phone" className="text-foreground/90">
                         <span suppressHydrationWarning>
                           {t('landing.contact.phoneLabel') || 'Phone Number (Optional)'}
                         </span>
@@ -309,23 +286,12 @@ export default function ContactPage() {
                         type="tel"
                         value={formData.phone}
                         onChange={handleChange}
-                        className="mt-2"
-                        style={{
-                          backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                          borderColor: 'rgba(255, 255, 255, 0.2)',
-                          color: '#ffffff',
-                        }}
-                        onFocus={(e) => {
-                          e.currentTarget.style.borderColor = '#ff4538';
-                        }}
-                        onBlur={(e) => {
-                          e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
-                        }}
+                        className="mt-2 bg-input dark:bg-[rgba(255,255,255,0.05)] border-input dark:border-[rgba(255,255,255,0.2)] text-foreground focus:border-primary"
                       />
                     </div>
 
                     <div>
-                      <Label htmlFor="subject" style={{ color: '#ffffff' }}>
+                      <Label htmlFor="subject" className="text-foreground/90">
                         <span suppressHydrationWarning>
                           {t('landing.contact.subject') || 'Subject (Optional)'}
                         </span>
@@ -336,27 +302,16 @@ export default function ContactPage() {
                         type="text"
                         value={formData.subject}
                         onChange={handleChange}
-                        className="mt-2"
-                        style={{
-                          backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                          borderColor: 'rgba(255, 255, 255, 0.2)',
-                          color: '#ffffff',
-                        }}
-                        onFocus={(e) => {
-                          e.currentTarget.style.borderColor = '#ff4538';
-                        }}
-                        onBlur={(e) => {
-                          e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
-                        }}
+                        className="mt-2 bg-input dark:bg-[rgba(255,255,255,0.05)] border-input dark:border-[rgba(255,255,255,0.2)] text-foreground focus:border-primary"
                       />
                     </div>
 
                     <div>
-                      <Label htmlFor="message" style={{ color: '#ffffff' }}>
+                      <Label htmlFor="message" className="text-foreground/90">
                         <span suppressHydrationWarning>
                           {t('landing.contact.message') || 'Message'}
                         </span>
-                        <span className="text-red-500 ml-1">*</span>
+                        <span className="text-destructive ml-1">*</span>
                       </Label>
                       <Textarea
                         id="message"
@@ -365,42 +320,19 @@ export default function ContactPage() {
                         rows={6}
                         value={formData.message}
                         onChange={handleChange}
-                        className="mt-2"
+                        className="mt-2 bg-input dark:bg-[rgba(255,255,255,0.05)] border-input dark:border-[rgba(255,255,255,0.2)] text-foreground focus:border-primary resize-none"
                         placeholder={
                           t('landing.contact.messagePlaceholder') ||
                           'Tell us about your immigration needs...'
                         }
-                        style={{
-                          backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                          borderColor: 'rgba(255, 255, 255, 0.2)',
-                          color: '#ffffff',
-                          resize: 'none',
-                        }}
-                        onFocus={(e) => {
-                          e.currentTarget.style.borderColor = '#ff4538';
-                        }}
-                        onBlur={(e) => {
-                          e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
-                        }}
                       />
                     </div>
 
                     <Button
                       type="submit"
                       size="lg"
-                      className="w-full text-white"
+                      className="w-full text-primary-foreground bg-primary hover:bg-primary/90"
                       disabled={isSubmitting}
-                      style={{ backgroundColor: '#ff4538' }}
-                      onMouseEnter={(e) => {
-                        if (!isSubmitting) {
-                          e.currentTarget.style.backgroundColor = '#ff5c50';
-                        }
-                      }}
-                      onMouseLeave={(e) => {
-                        if (!isSubmitting) {
-                          e.currentTarget.style.backgroundColor = '#ff4538';
-                        }
-                      }}
                     >
                       {isSubmitting ? (
                         <>

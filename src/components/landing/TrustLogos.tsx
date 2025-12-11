@@ -51,24 +51,15 @@ export function TrustLogos() {
   const duplicatedAuthorities = [...authorities, ...authorities];
 
   return (
-    <section
-      className="relative py-8 md:py-12 overflow-hidden"
-      style={{ backgroundColor: '#091a24' }}
-    >
+    <section className="relative py-8 md:py-12 overflow-hidden bg-background dark:bg-[#091a24]">
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-8 md:mb-10">
-          <h2
-            className="text-3xl md:text-4xl font-bold mb-3 tracking-tight"
-            style={{ color: '#ffffff' }}
-          >
+          <h2 className="text-3xl md:text-4xl font-bold mb-3 tracking-tight text-foreground/90">
             <span suppressHydrationWarning>
               {t('landing.trust.title') || 'Trusted by immigration authorities worldwide'}
             </span>
           </h2>
-          <p
-            className="text-base md:text-lg mt-2 leading-[1.6] font-normal"
-            style={{ color: 'rgba(255, 255, 255, 0.75)' }}
-          >
+          <p className="text-base md:text-lg mt-2 leading-[1.6] font-normal text-foreground/70">
             <span suppressHydrationWarning>
               {t('landing.trust.subtitle') ||
                 'Recognized partners with official immigration agencies'}
@@ -78,17 +69,17 @@ export function TrustLogos() {
 
         {/* Marquee Container */}
         <div className="relative w-full overflow-hidden">
-          {/* Gradient overlays for fade effect */}
+          {/* Gradient overlays for fade effect - Theme-aware */}
           <div
             className="absolute left-0 top-0 bottom-0 w-32 z-10 pointer-events-none"
             style={{
-              background: 'linear-gradient(to right, #091a24 0%, transparent 100%)',
+              background: 'linear-gradient(to right, var(--background) 0%, transparent 100%)',
             }}
           />
           <div
             className="absolute right-0 top-0 bottom-0 w-32 z-10 pointer-events-none"
             style={{
-              background: 'linear-gradient(to left, #091a24 0%, transparent 100%)',
+              background: 'linear-gradient(to left, var(--background) 0%, transparent 100%)',
             }}
           />
 
@@ -102,50 +93,25 @@ export function TrustLogos() {
                   className="flex-shrink-0 mx-4"
                   style={{ width: '280px' }}
                 >
-                  <Card
-                    className="h-full transition-all duration-300 hover:scale-105 hover:shadow-xl"
-                    style={{
-                      backgroundColor: 'rgba(255, 255, 255, 0.03)',
-                      borderColor: 'rgba(255, 255, 255, 0.1)',
-                      borderWidth: '1px',
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.borderColor = '#ff4538';
-                      e.currentTarget.style.backgroundColor = 'rgba(255, 69, 56, 0.05)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
-                      e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.03)';
-                    }}
-                  >
+                  <Card className="h-full transition-all duration-300 hover:scale-105 hover:shadow-xl bg-card border-border hover:border-primary">
                     <div className="p-6 flex flex-col items-center text-center space-y-4">
                       {/* Icon */}
-                      <div
-                        className="w-16 h-16 rounded-2xl flex items-center justify-center transition-transform duration-300"
-                        style={{ backgroundColor: 'rgba(255, 69, 56, 0.1)' }}
-                      >
-                        <Icon className="h-8 w-8" style={{ color: '#ff4538' }} />
+                      <div className="w-16 h-16 rounded-2xl flex items-center justify-center transition-transform duration-300 bg-primary/10">
+                        <Icon className="h-8 w-8 text-primary" />
                       </div>
 
                       {/* Authority Name */}
                       <div>
-                        <h3 className="text-lg font-bold mb-1" style={{ color: '#ffffff' }}>
+                        <h3 className="text-lg font-bold mb-1 text-foreground/90">
                           {authority.name}
                         </h3>
-                        <p className="text-xs mb-2" style={{ color: 'rgba(255, 255, 255, 0.6)' }}>
-                          {authority.fullName}
-                        </p>
-                        <p className="text-xs font-medium" style={{ color: '#ff4538' }}>
-                          {authority.country}
-                        </p>
+                        <p className="text-xs mb-2 text-foreground/60">{authority.fullName}</p>
+                        <p className="text-xs font-medium text-primary">{authority.country}</p>
                       </div>
 
                       {/* Verified Badge */}
-                      <div
-                        className="flex items-center gap-1 text-xs"
-                        style={{ color: 'rgba(255, 255, 255, 0.7)' }}
-                      >
-                        <CheckCircle2 className="h-3 w-3" style={{ color: '#ff4538' }} />
+                      <div className="flex items-center gap-1 text-xs text-foreground/60">
+                        <CheckCircle2 className="h-3 w-3 text-primary" />
                         <span suppressHydrationWarning>
                           {t('landing.trust.verifiedPartner') || 'Verified Partner'}
                         </span>

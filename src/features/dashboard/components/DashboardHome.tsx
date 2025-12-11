@@ -86,12 +86,12 @@ export const DashboardHome = memo(function DashboardHome() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold text-white">
+        <h1 className="text-3xl font-bold" style={{ color: 'var(--foreground)' }}>
           {t('dashboard.welcomeBack', {
             firstName: user?.firstName ? `, ${user.firstName}` : '',
           }) || `Welcome back${user?.firstName ? `, ${user.firstName}` : ''}!`}
         </h1>
-        <p className="text-white/70 mt-2">
+        <p className="mt-2" style={{ color: 'var(--muted-foreground)' }}>
           {t('dashboard.overview') || 'Here is an overview of your immigration cases'}
         </p>
       </div>
@@ -383,7 +383,7 @@ export const DashboardHome = memo(function DashboardHome() {
                 e.currentTarget.style.borderColor = 'rgba(255, 69, 56, 0.3)';
               }}
             >
-              <Link href="/dashboard/documents">
+              <Link href="/dashboard/cases?tab=documents">
                 <FileText className="mr-2 h-4 w-4" style={{ color: '#ff4538' }} />
                 {user?.role === 'CLIENT'
                   ? t('dashboard.uploadDocuments') || 'Upload Documents'

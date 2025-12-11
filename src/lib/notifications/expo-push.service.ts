@@ -515,7 +515,7 @@ export async function sendDocumentStatusNotification(
     body: `Your ${documentName} has been ${status.toLowerCase()}`,
     data: {
       type: 'DOCUMENT_STATUS_UPDATE',
-      actionUrl: `/dashboard/documents`,
+      actionUrl: `/dashboard/cases?tab=documents`,
       screen: 'documents',
       params: { documentId, status },
     },

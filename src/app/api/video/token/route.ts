@@ -1,3 +1,49 @@
+/**
+ * ZegoCloud Video Token Generation API
+ *
+ * This endpoint generates secure tokens for ZegoCloud video/voice calls.
+ * It can be used by both web and mobile applications.
+ *
+ * MOBILE APP INTEGRATION:
+ * -----------------------
+ * Mobile apps can use this same API endpoint to get tokens for video calls.
+ *
+ * Required Environment Variables:
+ * - ZEGOCLOUD_APP_ID: Your ZegoCloud App ID (shared between web and mobile)
+ * - ZEGOCLOUD_SERVER_SECRET or ZEGOCLOUD_APP_SECRET: Server secret for token generation
+ *
+ * Optional Environment Variables:
+ * - ZEGOCLOUD_CALLBACK_SECRET: Used for webhook verification (not for token generation)
+ * - ZEGOCLOUD_SERVER_URL: ZegoCloud server URL (if using custom server)
+ *
+ * Note: NEXT_PUBLIC_* variables are NOT accessible in API routes (Next.js 15+).
+ * All environment variables must be server-side only (no NEXT_PUBLIC_ prefix).
+ *
+ * Mobile App Implementation:
+ * 1. Authenticate user with your backend (same auth system as web)
+ * 2. Call POST /api/video/token with:
+ *    {
+ *      "roomId": "room-123",
+ *      "userId": "user-456",
+ *      "userName": "John Doe",
+ *      "canPublish": true,
+ *      "canLogin": true,
+ *      "expiresInSeconds": 1800
+ *    }
+ * 3. Use the returned token with ZegoCloud SDK in mobile app
+ * 4. Both web and mobile users can join the same room using the same App ID
+ *
+ * Security:
+ * - Tokens are generated server-side using ZEGOCLOUD_SERVER_SECRET or ZEGOCLOUD_APP_SECRET
+ * - Never expose server secrets in mobile app code
+ * - Mobile app should always call this API endpoint, never generate tokens client-side
+ *
+ * Cross-Platform Communication:
+ * - Web and mobile apps share the same ZEGOCLOUD_APP_ID
+ * - Users from both platforms can join the same video rooms
+ * - Token generation is centralized in this API endpoint
+ */
+
 import { NextRequest, NextResponse } from 'next/server';
 import { authenticateToken, AuthenticatedRequest } from '@/lib/auth/middleware';
 import { ERROR_MESSAGES } from '@/lib/constants';
@@ -57,17 +103,16 @@ const postHandler = asyncHandler(async (request: NextRequest) => {
     throw new ApiError('streamIds must contain non-empty strings', HttpStatus.BAD_REQUEST);
   }
 
-  const rawAppId =
-    process.env.ZEGOCLOUD_APP_ID ??
-    process.env.NEXT_PUBLIC_ZEGOCLOUD_APP_ID ??
-    process.env.NEXT_PUBLIC_APP_ID;
+  // ZegoCloud App ID - shared between web and mobile apps
+  // Note: NEXT_PUBLIC_* variables are NOT accessible in API routes (Next.js 15+)
+  const rawAppId = process.env.ZEGOCLOUD_APP_ID;
   const appId = rawAppId ? Number.parseInt(rawAppId, 10) : NaN;
 
-  const serverSecret =
-    process.env.ZEGOCLOUD_SERVER_SECRET ??
-    process.env.ZEGOCLOUD_APP_SECRET ??
-    process.env.NEXT_PUBLIC_APP_SIGNIN ??
-    process.env.NEXT_PUBLIC_ZEGOCLOUD_APP_SIGNIN;
+  // ZegoCloud Server Secret - used for secure token generation
+  // Priority: ZEGOCLOUD_SERVER_SECRET (preferred) > ZEGOCLOUD_APP_SECRET
+  // Note: ZEGOCLOUD_CALLBACK_SECRET is for webhook verification, not token generation
+  // Note: NEXT_PUBLIC_* variables are NOT accessible in API routes (Next.js 15+)
+  const serverSecret = process.env.ZEGOCLOUD_SERVER_SECRET ?? process.env.ZEGOCLOUD_APP_SECRET;
 
   if (!Number.isFinite(appId) || appId <= 0) {
     logger.error('ZegoCloud app ID is not configured correctly');
@@ -75,14 +120,10 @@ const postHandler = asyncHandler(async (request: NextRequest) => {
   }
 
   if (!serverSecret) {
-    logger.error('ZegoCloud server secret is missing. Tokens cannot be generated securely.');
-    throw new ApiError('Video service is not configured correctly', HttpStatus.SERVICE_UNAVAILABLE);
-  }
-
-  if (!process.env.ZEGOCLOUD_SERVER_SECRET && !process.env.ZEGOCLOUD_APP_SECRET) {
-    logger.warn(
-      'Using public app sign for token generation. Move credentials to server-only envs.'
+    logger.error(
+      'ZegoCloud server secret is missing. Configure ZEGOCLOUD_SERVER_SECRET or ZEGOCLOUD_APP_SECRET in server-side environment variables (NEXT_PUBLIC_* variables are not accessible in API routes).'
     );
+    throw new ApiError('Video service is not configured correctly', HttpStatus.SERVICE_UNAVAILABLE);
   }
 
   const userId = req.user.userId || req.user.uid;

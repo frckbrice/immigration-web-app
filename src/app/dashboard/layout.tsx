@@ -7,6 +7,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useLogout } from '@/features/auth/api/useAuth';
 import { LanguageSwitcher } from '@/components/layout/LanguageSwitcher';
+import { ThemeSwitcher } from '@/components/layout/ThemeSwitcher';
 import { useTranslation } from 'react-i18next';
 import {
   LogOut,
@@ -56,6 +57,30 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
     if (!user?.role) return [];
     return getNavigationForRole(user.role as UserRole);
   }, [user?.role]);
+
+  // Helper function to get translated navigation title
+  const getNavTitle = (title: string): string => {
+    const titleMap: Record<string, string> = {
+      Dashboard: 'dashboard.nav.dashboard',
+      'My Cases': 'dashboard.nav.myCases',
+      Cases: 'dashboard.nav.cases',
+      Documents: 'dashboard.nav.documents',
+      // Templates: 'dashboard.nav.templates',
+      Messages: 'dashboard.nav.messages',
+      Notifications: 'dashboard.nav.notifications',
+      Clients: 'dashboard.nav.clients',
+      Users: 'dashboard.nav.users',
+      'Invite Codes': 'dashboard.nav.inviteCodes',
+      Analytics: 'dashboard.nav.analytics',
+      'Audit Logs': 'dashboard.nav.auditLogs',
+      FAQ: 'dashboard.nav.faq',
+      Templates: 'dashboard.nav.templates',
+      Profile: 'dashboard.nav.profile',
+      Settings: 'dashboard.nav.settings',
+    };
+    const translationKey = titleMap[title];
+    return translationKey ? t(translationKey) : title;
+  };
 
   useEffect(() => {
     // Only redirect if auth check is complete (not loading) and user is not authenticated
@@ -137,7 +162,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                   hasPaid: paymentData.hasPaid,
                   bypassed: paymentData.bypassed,
                 });
-                router.push('/checkout');
+                router.push('/checkout?paymentRequired=true');
               }
             } else {
               logger.info('[DashboardLayout] Payment verified - allowing access', {
@@ -160,7 +185,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
           });
           // On error, redirect to checkout to be safe
           if (pathname !== '/checkout' && !pathname.startsWith('/checkout/')) {
-            router.push('/checkout');
+            router.push('/checkout?paymentRequired=true');
           }
         }
       };
@@ -224,12 +249,9 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   };
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#091a24' }}>
+    <div className="min-h-screen bg-background">
       {/* Top Navigation */}
-      <header
-        className="sticky top-0 z-50 w-full border-b backdrop-blur supports-[backdrop-filter]:bg-opacity-60"
-        style={{ backgroundColor: '#091a24', borderColor: '#ff4538' }}
-      >
+      <header className="sticky top-0 z-50 w-full border-b backdrop-blur supports-[backdrop-filter]:bg-opacity-60 bg-background dark:bg-[#091a24] border-border">
         <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
             {/* Logo Section */}
@@ -240,18 +262,17 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="md:hidden text-white hover:bg-white/10"
+                    className="md:hidden text-foreground hover:bg-accent"
                   >
                     <Menu className="h-5 w-5" />
                   </Button>
                 </SheetTrigger>
                 <SheetContent
                   side="left"
-                  className="w-64"
-                  style={{ backgroundColor: '#091a24', borderColor: 'rgba(255, 69, 56, 0.1)' }}
+                  className="w-64 bg-background dark:bg-[#091a24] border-r border-border"
                 >
                   <SheetHeader>
-                    <SheetTitle className="text-left text-white">
+                    <SheetTitle className="text-left text-foreground">
                       {t('dashboard.navigation')}
                     </SheetTitle>
                   </SheetHeader>
@@ -275,20 +296,13 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                           className={cn(
                             'flex items-center justify-between space-x-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors cursor-pointer',
                             isActive
-                              ? 'text-white'
-                              : 'text-white/70 hover:bg-white/10 hover:text-white'
+                              ? 'text-primary-foreground bg-primary'
+                              : 'text-foreground/70 hover:bg-accent hover:text-foreground'
                           )}
-                          style={
-                            isActive
-                              ? {
-                                  backgroundColor: '#ff4538',
-                                }
-                              : undefined
-                          }
                         >
                           <div className="flex items-center space-x-3">
                             <item.icon className="h-4 w-4" />
-                            <span>{item.title}</span>
+                            <span>{getNavTitle(item.title)}</span>
                           </div>
                           {badgeCount && badgeCount > 0 && (
                             <Badge
@@ -302,12 +316,10 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                       );
                     })}
                   </nav>
-                  <Separator
-                    className="my-4"
-                    style={{ backgroundColor: 'rgba(255, 69, 56, 0.1)' }}
-                  />
+                  <Separator className="my-4" />
                   <div className="space-y-3">
-                    <div className="flex items-center space-x-2 px-4 text-white">
+                    <div className="flex items-center space-x-2 px-4">
+                      <ThemeSwitcher />
                       <LanguageSwitcher />
                     </div>
                   </div>
@@ -328,10 +340,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                     priority
                   />
                 </div>
-                <span
-                  className="font-bold text-sm sm:text-lg leading-tight"
-                  style={{ color: '#ff4538' }}
-                >
+                <span className="font-bold text-sm sm:text-lg leading-tight text-primary">
                   Patrick Travel Service
                 </span>
               </Link>
@@ -339,8 +348,12 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
 
             {/* Right Section - Language & User Info */}
             <div className="flex items-center space-x-2 sm:space-x-4">
+              {/* Theme Switcher - Visible on all screen sizes */}
+              <div className="flex items-center">
+                <ThemeSwitcher />
+              </div>
               {/* Language Switcher - Visible on all screen sizes */}
-              <div className="flex items-center text-white">
+              <div className="flex items-center">
                 <LanguageSwitcher variant="light" />
               </div>
 
@@ -355,15 +368,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                         src={user?.profilePicture || undefined}
                         alt={`${user?.firstName} ${user?.lastName}`}
                       />
-                      <AvatarFallback
-                        className="text-sm font-medium text-white"
-                        style={{
-                          backgroundColor: '#091a24',
-                          borderColor: '#ff4538',
-                          borderWidth: '1px',
-                          borderStyle: 'solid',
-                        }}
-                      >
+                      <AvatarFallback className="text-sm font-medium text-primary-foreground bg-primary border border-primary">
                         {getInitials()}
                       </AvatarFallback>
                     </Avatar>
@@ -427,10 +432,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
 
       <div className="flex">
         {/* Sidebar */}
-        <aside
-          className="w-64 border-r min-h-[calc(100vh-4rem)] hidden md:block"
-          style={{ backgroundColor: '#091a24', borderColor: '#ff4538' }}
-        >
+        <aside className="w-64 border-r min-h-[calc(100vh-4rem)] hidden md:block bg-background dark:bg-[#091a24] border-border">
           <div className="w-full max-w-7xl mx-auto">
             <nav className="p-4 space-y-2">
               {/* Role-Based Navigation */}
@@ -454,7 +456,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                     isActive={isActive}
                     badge={badgeCount}
                   >
-                    {item.title}
+                    {getNavTitle(item.title)}
                   </NavLink>
                 );
               })}
@@ -463,11 +465,8 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
         </aside>
 
         {/* Main Content */}
-        <main
-          className="flex-1 p-4 sm:p-6 lg:p-8 overflow-x-hidden"
-          style={{ backgroundColor: '#0a1f2e' }}
-        >
-          <div className="mx-auto max-w-7xl w-full text-white">{children}</div>
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-x-hidden bg-background">
+          <div className="mx-auto max-w-7xl w-full">{children}</div>
         </main>
       </div>
     </div>
@@ -493,15 +492,10 @@ const NavLink = memo(function NavLink({
       href={href}
       className={cn(
         'flex items-center justify-between space-x-3 px-4 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer',
-        isActive ? 'text-white' : 'text-white/70 hover:bg-white/10 hover:text-white'
-      )}
-      style={
         isActive
-          ? {
-              backgroundColor: '#ff4538',
-            }
-          : undefined
-      }
+          ? 'text-primary-foreground bg-primary'
+          : 'text-foreground/70 hover:bg-accent hover:text-foreground'
+      )}
     >
       <div className="flex items-center space-x-3">
         <Icon className="h-4 w-4" />

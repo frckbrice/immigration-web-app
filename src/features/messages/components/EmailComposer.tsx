@@ -308,47 +308,26 @@ export function EmailComposer({
       <div className="space-y-4 sm:space-y-6 px-0 sm:px-1">
         {/* Recipient Info Card - For Agents/Admins */}
         {user?.role !== 'CLIENT' && (recipientName || recipientEmail) && (
-          <div
-            className="p-2.5 sm:p-4 rounded-lg border"
-            style={{
-              borderColor: 'rgba(255, 255, 255, 0.1)',
-              borderWidth: '1px',
-              borderStyle: 'solid',
-              backgroundColor: 'rgba(255, 255, 255, 0.03)',
-              backdropFilter: 'blur(10px)',
-            }}
-          >
+          <div className="p-2.5 sm:p-4 rounded-lg border border-border bg-card">
             <div className="flex items-start gap-2 sm:gap-3">
-              <div
-                className="p-1.5 sm:p-2 rounded-full shrink-0"
-                style={{ backgroundColor: 'rgba(255, 69, 56, 0.1)' }}
-              >
-                <Mail className="h-4 w-4 sm:h-5 sm:w-5" style={{ color: '#ff4538' }} />
+              <div className="p-1.5 sm:p-2 rounded-full shrink-0 bg-primary/10">
+                <Mail className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
               </div>
               <div className="flex-1 min-w-0">
-                <h4
-                  className="font-semibold text-xs sm:text-sm"
-                  style={{ color: 'rgba(255, 255, 255, 0.7)' }}
-                >
+                <h4 className="font-semibold text-xs sm:text-sm text-muted-foreground">
                   {t('email.sendingEmailTo')}
                 </h4>
-                <p
-                  className="text-xs sm:text-sm font-medium mt-1 truncate"
-                  style={{ color: 'rgba(255, 255, 255, 0.9)' }}
-                >
+                <p className="text-xs sm:text-sm font-medium mt-1 truncate text-foreground">
                   {recipientName}
                 </p>
                 {recipientEmail && (
-                  <p
-                    className="text-xs truncate break-all"
-                    style={{ color: 'rgba(255, 255, 255, 0.7)' }}
-                  >
+                  <p className="text-xs truncate break-all text-muted-foreground">
                     {recipientEmail}
                   </p>
                 )}
                 {caseReference && (
                   <div className="mt-2 flex items-center gap-1.5 text-xs text-muted-foreground">
-                    <Briefcase className="h-3 w-3 shrink-0" style={{ color: '#ff4538' }} />
+                    <Briefcase className="h-3 w-3 shrink-0 text-primary" />
                     <span className="truncate">{t('email.caseLabel', { caseReference })}</span>
                   </div>
                 )}
@@ -362,12 +341,11 @@ export function EmailComposer({
           <div className="flex items-center justify-between gap-2">
             <Label
               htmlFor="case-select"
-              className="text-xs sm:text-sm font-semibold flex items-center gap-1.5 sm:gap-2"
-              style={{ color: 'rgba(255, 255, 255, 0.9)' }}
+              className="text-xs sm:text-sm font-semibold flex items-center gap-1.5 sm:gap-2 text-foreground"
             >
-              <Briefcase className="h-3 w-3 sm:h-4 sm:w-4 shrink-0" style={{ color: '#ff4538' }} />
+              <Briefcase className="h-3 w-3 sm:h-4 sm:w-4 shrink-0 text-primary" />
               <span className="truncate">{t('email.selectCase') || 'Select Case'}</span>
-              <span style={{ color: '#ff4538' }}>*</span>
+              <span className="text-primary">*</span>
             </Label>
             {userCases.length > 0 && (
               <span className="text-xs text-muted-foreground shrink-0">
@@ -418,30 +396,7 @@ export function EmailComposer({
               <Select value={caseId} onValueChange={handleCaseChange}>
                 <SelectTrigger
                   id="case-select"
-                  className="h-12 sm:h-14 transition-all text-sm sm:text-base text-white [&[data-placeholder]]:text-white/50"
-                  style={{
-                    backgroundColor: 'rgba(255, 255, 255, 0.03)',
-                    borderColor: 'rgba(255, 69, 56, 0.3)',
-                    borderWidth: '1px',
-                    borderStyle: 'solid',
-                    color: 'white',
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.borderColor = 'rgba(255, 69, 56, 0.5)';
-                    e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.05)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.borderColor = 'rgba(255, 69, 56, 0.3)';
-                    e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.03)';
-                  }}
-                  onFocus={(e) => {
-                    e.currentTarget.style.borderColor = '#ff4538';
-                    e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.05)';
-                  }}
-                  onBlur={(e) => {
-                    e.currentTarget.style.borderColor = 'rgba(255, 69, 56, 0.3)';
-                    e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.03)';
-                  }}
+                  className="h-12 sm:h-14 transition-all text-sm sm:text-base text-foreground bg-input border border-primary/30 hover:border-primary/50 focus:border-primary [&[data-placeholder]]:text-muted-foreground"
                 >
                   <SelectValue
                     placeholder={t('email.chooseCasePlaceholder') || 'Choose a case to continue...'}
@@ -466,17 +421,11 @@ export function EmailComposer({
                         return (
                           <div className="flex items-center justify-between w-full pr-2">
                             <div className="flex flex-col gap-1">
-                              <span
-                                className="font-semibold text-sm"
-                                style={{ color: 'rgba(255, 255, 255, 0.9)' }}
-                              >
+                              <span className="font-semibold text-sm text-foreground">
                                 {selectedCase.referenceNumber}
                               </span>
-                              <span
-                                className="text-xs flex items-center gap-1"
-                                style={{ color: 'rgba(255, 255, 255, 0.7)' }}
-                              >
-                                <Briefcase className="h-3 w-3" style={{ color: '#ff4538' }} />
+                              <span className="text-xs flex items-center gap-1 text-muted-foreground">
+                                <Briefcase className="h-3 w-3 text-primary" />
                                 {getServiceTypeLabel(selectedCase.serviceType)}
                               </span>
                             </div>
@@ -490,15 +439,7 @@ export function EmailComposer({
                       })()}
                   </SelectValue>
                 </SelectTrigger>
-                <SelectContent
-                  className="max-h-[300px]"
-                  style={{
-                    backgroundColor: '#091a24',
-                    borderColor: '#ff4538',
-                    borderWidth: '1px',
-                    borderStyle: 'solid',
-                  }}
-                >
+                <SelectContent className="max-h-[300px] bg-popover border-border">
                   {userCases.map((caseItem: any) => {
                     const statusColorMap: Record<string, string> = {
                       SUBMITTED: 'bg-blue-100 text-blue-700',
@@ -516,25 +457,11 @@ export function EmailComposer({
                       <SelectItem
                         key={caseItem.id}
                         value={caseItem.id}
-                        className="py-3 cursor-pointer transition-all"
-                        style={{
-                          backgroundColor: 'transparent',
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.backgroundColor = 'rgba(255, 69, 56, 0.1)';
-                          e.currentTarget.style.borderColor = 'rgba(255, 69, 56, 0.3)';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.backgroundColor = 'transparent';
-                          e.currentTarget.style.borderColor = 'transparent';
-                        }}
+                        className="py-3 cursor-pointer transition-all hover:bg-accent"
                       >
                         <div className="flex flex-col gap-2 w-full">
                           <div className="flex items-center justify-between gap-2">
-                            <span
-                              className="font-semibold text-sm"
-                              style={{ color: 'rgba(255, 255, 255, 0.9)' }}
-                            >
+                            <span className="font-semibold text-sm text-foreground">
                               {caseItem.referenceNumber}
                             </span>
                             <span
@@ -543,11 +470,8 @@ export function EmailComposer({
                               {getCaseStatusLabel(caseItem.status)}
                             </span>
                           </div>
-                          <div
-                            className="flex items-center gap-1.5 text-xs"
-                            style={{ color: 'rgba(255, 255, 255, 0.7)' }}
-                          >
-                            <Briefcase className="h-3 w-3" style={{ color: '#ff4538' }} />
+                          <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                            <Briefcase className="h-3 w-3 text-primary" />
                             <span>{getServiceTypeLabel(caseItem.serviceType)}</span>
                           </div>
                         </div>
@@ -557,24 +481,9 @@ export function EmailComposer({
                 </SelectContent>
               </Select>
 
-              <div
-                className="flex items-start gap-2 p-2.5 sm:p-3 rounded-lg border"
-                style={{
-                  borderColor: 'rgba(255, 255, 255, 0.1)',
-                  borderWidth: '1px',
-                  borderStyle: 'solid',
-                  backgroundColor: 'rgba(255, 255, 255, 0.03)',
-                  backdropFilter: 'blur(10px)',
-                }}
-              >
-                <Mail
-                  className="h-3.5 w-3.5 sm:h-4 sm:w-4 flex-shrink-0 mt-0.5"
-                  style={{ color: '#ff4538' }}
-                />
-                <p
-                  className="text-xs leading-relaxed"
-                  style={{ color: 'rgba(255, 255, 255, 0.7)' }}
-                >
+              <div className="flex items-start gap-2 p-2.5 sm:p-3 rounded-lg border border-border bg-card">
+                <Mail className="h-3.5 w-3.5 sm:h-4 sm:w-4 flex-shrink-0 mt-0.5 text-primary" />
+                <p className="text-xs leading-relaxed text-muted-foreground">
                   {t('email.caseHelper') ||
                     'Your email will be sent to the agent assigned to the selected case'}
                 </p>
@@ -587,11 +496,10 @@ export function EmailComposer({
         <div className="space-y-2 sm:space-y-2.5">
           <Label
             htmlFor="subject"
-            className="text-xs sm:text-sm font-semibold flex items-center gap-1.5 sm:gap-2"
-            style={{ color: 'rgba(255, 255, 255, 0.9)' }}
+            className="text-xs sm:text-sm font-semibold flex items-center gap-1.5 sm:gap-2 text-foreground"
           >
             {t('email.subject') || 'Subject'}
-            <span style={{ color: '#ff4538' }}>*</span>
+            <span className="text-primary">*</span>
           </Label>
           <Input
             id="subject"
@@ -599,12 +507,7 @@ export function EmailComposer({
             onChange={handleSubjectChange}
             placeholder={t('email.subjectPlaceholder') || 'Enter email subject...'}
             maxLength={200}
-            className="h-11 sm:h-12 text-sm sm:text-base focus:ring-2 focus:ring-primary/20 transition-all"
-            style={{
-              color: 'white',
-              backgroundColor: 'rgba(255, 255, 255, 0.03)',
-              borderColor: 'rgba(255, 69, 56, 0.3)',
-            }}
+            className="h-11 sm:h-12 text-sm sm:text-base text-foreground bg-input border-primary/30 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
           />
           <div className="flex justify-between items-center gap-2">
             <p className="text-xs text-muted-foreground truncate">
@@ -618,11 +521,10 @@ export function EmailComposer({
         <div className="space-y-2 sm:space-y-2.5">
           <Label
             htmlFor="content"
-            className="text-xs sm:text-sm font-semibold flex items-center gap-1.5 sm:gap-2"
-            style={{ color: 'rgba(255, 255, 255, 0.9)' }}
+            className="text-xs sm:text-sm font-semibold flex items-center gap-1.5 sm:gap-2 text-foreground"
           >
             {t('email.message') || 'Message'}
-            <span style={{ color: '#ff4538' }}>*</span>
+            <span className="text-primary">*</span>
           </Label>
           <Textarea
             id="content"
@@ -632,12 +534,7 @@ export function EmailComposer({
               t('email.contentPlaceholder') ||
               'Type your message here...\n\nYou can format your message with:\n• Line breaks\n• Bullet points\n• Multiple paragraphs'
             }
-            className="min-h-[180px] sm:min-h-[220px] resize-y text-sm sm:text-base leading-relaxed focus:ring-2 focus:ring-primary/20 transition-all"
-            style={{
-              color: 'white',
-              backgroundColor: 'rgba(255, 255, 255, 0.03)',
-              borderColor: 'rgba(255, 69, 56, 0.3)',
-            }}
+            className="min-h-[180px] sm:min-h-[220px] resize-y text-sm sm:text-base leading-relaxed text-foreground bg-input border-primary/30 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
             maxLength={5000}
           />
           <div className="flex justify-between items-center gap-2">
@@ -653,10 +550,7 @@ export function EmailComposer({
 
         {/* Attachments */}
         <div className="space-y-2 sm:space-y-3">
-          <Label
-            className="text-xs sm:text-sm font-semibold"
-            style={{ color: 'rgba(255, 255, 255, 0.9)' }}
-          >
+          <Label className="text-xs sm:text-sm font-semibold text-foreground">
             {t('email.attachments') || 'Attachments'} (Optional)
           </Label>
 
@@ -711,25 +605,9 @@ export function EmailComposer({
             size="sm"
             onClick={() => fileInputRef.current?.click()}
             disabled={isUploading || attachments.length >= 3 || sendEmail.isPending}
-            className="w-full h-10 sm:h-11 border-dashed border-2 hover:border-solid text-sm sm:text-base"
-            style={{
-              borderColor: 'rgba(255, 69, 56, 0.3)',
-              borderWidth: '2px',
-              borderStyle: 'dashed',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = 'rgba(255, 69, 56, 0.5)';
-              e.currentTarget.style.borderStyle = 'solid';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.borderColor = 'rgba(255, 69, 56, 0.3)';
-              e.currentTarget.style.borderStyle = 'dashed';
-            }}
+            className="w-full h-10 sm:h-11 border-dashed border-2 hover:border-solid text-sm sm:text-base border-primary/30 hover:border-primary/50 text-foreground"
           >
-            <Paperclip
-              className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1.5 sm:mr-2 shrink-0"
-              style={{ color: '#ff4538' }}
-            />
+            <Paperclip className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1.5 sm:mr-2 shrink-0 text-primary" />
             {isUploading ? (
               <>
                 <Loader2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1.5 sm:mr-2 animate-spin shrink-0" />
@@ -779,21 +657,13 @@ export function EmailComposer({
   if (isDesktop) {
     return (
       <Sheet open={open} onOpenChange={onOpenChange}>
-        <SheetContent
-          className="sm:max-w-xl overflow-y-auto"
-          style={{
-            backgroundColor: '#091a24',
-            borderColor: '#ff4538',
-            borderWidth: '0 0 0 1px',
-            borderStyle: 'solid',
-          }}
-        >
+        <SheetContent className="sm:max-w-xl overflow-y-auto bg-background border-l border-border">
           <SheetHeader>
-            <SheetTitle className="flex items-center gap-2 text-white">
-              <Mail className="h-5 w-5" style={{ color: '#ff4538' }} />
+            <SheetTitle className="flex items-center gap-2 text-foreground">
+              <Mail className="h-5 w-5 text-primary" />
               {t('email.compose') || 'Compose Email'}
             </SheetTitle>
-            <SheetDescription style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+            <SheetDescription className="text-muted-foreground">
               {user?.role === 'CLIENT'
                 ? t('email.clientDescription') || 'Send a formal email to your assigned agent'
                 : t('email.agentDescription') || 'Send a formal email to your client'}
@@ -802,10 +672,7 @@ export function EmailComposer({
 
           <div className="py-6 px-1">{FormContent}</div>
 
-          <SheetFooter
-            className="gap-3 sm:gap-3 pt-6 border-t sticky bottom-0 pb-6"
-            style={{ borderColor: 'rgba(255, 69, 56, 0.2)', backgroundColor: '#091a24' }}
-          >
+          <SheetFooter className="gap-3 sm:gap-3 pt-6 border-t sticky bottom-0 pb-6 bg-background border-border">
             <Button
               variant="outline"
               onClick={() => {
@@ -813,32 +680,14 @@ export function EmailComposer({
                 onOpenChange(false);
               }}
               disabled={sendEmail.isPending}
-              className="flex-1 h-11 text-white"
-              style={{
-                backgroundColor: 'transparent',
-                borderColor: 'rgba(255, 69, 56, 0.3)',
-                borderWidth: '1px',
-                borderStyle: 'solid',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = 'rgba(255, 69, 56, 0.5)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = 'rgba(255, 69, 56, 0.3)';
-              }}
+              className="flex-1 h-11 border-border hover:border-primary/50"
             >
               {t('common.cancel') || 'Cancel'}
             </Button>
             <Button
               onClick={handleSend}
               disabled={!isFormValid || sendEmail.isPending || isUploading}
-              className="flex-1 h-11 text-white disabled:opacity-50 disabled:cursor-not-allowed"
-              style={{
-                backgroundColor: '#361d22',
-                borderColor: '#ff4538',
-                borderWidth: '1px',
-                borderStyle: 'solid',
-              }}
+              className="flex-1 h-11 bg-primary text-primary-foreground border border-primary hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {sendEmail.isPending ? (
                 <>
@@ -861,24 +710,13 @@ export function EmailComposer({
   // Mobile: Dialog
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent
-        className="w-[95vw] max-w-[90vw] sm:max-w-lg max-h-[90vh] sm:max-h-[90vh] h-[100vh] sm:h-auto overflow-y-auto p-4 sm:p-6"
-        style={{
-          backgroundColor: '#091a24',
-          borderColor: '#ff4538',
-          borderWidth: '1px',
-          borderStyle: 'solid',
-        }}
-      >
+      <DialogContent className="w-[95vw] max-w-[90vw] sm:max-w-lg max-h-[90vh] sm:max-h-[90vh] h-[100vh] sm:h-auto overflow-y-auto p-4 sm:p-6 bg-background border-border">
         <DialogHeader className="space-y-2 sm:space-y-3 pb-3 sm:pb-0">
-          <DialogTitle className="flex items-center gap-2 text-lg sm:text-xl text-white">
-            <Mail className="h-4 w-4 sm:h-5 sm:w-5 shrink-0" style={{ color: '#ff4538' }} />
+          <DialogTitle className="flex items-center gap-2 text-lg sm:text-xl text-foreground">
+            <Mail className="h-4 w-4 sm:h-5 sm:w-5 shrink-0 text-primary" />
             <span className="truncate">{t('email.compose') || 'Compose Email'}</span>
           </DialogTitle>
-          <DialogDescription
-            className="text-xs sm:text-sm"
-            style={{ color: 'rgba(255, 255, 255, 0.7)' }}
-          >
+          <DialogDescription className="text-xs sm:text-sm text-muted-foreground">
             {user?.role === 'CLIENT'
               ? t('email.clientDescription') || 'Send a formal email to your assigned agent'
               : t('email.agentDescription') || 'Send a formal email to your client'}
@@ -887,10 +725,7 @@ export function EmailComposer({
 
         <div className="py-3 sm:py-4">{FormContent}</div>
 
-        <DialogFooter
-          className="gap-2 sm:gap-3 flex-col sm:flex-row pt-3 sm:pt-4 border-t"
-          style={{ borderColor: 'rgba(255, 69, 56, 0.2)' }}
-        >
+        <DialogFooter className="gap-2 sm:gap-3 flex-col sm:flex-row pt-3 sm:pt-4 border-t border-border">
           <Button
             variant="outline"
             onClick={() => {
@@ -898,32 +733,14 @@ export function EmailComposer({
               onOpenChange(false);
             }}
             disabled={sendEmail.isPending}
-            className="w-full sm:w-auto h-10 sm:h-11 text-white"
-            style={{
-              backgroundColor: 'transparent',
-              borderColor: 'rgba(255, 69, 56, 0.3)',
-              borderWidth: '1px',
-              borderStyle: 'solid',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = 'rgba(255, 69, 56, 0.5)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.borderColor = 'rgba(255, 69, 56, 0.3)';
-            }}
+            className="w-full sm:w-auto h-10 sm:h-11 border-border hover:border-primary/50"
           >
             {t('common.cancel') || 'Cancel'}
           </Button>
           <Button
             onClick={handleSend}
             disabled={!isFormValid || sendEmail.isPending || isUploading}
-            className="w-full sm:w-auto h-10 sm:h-11 text-white disabled:opacity-50 disabled:cursor-not-allowed"
-            style={{
-              backgroundColor: '#361d22',
-              borderColor: '#ff4538',
-              borderWidth: '1px',
-              borderStyle: 'solid',
-            }}
+            className="w-full sm:w-auto h-10 sm:h-11 bg-primary text-primary-foreground border border-primary hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {sendEmail.isPending ? (
               <>

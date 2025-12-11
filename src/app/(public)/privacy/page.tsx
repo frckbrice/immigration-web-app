@@ -28,20 +28,13 @@ export default function PrivacyPage() {
           <div className="h-4 bg-muted rounded w-5/6"></div>
         </div>
       ) : content ? (
-        <div
-          className="prose dark:prose-invert max-w-none mb-10 whitespace-pre-wrap"
-          style={{ color: 'rgba(255, 255, 255, 0.8)' }}
-        >
+        <div className="prose dark:prose-invert max-w-none mb-10 whitespace-pre-wrap text-foreground/70">
           {content}
         </div>
       ) : (
         <>
-          <p className="text-lg mb-6" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
-            {t('legal.privacy.description')}
-          </p>
-          <p className="mb-6" style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
-            {t('legal.privacy.intro')}
-          </p>
+          <p className="text-lg mb-6 text-foreground/70">{t('legal.privacy.description')}</p>
+          <p className="mb-6 text-foreground/70">{t('legal.privacy.intro')}</p>
 
           <LegalSection
             icon={Database}
@@ -185,14 +178,8 @@ export default function PrivacyPage() {
                 {t('legal.privacy.dataSharing.businessTransfers').split(':')[1]}
               </li>
             </ul>
-            <Card
-              className="mt-4 p-4 border-2"
-              style={{
-                backgroundColor: 'rgba(255, 255, 255, 0.03)',
-                borderColor: 'rgba(255, 69, 56, 0.3)',
-              }}
-            >
-              <p className="text-sm" style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
+            <Card className="mt-4 p-4 border-2 bg-card dark:bg-[rgba(255,255,255,0.03)] border-primary/30">
+              <p className="text-sm text-foreground/70">
                 ✓ {t('legal.privacy.dataSharing.noSelling')}
               </p>
             </Card>
@@ -288,10 +275,10 @@ export default function PrivacyPage() {
           </LegalSection>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold mb-4">
+            <h2 className="text-2xl font-semibold mb-4 text-foreground/90">
               7. {t('legal.privacy.dataRetention.title')}
             </h2>
-            <p>{t('legal.privacy.dataRetention.desc')}</p>
+            <p className="text-foreground/70">{t('legal.privacy.dataRetention.desc')}</p>
             <ul className="list-disc pl-6 mt-2 space-y-2">
               <li>
                 <strong>{t('legal.privacy.dataRetention.activeAccounts').split(':')[0]}:</strong>{' '}
@@ -330,10 +317,10 @@ export default function PrivacyPage() {
           </LegalSection>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold mb-4">
+            <h2 className="text-2xl font-semibold mb-4 text-foreground/90">
               9. {t('legal.privacy.supervisory.title')}
             </h2>
-            <p>{t('legal.privacy.supervisory.desc')}</p>
+            <p className="text-foreground/70">{t('legal.privacy.supervisory.desc')}</p>
           </section>
         </>
       )}

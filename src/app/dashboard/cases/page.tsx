@@ -1,11 +1,21 @@
 import { Suspense } from 'react';
-import { RoleCasesList } from '@/features/cases/components/RoleCasesList';
+import { CasesPageWithTabs } from '@/features/cases/components/CasesPageWithTabs';
 import { CasesListSkeleton } from '@/features/cases/components/CasesList';
 
-export default function CasesPage() {
+interface CasesPageProps {
+  searchParams: Promise<{
+    tab?: string;
+    [key: string]: string | string[] | undefined;
+  }>;
+}
+
+export default async function CasesPage({ searchParams }: CasesPageProps) {
+  const params = await searchParams;
+  const initialTab = params.tab === 'documents' ? 'documents' : 'cases';
+
   return (
     <Suspense fallback={<CasesListSkeleton />}>
-      <RoleCasesList />
+      <CasesPageWithTabs initialTab={initialTab} />
     </Suspense>
   );
 }

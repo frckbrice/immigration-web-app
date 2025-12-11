@@ -1,17 +1,10 @@
 import type { Metadata, Viewport } from 'next';
-import { Inter } from 'next/font/google';
 import './globals.css';
 import { Providers } from './providers';
 import { WebVitals } from '@/components/performance/WebVitals';
 
-// PERFORMANCE: Optimized font loading with display:swap and preload
-const inter = Inter({
-  subsets: ['latin'],
-  variable: '--font-inter',
-  display: 'swap', // Prevents invisible text while font loads
-  preload: true,
-  fallback: ['system-ui', '-apple-system', 'sans-serif'],
-});
+// PERFORMANCE: Using system font stack to avoid build-time network requests
+// Inter font will be loaded via CSS @import in globals.css for runtime loading
 
 // PERFORMANCE: Separate viewport export (Next.js 14+ optimization)
 export const viewport: Viewport = {
@@ -184,12 +177,8 @@ export default function RootLayout({
             `,
           }}
         />
-        {/* PERFORMANCE: Resource hints for faster loading */}
-        <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" crossOrigin="anonymous" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
-      <body className={`${inter.variable} font-sans antialiased`}>
+      <body className="font-sans antialiased">
         {/* PERFORMANCE: Web Vitals monitoring */}
         <WebVitals />
         <Providers>{children}</Providers>

@@ -106,7 +106,7 @@ const handler = asyncHandler(
           type: 'DOCUMENT_VERIFIED',
           title: 'Document Approved',
           message: `Your ${document.originalName} has been verified and approved`,
-          actionUrl: '/dashboard/documents',
+          actionUrl: '/dashboard/cases?tab=documents',
         });
       } catch (notifError) {
         logger.warn('Failed to send realtime notification', notifError);
