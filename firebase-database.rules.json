@@ -37,9 +37,9 @@
     },
     "presence": {
       "$userId": {
-        ".read": true,
+        ".read": "auth != null",
         ".write": "auth != null && auth.uid == $userId",
-        ".validate": "newData.hasChildren(['userId', 'status', 'lastSeen'])"
+        ".validate": "newData.hasChildren(['userId', 'status', 'lastSeen']) && newData.child('userId').val() == $userId && (newData.child('status').val() == 'online' || newData.child('status').val() == 'offline' || newData.child('status').val() == 'away')"
       }
     },
     "typing": {
@@ -47,7 +47,7 @@
         ".read": "auth != null && (root.child('chats/' + $chatRoomId + '/metadata/participants/clientId').val() == auth.uid || root.child('chats/' + $chatRoomId + '/metadata/participants/agentId').val() == auth.uid)",
         "$userId": {
           ".write": "auth != null && auth.uid == $userId",
-          ".validate": "newData.hasChildren(['userId', 'isTyping', 'timestamp'])"
+          ".validate": "newData.hasChildren(['userId', 'isTyping', 'timestamp']) && newData.child('userId').val() == $userId && newData.child('isTyping').isBoolean()"
         }
       }
     },

@@ -8,11 +8,14 @@ import { auth } from '@/lib/firebase/firebase-client';
 import { useAuthStore } from '@/features/auth/store';
 import { logger } from '@/lib/utils/logger';
 import { createSafeLogIdentifier } from '@/lib/utils/pii-hash';
+import { setUserOffline, setUserOnline } from '@/lib/firebase/presence.service';
 
 export function FirebaseAuthProvider({ children }: { children: React.ReactNode }) {
   const { setAuth, logout, setLoading, initAuth } = useAuthStore();
   const isInitialized = useRef(false);
   const hasValidUserData = useRef(false); // PERFORMANCE: Track if we have valid user data
+  const presenceDetachRef = useRef<null | (() => void)>(null);
+  const lastPresenceUidRef = useRef<string | null>(null);
 
   useEffect(() => {
     // Initialize auth from localStorage first (for immediate state restoration)
@@ -41,6 +44,26 @@ export function FirebaseAuthProvider({ children }: { children: React.ReactNode }
 
     // Listen to Firebase auth state changes
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      // Presence should be managed globally so other clients can reliably see online status,
+      // not only when the Messages page is open.
+      try {
+        if (presenceDetachRef.current) {
+          presenceDetachRef.current();
+          presenceDetachRef.current = null;
+        }
+
+        const previousUid = lastPresenceUidRef.current;
+        lastPresenceUidRef.current = firebaseUser?.uid ?? null;
+
+        if (firebaseUser?.uid) {
+          presenceDetachRef.current = setUserOnline(firebaseUser.uid, 'web');
+        } else if (previousUid) {
+          setUserOffline(previousUid, 'web');
+        }
+      } catch {
+        // Best-effort; never block auth flow
+      }
+
       if (firebaseUser) {
         try {
           // PERFORMANCE: Don't force refresh on every auth state change
@@ -176,6 +199,18 @@ export function FirebaseAuthProvider({ children }: { children: React.ReactNode }
     return () => {
       unsubscribe();
       clearInterval(tokenRefreshInterval);
+      try {
+        if (presenceDetachRef.current) {
+          presenceDetachRef.current();
+          presenceDetachRef.current = null;
+        }
+        const uid = lastPresenceUidRef.current;
+        if (uid) {
+          setUserOffline(uid, 'web');
+        }
+      } catch {
+        // Best-effort
+      }
     };
   }, [setAuth, logout, setLoading, initAuth]);
 
