@@ -18,6 +18,9 @@ import {
   FileIcon,
   Image as ImageIcon,
   Mail,
+  Video,
+  Phone,
+  PhoneOff,
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -45,6 +48,25 @@ import type { MessageAttachment } from '@/lib/types';
 import { logger } from '@/lib/utils/logger';
 import { Download } from 'lucide-react';
 import { EmailComposer } from './EmailComposer';
+import dynamic from 'next/dynamic';
+import { getFreshToken } from '@/lib/auth/token-manager';
+
+// Lazy load all video call components to prevent them from breaking the page if there's an error
+const VideoCallDialog = dynamic(
+  () => import('@/features/video').then((mod) => ({ default: mod.VideoCallDialog })),
+  {
+    ssr: false,
+    loading: () => null,
+  }
+);
+
+const IncomingCallDialog = dynamic(
+  () => import('@/features/video').then((mod) => ({ default: mod.IncomingCallDialog })),
+  {
+    ssr: false,
+    loading: () => null,
+  }
+);
 
 interface MessagesListProps {
   preselectedClientId?: string;
@@ -71,6 +93,70 @@ export function MessagesList({
   const [isUploading, setIsUploading] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const [emailComposerOpen, setEmailComposerOpen] = useState(false);
+  const [videoCallOpen, setVideoCallOpen] = useState(false);
+  const [callMode, setCallMode] = useState<'video' | 'audio'>('video');
+  const [activeCallRoomId, setActiveCallRoomId] = useState<string | null>(null);
+  const [outgoingCallStatus, setOutgoingCallStatus] = useState<string | null>(null);
+  const [incomingCall, setIncomingCall] = useState<
+    import('@/lib/firebase/call-invitations.service').CallInvitation | null
+  >(null);
+  const outgoingCallStatusRef = useRef<string | null>(null);
+  const activeCallRoomIdRef = useRef<string | null>(null);
+  const [outgoingAutoRetryCount, setOutgoingAutoRetryCount] = useState(0);
+  const outgoingAutoRetryPendingRef = useRef(false);
+  const outgoingCallTargetRef = useRef<{
+    toFirebaseId: string;
+    toUserName: string;
+    callMode: 'video' | 'audio';
+  } | null>(null);
+
+  // Track Firebase UID (may change on auth state changes)
+  const [firebaseUserId, setFirebaseUserId] = useState<string | null>(
+    () => auth?.currentUser?.uid || null
+  );
+
+  // Update Firebase UID when auth state changes
+  useEffect(() => {
+    if (!auth) {
+      logger.error('Firebase Auth is not initialized');
+      return;
+    }
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setFirebaseUserId(user?.uid || null);
+    });
+    return unsubscribe;
+  }, []);
+
+  // Listen for incoming calls (IMPORTANT: subscribe when firebaseUserId becomes available).
+  // Previously this only ran once on mount and could miss calls if auth.currentUser was still null.
+  useEffect(() => {
+    if (!firebaseUserId) {
+      setIncomingCall(null);
+      return;
+    }
+
+    let unsubscribe: (() => void) | null = null;
+    let mounted = true;
+
+    import('@/lib/firebase/call-invitations.service')
+      .then((module) => {
+        if (!mounted) return;
+        if (!module.subscribeToIncomingCalls) return;
+
+        unsubscribe = module.subscribeToIncomingCalls(firebaseUserId, (invitation) => {
+          if (!mounted) return;
+          setIncomingCall(invitation);
+        });
+      })
+      .catch((error) => {
+        console.warn('[Messages] Failed to load call invitations service:', error);
+      });
+
+    return () => {
+      mounted = false;
+      unsubscribe?.();
+    };
+  }, [firebaseUserId]);
 
   const relativeFormatter = useMemo(
     () => new Intl.RelativeTimeFormat(i18n.language, { numeric: 'auto' }),
@@ -96,22 +182,190 @@ export function MessagesList({
     };
   }, []);
 
-  // Track Firebase UID (may change on auth state changes)
-  const [firebaseUserId, setFirebaseUserId] = useState<string | null>(
-    () => auth?.currentUser?.uid || null
-  );
-
-  // Update Firebase UID when auth state changes
+  // Keep refs in sync for timeout callbacks (avoid stale closures)
   useEffect(() => {
-    if (!auth) {
-      logger.error('Firebase Auth is not initialized');
+    outgoingCallStatusRef.current = outgoingCallStatus;
+    activeCallRoomIdRef.current = activeCallRoomId;
+  }, [outgoingCallStatus, activeCallRoomId]);
+
+  // Listen for outgoing call status changes (when we initiated the call)
+  useEffect(() => {
+    if (!activeCallRoomId) return;
+
+    let unsubscribe: (() => void) | null = null;
+    let isMounted = true;
+
+    // Dynamically import to prevent breaking if module has issues
+    import('@/lib/firebase/call-invitations.service')
+      .then((module) => {
+        if (!isMounted || !activeCallRoomId) return;
+
+        const invitationId = `call-${activeCallRoomId}`;
+        unsubscribe = module.subscribeToCallStatus(
+          invitationId,
+          (invitation: import('@/lib/firebase/call-invitations.service').CallInvitation | null) => {
+            if (!isMounted) return;
+
+            if (!invitation) {
+              setOutgoingCallStatus(null);
+              return;
+            }
+
+            setOutgoingCallStatus(invitation.status);
+
+            // If call is accepted, open the video dialog
+            if (invitation.status === 'accepted' && !videoCallOpen) {
+              outgoingAutoRetryPendingRef.current = false;
+              setVideoCallOpen(true);
+            }
+
+            // If call is rejected, cancelled, or ended, close dialog and show message
+            if (['rejected', 'cancelled', 'ended'].includes(invitation.status)) {
+              // If we cancelled specifically to perform an auto-retry, do not clear UI state here.
+              // The retry will immediately re-invite and transition back to 'ringing'.
+              if (invitation.status === 'cancelled' && outgoingAutoRetryPendingRef.current) {
+                return;
+              }
+              if (invitation.status === 'rejected') {
+                toast.info('Call was rejected.');
+              } else if (invitation.status === 'cancelled') {
+                toast.info('Call was cancelled.');
+              }
+              setVideoCallOpen(false);
+              setActiveCallRoomId(null);
+              setOutgoingCallStatus(null);
+              setOutgoingAutoRetryCount(0);
+              outgoingAutoRetryPendingRef.current = false;
+              outgoingCallTargetRef.current = null;
+            }
+          }
+        );
+      })
+      .catch((error) => {
+        console.warn('[Messages] Failed to load call status subscription:', error);
+        // Continue without call status tracking - don't break the component
+      });
+
+    return () => {
+      isMounted = false;
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
+  }, [activeCallRoomId, videoCallOpen]);
+
+  // Auto-cancel outgoing calls that are not answered within a reasonable time.
+  // Reuses existing cancel endpoint (PATCH /api/calls/[invitationId]) and realtime status listeners.
+  useEffect(() => {
+    const CALL_RING_TIMEOUT_MS = 65_000;
+    const MAX_AUTO_RETRIES = 1;
+    const roomId = activeCallRoomId;
+    const status = outgoingCallStatus;
+
+    const invitationId = roomId ? `call-${roomId}` : null;
+    const timerKey = invitationId ? `outgoing-call-timeout:${invitationId}` : null;
+
+    // Clear any previous timer if call state changes away from ringing/pending
+    if (!timerKey || !invitationId || !['pending', 'ringing'].includes(status ?? '')) {
+      if (timerKey) {
+        const existing = cleanupTimersRef.current.get(timerKey);
+        if (existing) {
+          clearTimeout(existing);
+          cleanupTimersRef.current.delete(timerKey);
+        }
+      }
       return;
     }
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setFirebaseUserId(user?.uid || null);
-    });
-    return unsubscribe;
-  }, []);
+
+    // Don't set a second timer for the same invitation
+    if (cleanupTimersRef.current.has(timerKey)) return;
+
+    const timeout = setTimeout(async () => {
+      // Re-check latest state (avoid cancelling an accepted call due to race)
+      const latestRoomId = activeCallRoomIdRef.current;
+      const latestStatus = outgoingCallStatusRef.current;
+      const latestInvitationId = latestRoomId ? `call-${latestRoomId}` : null;
+
+      if (!latestInvitationId || latestInvitationId !== invitationId) return;
+      if (!['pending', 'ringing'].includes(latestStatus ?? '')) return;
+
+      try {
+        const token = await getFreshToken();
+        if (!token) return;
+
+        // If we have retries left, cancel then immediately re-invite once.
+        if (outgoingAutoRetryCount < MAX_AUTO_RETRIES && outgoingCallTargetRef.current) {
+          outgoingAutoRetryPendingRef.current = true;
+          setOutgoingAutoRetryCount((v) => v + 1);
+
+          // 1) Cancel current ringing (stops remote ringing UI)
+          await fetch(`/api/calls/${invitationId}`, {
+            method: 'PATCH', // cancel (caller)
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
+            },
+            credentials: 'include',
+          });
+
+          // 2) Re-invite (auto retry)
+          const target = outgoingCallTargetRef.current;
+          toast.info(t('video.retryingCall', { defaultValue: 'No answer. Retrying…' }));
+
+          const response = await fetch('/api/calls/invite', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
+            },
+            credentials: 'include',
+            body: JSON.stringify({
+              toFirebaseId: target.toFirebaseId,
+              toUserName: target.toUserName,
+              callMode: target.callMode,
+            }),
+          });
+
+          if (!response.ok) {
+            // If retry fails, fall back to ended UX
+            outgoingAutoRetryPendingRef.current = false;
+            toast.info(t('video.noAnswer', { defaultValue: 'No answer. Call ended.' }));
+          } else {
+            // Allow status handler to process new ringing state
+            outgoingAutoRetryPendingRef.current = false;
+          }
+        } else {
+          // No more retries: cancel and end locally
+          await fetch(`/api/calls/${invitationId}`, {
+            method: 'PATCH', // cancel (caller)
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
+            },
+            credentials: 'include',
+          });
+
+          toast.info(t('video.noAnswer', { defaultValue: 'No answer. Call ended.' }));
+          setOutgoingAutoRetryCount(0);
+          outgoingCallTargetRef.current = null;
+        }
+      } catch {
+        // Best-effort: don't break UX
+      } finally {
+        cleanupTimersRef.current.delete(timerKey);
+      }
+    }, CALL_RING_TIMEOUT_MS);
+
+    cleanupTimersRef.current.set(timerKey, timeout);
+
+    return () => {
+      const existing = cleanupTimersRef.current.get(timerKey);
+      if (existing) {
+        clearTimeout(existing);
+        cleanupTimersRef.current.delete(timerKey);
+      }
+    };
+  }, [activeCallRoomId, outgoingCallStatus, outgoingAutoRetryCount, t]);
 
   // Handle preselected client - open email composer or select chat
   useEffect(() => {
@@ -274,12 +528,24 @@ export function MessagesList({
 
   // Transform ChatRoom to Conversation format for UI (fully memoized)
   const conversations = useMemo(() => {
-    if (!firebaseUserId) return [];
+    // Don't return empty array immediately if firebaseUserId is null - we might still be loading
+    // Only return empty if we have user.id but no firebaseUserId (auth failed or still initializing)
+    // This prevents showing empty state prematurely while auth is initializing
+    if (user?.id && !firebaseUserId && !isLoadingConversations) {
+      // Auth should be ready but Firebase UID is missing - return empty
+      logger.debug('[Conversations] User exists but no Firebase UID, returning empty');
+      return [];
+    }
+
+    // If we don't have user.id yet, return empty (not logged in)
+    if (!user?.id) {
+      return [];
+    }
 
     const conversationList: Conversation[] = [];
 
     // Add existing Firebase chat rooms
-    if (apiConversations && apiConversations.length > 0) {
+    if (apiConversations && apiConversations.length > 0 && firebaseUserId) {
       const firebaseConvos = apiConversations
         .filter((room: FirebaseChatRoom): room is FirebaseChatRoom & { id: string } => !!room.id)
         .map((room) => {
@@ -358,6 +624,7 @@ export function MessagesList({
     apiConversations,
     firebaseUserId,
     user?.id,
+    isLoadingConversations,
     getUserInfo,
     preselectedClientId,
     preselectedClientName,
@@ -747,7 +1014,13 @@ export function MessagesList({
   }, []);
 
   // PROGRESSIVE UI: Show layout immediately, populate with data as it loads
-  const isFirstLoad = (isLoadingConversations || isLoadingUsers) && conversations.length === 0;
+  // Show loading state if:
+  // 1. Conversations are still loading, OR
+  // 2. Users are still loading, OR
+  // 3. We have a user but Firebase UID is not ready yet (auth initializing)
+  const isFirstLoad =
+    Boolean(isLoadingConversations || isLoadingUsers || (!!user?.id && !firebaseUserId)) &&
+    conversations.length === 0;
 
   return (
     <div className="space-y-6">
@@ -788,6 +1061,95 @@ export function MessagesList({
         recipientEmail={preselectedClientEmail}
         caseReference={caseReference}
       />
+
+      {/* Incoming Call Dialog */}
+      {incomingCall && ['pending', 'ringing'].includes(incomingCall.status) && (
+        <IncomingCallDialog
+          invitation={incomingCall}
+          onAccept={() => {
+            // When call is accepted, open the video call dialog
+            if (incomingCall) {
+              setCallMode(incomingCall.callMode);
+              setActiveCallRoomId(incomingCall.roomId);
+              setVideoCallOpen(true);
+            }
+          }}
+          onReject={() => {
+            // Call rejected - clear state
+            setActiveCallRoomId(null);
+          }}
+        />
+      )}
+
+      {/* Video Call Dialog - Only render when dialog is open to avoid breaking the page */}
+      {videoCallOpen && firebaseUserId && user && (
+        <VideoCallDialog
+          open={videoCallOpen}
+          onOpenChange={(open) => {
+            setVideoCallOpen(open);
+            if (!open) {
+              // End the call when dialog closes
+              if (activeCallRoomId) {
+                getFreshToken()
+                  .then((token) => {
+                    if (token) {
+                      const invitationId = `call-${activeCallRoomId}`;
+                      return fetch(`/api/calls/${invitationId}`, {
+                        method: 'PUT',
+                        headers: {
+                          'Content-Type': 'application/json',
+                          Authorization: `Bearer ${token}`,
+                        },
+                        credentials: 'include',
+                      });
+                    }
+                    return null;
+                  })
+                  .catch(() => {
+                    // Ignore errors on cleanup
+                  });
+              }
+              setActiveCallRoomId(null);
+            }
+          }}
+          roomId={
+            activeCallRoomId ||
+            (selectedConversation
+              ? [firebaseUserId, selectedConversation.participantId].sort().join('-')
+              : '')
+          }
+          userId={firebaseUserId}
+          userName={`${user.firstName} ${user.lastName}`.trim() || user.email || 'User'}
+          participantName={
+            incomingCall?.fromUserName || selectedConversation?.participantName || 'Participant'
+          }
+          callMode={callMode}
+          onCallEnd={async () => {
+            // End the call in Firebase
+            if (activeCallRoomId) {
+              try {
+                const token = await getFreshToken();
+                if (token) {
+                  const invitationId = `call-${activeCallRoomId}`;
+                  await fetch(`/api/calls/${invitationId}`, {
+                    method: 'PUT',
+                    headers: {
+                      'Content-Type': 'application/json',
+                      Authorization: `Bearer ${token}`,
+                    },
+                    credentials: 'include',
+                  });
+                }
+              } catch (error) {
+                // Ignore errors on cleanup
+                console.warn('[Call] Failed to end call:', error);
+              }
+            }
+            setVideoCallOpen(false);
+            setActiveCallRoomId(null);
+          }}
+        />
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 h-[calc(100vh-14rem)] sm:h-[calc(100vh-16rem)]">
         {/* Conversations - Hidden on mobile */}
@@ -946,69 +1308,286 @@ export function MessagesList({
                 className="border-b pb-3 sm:pb-4"
                 style={{ borderColor: 'rgba(255, 69, 56, 0.2)' }}
               >
-                <div className="flex gap-2 sm:gap-3">
-                  <div className="relative">
-                    <Avatar className="h-9 w-9 sm:h-10 sm:w-10">
-                      <AvatarFallback className="text-[10px] sm:text-xs">
-                        {getInitials(selectedConversation.participantName)}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div
-                      className={cn(
-                        'absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-white dark:border-slate-900',
-                        selectedPresence?.status === 'online'
-                          ? 'bg-emerald-500'
-                          : 'bg-muted-foreground/40'
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
-                      <h3 className="text-base sm:text-lg font-semibold leading-tight">
-                        {selectedConversation.participantName}
-                      </h3>
-                      {isParticipantTyping ? (
-                        <Badge
-                          variant="outline"
-                          className="text-[10px] sm:text-xs h-4 sm:h-5 px-1 sm:px-1.5"
-                          style={{
-                            borderColor: '#ff4538',
-                            backgroundColor: 'rgba(255, 69, 56, 0.1)',
-                            color: '#ff4538',
-                          }}
-                        >
-                          Typing…
-                        </Badge>
-                      ) : (
-                        selectedPresence?.status === 'online' && (
+                <div className="flex items-start justify-between gap-2 sm:gap-3">
+                  <div className="flex gap-2 sm:gap-3 flex-1 min-w-0">
+                    <div className="relative flex-shrink-0">
+                      <Avatar className="h-9 w-9 sm:h-10 sm:w-10">
+                        <AvatarFallback className="text-[10px] sm:text-xs">
+                          {getInitials(selectedConversation.participantName)}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div
+                        className={cn(
+                          'absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-white dark:border-slate-900',
+                          selectedPresence?.status === 'online'
+                            ? 'bg-emerald-500'
+                            : 'bg-muted-foreground/40'
+                        )}
+                      />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                        <h3 className="text-base sm:text-lg font-semibold leading-tight truncate">
+                          {selectedConversation.participantName}
+                        </h3>
+                        {isParticipantTyping ? (
                           <Badge
                             variant="outline"
                             className="text-[10px] sm:text-xs h-4 sm:h-5 px-1 sm:px-1.5"
                             style={{
-                              borderColor: 'rgba(16, 185, 129, 0.3)',
-                              backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                              color: '#10b981',
+                              borderColor: '#ff4538',
+                              backgroundColor: 'rgba(255, 69, 56, 0.1)',
+                              color: '#ff4538',
                             }}
                           >
-                            Online
+                            Typing…
                           </Badge>
-                        )
-                      )}
+                        ) : (
+                          selectedPresence?.status === 'online' && (
+                            <Badge
+                              variant="outline"
+                              className="text-[10px] sm:text-xs h-4 sm:h-5 px-1 sm:px-1.5"
+                              style={{
+                                borderColor: 'rgba(16, 185, 129, 0.3)',
+                                backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                                color: '#10b981',
+                              }}
+                            >
+                              Online
+                            </Badge>
+                          )
+                        )}
+                        {/* Outgoing call status indicator */}
+                        {outgoingCallStatus === 'ringing' && (
+                          <Badge
+                            variant="outline"
+                            className="text-[10px] sm:text-xs h-4 sm:h-5 px-1 sm:px-1.5 animate-pulse"
+                            style={{
+                              borderColor: '#ff4538',
+                              backgroundColor: 'rgba(255, 69, 56, 0.1)',
+                              color: '#ff4538',
+                            }}
+                          >
+                            {t('video.calling', {
+                              name: selectedConversation.participantName,
+                              defaultValue: `Calling ${selectedConversation.participantName}...`,
+                            })}
+                          </Badge>
+                        )}
+                      </div>
+                      <div className="flex flex-wrap items-center gap-x-1.5 sm:gap-x-2 gap-y-0.5 sm:gap-y-1 mt-0.5 sm:mt-1">
+                        <span className="text-[10px] sm:text-xs text-muted-foreground">
+                          {selectedConversation.participantRole}
+                        </span>
+                        <span className="hidden sm:inline text-[10px] sm:text-xs text-muted-foreground">
+                          •
+                        </span>
+                        <span
+                          className={cn('text-[10px] sm:text-xs', headerStatusClass)}
+                          suppressHydrationWarning
+                        >
+                          {headerStatusLabel}
+                        </span>
+                      </div>
                     </div>
-                    <div className="flex flex-wrap items-center gap-x-1.5 sm:gap-x-2 gap-y-0.5 sm:gap-y-1 mt-0.5 sm:mt-1">
-                      <span className="text-[10px] sm:text-xs text-muted-foreground">
-                        {selectedConversation.participantRole}
-                      </span>
-                      <span className="hidden sm:inline text-[10px] sm:text-xs text-muted-foreground">
-                        •
-                      </span>
-                      <span
-                        className={cn('text-[10px] sm:text-xs', headerStatusClass)}
-                        suppressHydrationWarning
+                  </div>
+                  {/* Video and Audio Call Buttons */}
+                  <div className="flex gap-1.5 sm:gap-2 flex-shrink-0">
+                    {/* Cancel outgoing call while ringing */}
+                    {outgoingCallStatus === 'ringing' && activeCallRoomId && (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={async () => {
+                          try {
+                            const token = await getFreshToken();
+                            if (!token) {
+                              toast.error('Please sign in to cancel the call.');
+                              return;
+                            }
+
+                            const invitationId = `call-${activeCallRoomId}`;
+                            const response = await fetch(`/api/calls/${invitationId}`, {
+                              method: 'PATCH',
+                              headers: {
+                                'Content-Type': 'application/json',
+                                Authorization: `Bearer ${token}`,
+                              },
+                              credentials: 'include',
+                            });
+
+                            if (!response.ok) {
+                              const error = await response
+                                .json()
+                                .catch(() => ({ error: 'Failed to cancel call' }));
+                              throw new Error(error.error || 'Failed to cancel call');
+                            }
+
+                            toast.info('Call cancelled.');
+                          } catch (error: any) {
+                            console.error('[Call] Failed to cancel invitation:', error);
+                            toast.error(
+                              error?.message || 'Failed to cancel call. Please try again.'
+                            );
+                          } finally {
+                            // Always reset local UI state to avoid being stuck in "Calling..."
+                            setOutgoingCallStatus(null);
+                            setActiveCallRoomId(null);
+                            setVideoCallOpen(false);
+                          }
+                        }}
+                        className="h-8 w-8 sm:h-9 sm:w-9 p-0"
+                        style={{
+                          borderColor: '#ef4444',
+                          color: '#ef4444',
+                        }}
+                        aria-label={t('video.cancelCall') || 'Cancel call'}
+                        title={t('video.cancelCall') || 'Cancel call'}
                       >
-                        {headerStatusLabel}
-                      </span>
-                    </div>
+                        <PhoneOff className="h-4 w-4 sm:h-5 sm:w-5" />
+                      </Button>
+                    )}
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      disabled={Boolean(
+                        activeCallRoomId && outgoingCallStatus && outgoingCallStatus !== 'accepted'
+                      )}
+                      onClick={async () => {
+                        if (!selectedConversation || !firebaseUserId || !user) return;
+
+                        try {
+                          // Reset retry state for a new outgoing call attempt
+                          setOutgoingAutoRetryCount(0);
+                          outgoingAutoRetryPendingRef.current = false;
+                          outgoingCallTargetRef.current = {
+                            toFirebaseId: selectedConversation.participantId,
+                            toUserName: selectedConversation.participantName,
+                            callMode: 'video',
+                          };
+
+                          const token = await getFreshToken();
+                          if (!token) {
+                            toast.error('Please sign in to start a call.');
+                            return;
+                          }
+
+                          // Create call invitation
+                          const response = await fetch('/api/calls/invite', {
+                            method: 'POST',
+                            headers: {
+                              'Content-Type': 'application/json',
+                              Authorization: `Bearer ${token}`,
+                            },
+                            credentials: 'include',
+                            body: JSON.stringify({
+                              toFirebaseId: selectedConversation.participantId,
+                              toUserName: selectedConversation.participantName,
+                              callMode: 'video',
+                            }),
+                          });
+
+                          if (!response.ok) {
+                            const error = await response
+                              .json()
+                              .catch(() => ({ error: 'Failed to start call' }));
+                            throw new Error(error.error || 'Failed to start call');
+                          }
+
+                          const data = await response.json();
+                          setCallMode('video');
+                          // Store roomId (not invitationId) - we'll construct invitationId when needed
+                          setActiveCallRoomId(data.data.roomId);
+                          setOutgoingCallStatus('ringing');
+                          toast.info('Calling... Waiting for answer.');
+                          // Wait for call to be accepted before opening dialog
+                          // The dialog will open when call status becomes 'accepted'
+                        } catch (error: any) {
+                          console.error('[Call] Failed to create invitation:', error);
+                          toast.error(
+                            error?.message || 'Failed to start video call. Please try again.'
+                          );
+                        }
+                      }}
+                      className="h-8 w-8 sm:h-9 sm:w-9 p-0"
+                      style={{
+                        borderColor: '#ff4538',
+                        color: '#ff4538',
+                      }}
+                      aria-label={t('video.startVideoCall') || 'Start video call'}
+                    >
+                      <Video className="h-4 w-4 sm:h-5 sm:w-5" />
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      disabled={Boolean(
+                        activeCallRoomId && outgoingCallStatus && outgoingCallStatus !== 'accepted'
+                      )}
+                      onClick={async () => {
+                        if (!selectedConversation || !firebaseUserId || !user) return;
+
+                        try {
+                          // Reset retry state for a new outgoing call attempt
+                          setOutgoingAutoRetryCount(0);
+                          outgoingAutoRetryPendingRef.current = false;
+                          outgoingCallTargetRef.current = {
+                            toFirebaseId: selectedConversation.participantId,
+                            toUserName: selectedConversation.participantName,
+                            callMode: 'audio',
+                          };
+
+                          const token = await getFreshToken();
+                          if (!token) {
+                            toast.error('Please sign in to start a call.');
+                            return;
+                          }
+
+                          // Create call invitation
+                          const response = await fetch('/api/calls/invite', {
+                            method: 'POST',
+                            headers: {
+                              'Content-Type': 'application/json',
+                              Authorization: `Bearer ${token}`,
+                            },
+                            credentials: 'include',
+                            body: JSON.stringify({
+                              toFirebaseId: selectedConversation.participantId,
+                              toUserName: selectedConversation.participantName,
+                              callMode: 'audio',
+                            }),
+                          });
+
+                          if (!response.ok) {
+                            const error = await response
+                              .json()
+                              .catch(() => ({ error: 'Failed to start call' }));
+                            throw new Error(error.error || 'Failed to start call');
+                          }
+
+                          const data = await response.json();
+                          setCallMode('audio');
+                          // Store roomId (not invitationId) - we'll construct invitationId when needed
+                          setActiveCallRoomId(data.data.roomId);
+                          setOutgoingCallStatus('ringing');
+                          toast.info('Calling... Waiting for answer.');
+                          // Wait for call to be accepted before opening dialog
+                        } catch (error: any) {
+                          console.error('[Call] Failed to create invitation:', error);
+                          toast.error(
+                            error?.message || 'Failed to start audio call. Please try again.'
+                          );
+                        }
+                      }}
+                      className="h-8 w-8 sm:h-9 sm:w-9 p-0"
+                      style={{
+                        borderColor: '#ff4538',
+                        color: '#ff4538',
+                      }}
+                      aria-label={t('video.startAudioCall') || 'Start audio call'}
+                    >
+                      <Phone className="h-4 w-4 sm:h-5 sm:w-5" />
+                    </Button>
                   </div>
                 </div>
               </CardHeader>

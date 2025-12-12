@@ -5,6 +5,7 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { useAuthStore } from '@/features/auth/store';
 import { ref, onValue, off, query, orderByChild } from 'firebase/database';
+import { onAuthStateChanged } from 'firebase/auth';
 import { database, auth } from '@/lib/firebase/firebase-client';
 import { logger } from '@/lib/utils/logger';
 import {
@@ -68,6 +69,17 @@ function subscribeToRoomMessages(
     logger.error('Firebase Database is not initialized');
     return () => {}; // Return no-op cleanup function
   }
+
+  // Verify user is authenticated before subscribing
+  const currentUser = auth?.currentUser;
+  if (!currentUser) {
+    logger.warn(
+      `[Messages] Cannot subscribe - user not authenticated for room ${chatRoomId.substring(0, 8)}...`
+    );
+    callback([]);
+    return () => {}; // Return no-op cleanup
+  }
+
   const messagesRef = query(ref(database, `chats/${chatRoomId}/messages`), orderByChild('sentAt'));
 
   onValue(
@@ -101,11 +113,28 @@ function subscribeToRoomMessages(
       callback(sorted);
     },
     (error) => {
-      logger.error(
-        `[Firebase] Error listening to messages for room ${chatRoomId.substring(0, 8)}...`,
-        error
-      );
-      callback([]);
+      // Handle permission denied errors gracefully
+      const errorCode = (error as any)?.code || '';
+      const errorMessage = (error as any)?.message || '';
+
+      if (errorCode === 'PERMISSION_DENIED' || errorMessage.includes('PERMISSION_DENIED')) {
+        logger.warn(
+          `[Messages] Permission denied - user may not be authenticated yet. Room: ${chatRoomId.substring(0, 8)}...`,
+          {
+            errorCode,
+            hasAuth: !!auth?.currentUser,
+            authUid: auth?.currentUser?.uid?.substring(0, 8) + '...' || 'none',
+          }
+        );
+        // Return empty array on permission denied - component will retry when auth is ready
+        callback([]);
+      } else {
+        logger.error(
+          `[Firebase] Error listening to messages for room ${chatRoomId.substring(0, 8)}...`,
+          error
+        );
+        callback([]);
+      }
     }
   );
 
@@ -120,6 +149,17 @@ function subscribeToUserChatRooms(
     logger.error('Firebase Database is not initialized');
     return () => {}; // Return no-op cleanup function
   }
+
+  // Verify user is authenticated before subscribing
+  const currentUser = auth?.currentUser;
+  if (!currentUser) {
+    logger.warn(
+      `[Chat Rooms] Cannot subscribe - user not authenticated for userId ${userId.substring(0, 8)}...`
+    );
+    callback([]);
+    return () => {}; // Return no-op cleanup
+  }
+
   const roomsRef = ref(database, 'chats');
 
   onValue(
@@ -179,11 +219,28 @@ function subscribeToUserChatRooms(
       callback(rooms.sort((a, b) => (b.lastMessageAt || 0) - (a.lastMessageAt || 0)));
     },
     (error) => {
-      logger.error(
-        `[Chat Rooms] Error listening to rooms for userId ${userId.substring(0, 8)}...`,
-        error
-      );
-      callback([]);
+      // Handle permission denied errors gracefully
+      const errorCode = (error as any)?.code || '';
+      const errorMessage = (error as any)?.message || '';
+
+      if (errorCode === 'PERMISSION_DENIED' || errorMessage.includes('PERMISSION_DENIED')) {
+        logger.warn(
+          `[Chat Rooms] Permission denied - user may not be authenticated yet. UserId: ${userId.substring(0, 8)}...`,
+          {
+            errorCode,
+            hasAuth: !!auth?.currentUser,
+            authUid: auth?.currentUser?.uid?.substring(0, 8) + '...' || 'none',
+          }
+        );
+        // Return empty array on permission denied - component will retry when auth is ready
+        callback([]);
+      } else {
+        logger.error(
+          `[Chat Rooms] Error listening to rooms for userId ${userId.substring(0, 8)}...`,
+          error
+        );
+        callback([]);
+      }
     }
   );
 
@@ -279,13 +336,50 @@ export function useRealtimeMessages(chatRoomId: string | null) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [useMockData, setUseMockData] = useState(false);
+  const [firebaseUserId, setFirebaseUserId] = useState<string | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const lastMarkedRef = useRef<number>(0);
+
+  // Track Firebase auth state
+  useEffect(() => {
+    if (!auth) {
+      setIsLoading(false);
+      return;
+    }
+
+    // Set initial Firebase UID if available
+    const currentFirebaseUser = auth.currentUser;
+    if (currentFirebaseUser?.uid) {
+      setFirebaseUserId(currentFirebaseUser.uid);
+    }
+
+    // Listen for auth state changes
+    const unsubscribeAuth = onAuthStateChanged(auth, (firebaseUser) => {
+      if (firebaseUser?.uid) {
+        setFirebaseUserId(firebaseUser.uid);
+      } else {
+        setFirebaseUserId(null);
+        setMessages([]);
+        setIsLoading(false);
+      }
+    });
+
+    return () => {
+      unsubscribeAuth();
+    };
+  }, []);
 
   useEffect(() => {
     if (!chatRoomId) {
       setMessages([]);
       setIsLoading(false);
+      return;
+    }
+
+    // Wait for Firebase auth to be ready before subscribing
+    if (!firebaseUserId) {
+      logger.debug('[useRealtimeMessages] Firebase auth not ready yet, waiting...');
+      setIsLoading(true);
       return;
     }
 
@@ -309,9 +403,6 @@ export function useRealtimeMessages(chatRoomId: string | null) {
 
       // PERFORMANCE: Throttle read-marking to at most once per 2s
       // Get Firebase UID for comparing with message senderIds (which are Firebase UIDs)
-      const firebaseUser = auth?.currentUser;
-      const firebaseUserId = firebaseUser?.uid;
-
       const now = Date.now();
       if (
         firebaseUserId &&
@@ -339,7 +430,7 @@ export function useRealtimeMessages(chatRoomId: string | null) {
       }
       unsubscribe();
     };
-  }, [chatRoomId, user?.id, user?.firstName, user?.lastName, user?.email]);
+  }, [chatRoomId, firebaseUserId, user?.id, user?.firstName, user?.lastName, user?.email]);
 
   return { messages, isLoading };
 }
@@ -347,59 +438,122 @@ export function useRealtimeMessages(chatRoomId: string | null) {
 /**
  * Hook for real-time chat rooms list
  * Replaces polling - instant updates
- * DEMO MODE: Falls back to mock data after 2s timeout if Firebase empty (DEVELOPMENT ONLY)
+ * FIXED: Now properly waits for Firebase auth initialization using onAuthStateChanged
  */
 export function useRealtimeChatRooms() {
   const { user } = useAuthStore();
   const [chatRooms, setChatRooms] = useState<ChatRoom[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [useMockData, setUseMockData] = useState(false);
+  const [firebaseUserId, setFirebaseUserId] = useState<string | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const unsubscribeRoomsRef = useRef<(() => void) | null>(null);
 
+  // Listen for Firebase auth state changes to get Firebase UID
   useEffect(() => {
-    if (!user?.id) {
+    if (!auth) {
+      logger.error('[useRealtimeChatRooms] Firebase Auth is not initialized');
+      setIsLoading(false);
+      return;
+    }
+
+    // Set initial Firebase UID if available
+    const currentFirebaseUser = auth.currentUser;
+    if (currentFirebaseUser?.uid) {
+      setFirebaseUserId(currentFirebaseUser.uid);
+    }
+
+    // Listen for auth state changes
+    const unsubscribeAuth = onAuthStateChanged(auth, (firebaseUser) => {
+      if (firebaseUser?.uid) {
+        logger.debug('[useRealtimeChatRooms] Firebase auth state changed, UID available', {
+          uid: firebaseUser.uid.substring(0, 8) + '...',
+        });
+        setFirebaseUserId(firebaseUser.uid);
+      } else {
+        logger.debug('[useRealtimeChatRooms] Firebase auth state changed, no user');
+        setFirebaseUserId(null);
+        setChatRooms([]);
+        setIsLoading(false);
+      }
+    });
+
+    return () => {
+      unsubscribeAuth();
+    };
+  }, []);
+
+  // Subscribe to chat rooms when Firebase UID and user are available
+  useEffect(() => {
+    // Wait for both user.id and firebaseUserId to be available
+    if (!user?.id || !firebaseUserId) {
+      // Keep loading state if we're waiting for auth to initialize
+      if (user?.id && !firebaseUserId) {
+        // User exists but Firebase auth not ready yet - keep loading
+        setIsLoading(true);
+        return;
+      }
+      // No user at all - clear data
       setChatRooms([]);
       setIsLoading(false);
       return;
     }
 
-    // Get Firebase UID from auth.currentUser for filtering
-    // Firebase UID is what's stored in metadata participants, not PostgreSQL ID
-    const firebaseUser = auth?.currentUser;
-    const firebaseUserId = firebaseUser?.uid;
-
-    if (!firebaseUserId) {
-      setChatRooms([]);
-      setIsLoading(false);
+    // Double-check that auth.currentUser is available before subscribing
+    // This prevents permission denied errors
+    const currentUser = auth?.currentUser;
+    if (!currentUser) {
+      logger.debug('[useRealtimeChatRooms] Auth user not available yet, waiting...');
+      setIsLoading(true);
       return;
     }
+
+    logger.debug('[useRealtimeChatRooms] Subscribing to chat rooms', {
+      userId: user.id.substring(0, 8) + '...',
+      firebaseUserId: firebaseUserId.substring(0, 8) + '...',
+      authUid: currentUser.uid.substring(0, 8) + '...',
+    });
 
     setIsLoading(true);
 
-    // PRODUCTION: Stop loading after 2 seconds even if no data
+    // PRODUCTION: Stop loading after 3 seconds even if no data (increased from 2s to allow auth time)
     timeoutRef.current = setTimeout(() => {
+      logger.debug('[useRealtimeChatRooms] Timeout reached, stopping load state');
       setIsLoading(false);
-    }, 2000);
+    }, 3000);
 
-    const unsubscribe = subscribeToUserChatRooms(firebaseUserId, (rooms) => {
+    // Clean up previous subscription if any
+    if (unsubscribeRoomsRef.current) {
+      unsubscribeRoomsRef.current();
+      unsubscribeRoomsRef.current = null;
+    }
+
+    unsubscribeRoomsRef.current = subscribeToUserChatRooms(firebaseUserId, (rooms) => {
       // Clear timeout if Firebase responds
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
       }
+
+      logger.debug('[useRealtimeChatRooms] Received rooms from Firebase', {
+        roomCount: rooms.length,
+      });
 
       // Only use real Firebase data
       setChatRooms(rooms);
-      setUseMockData(false);
       setIsLoading(false);
     });
 
     return () => {
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
       }
-      unsubscribe();
+      if (unsubscribeRoomsRef.current) {
+        unsubscribeRoomsRef.current();
+        unsubscribeRoomsRef.current = null;
+      }
     };
-  }, [user?.id]);
+  }, [user?.id, firebaseUserId]);
 
   return { chatRooms, isLoading };
 }

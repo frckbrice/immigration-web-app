@@ -784,9 +784,22 @@
     "casesLoadError": "Please check your connection and try again."
   },
   "video": {
+    "refreshToken": "refreshToken",
     "connecting": "Connecting to secure video session…",
     "unableToStart": "Unable to start the video call.",
-    "notConfigured": "Video calling is not configured. Please verify your ZegoCloud credentials."
+    "notConfigured": "Video calling is not configured. Please verify your ZegoCloud credentials.",
+    "videoCall": "Video Call",
+    "audioCall": "Audio Call",
+    "calling": "Calling {{name}}...",
+    "callingYou": "is calling you ({{callType}})",
+    "endCall": "End call",
+    "connectionFailed": "Failed to connect to the call. Please check your internet connection and try again.",
+    "startVideoCall": "Start video call",
+    "startAudioCall": "Start audio call",
+    "incomingCall": "Incoming Call",
+    "accept": "Accept",
+    "reject": "Reject",
+    "processing": "Processing..."
   },
   "profile": {
     "title": "Profile",

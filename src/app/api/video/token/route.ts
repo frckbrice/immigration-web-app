@@ -126,7 +126,9 @@ const postHandler = asyncHandler(async (request: NextRequest) => {
     throw new ApiError('Video service is not configured correctly', HttpStatus.SERVICE_UNAVAILABLE);
   }
 
-  const userId = req.user.userId || req.user.uid;
+  // IMPORTANT: Use Firebase UID for Zego userId to keep web + mobile consistent
+  // (and to match how we identify users in RTDB call invitations).
+  const userId = req.user.uid || req.user.userId;
 
   if (typeof userId !== 'string' || userId.trim().length === 0) {
     logger.error('Authenticated request missing user identifier', { user: req.user });

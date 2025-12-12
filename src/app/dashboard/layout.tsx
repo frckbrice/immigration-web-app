@@ -43,6 +43,7 @@ import { useRealtimeNotifications } from '@/features/notifications/hooks/useReal
 import { useUnreadReceivedEmails } from '@/features/messages/hooks/useUnreadReceivedEmails';
 import { apiClient } from '@/lib/utils/axios';
 import { logger } from '@/lib/utils/logger';
+import { CallOverlay } from '@/features/video';
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   const router = useRouter();
@@ -89,8 +90,47 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
     }
   }, [isAuthenticated, isLoading, router]);
 
+  // DEV ONLY: ensure old PWA service workers/caches don't keep stale headers/assets.
+  // This can otherwise keep an old `Permissions-Policy` (camera/mic blocked) and break calls.
+  useEffect(() => {
+    if (process.env.NODE_ENV !== 'development') return;
+    if (typeof window === 'undefined') return;
+
+    const sw = (navigator as any).serviceWorker;
+    if (!sw?.getRegistrations) return;
+
+    sw.getRegistrations()
+      .then((regs: any[]) => Promise.allSettled(regs.map((r) => r.unregister())))
+      .catch(() => {});
+
+    if ('caches' in window) {
+      (window.caches as any)
+        .keys()
+        .then((keys: string[]) =>
+          Promise.allSettled(keys.map((k) => (window.caches as any).delete(k)))
+        )
+        .catch(() => {});
+    }
+  }, []);
+
   // Real-time notifications
   useRealtimeNotifications();
+
+  // SPA navigation bridge for browser Notification clicks (avoids full reload)
+  useEffect(() => {
+    const handler = (event: Event) => {
+      const detail = (event as CustomEvent<{ url?: string }>).detail;
+      const url = detail?.url;
+      if (typeof url === 'string' && url.trim().length > 0) {
+        // Mark as handled so notification click handler can avoid fallback reload
+        (window as any).__appNotificationNavHandled = true;
+        router.push(url);
+      }
+    };
+
+    window.addEventListener('app:navigate', handler as EventListener);
+    return () => window.removeEventListener('app:navigate', handler as EventListener);
+  }, [router]);
 
   // Get unread received emails count for badge (agents/admins only)
   const { data: unreadReceivedEmailsCount } = useUnreadReceivedEmails();
@@ -466,7 +506,11 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
 
         {/* Main Content */}
         <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-x-hidden bg-background">
-          <div className="mx-auto max-w-7xl w-full">{children}</div>
+          <div className="mx-auto max-w-7xl w-full">
+            {children}
+            {/* Global incoming-call UI (no navigation required) */}
+            <CallOverlay />
+          </div>
         </main>
       </div>
     </div>
