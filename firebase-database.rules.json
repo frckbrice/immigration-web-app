@@ -2,15 +2,12 @@
   "rules": {
     ".read": false,
     ".write": false,
-
     "chats": {
       ".read": "auth != null",
       ".write": "auth != null",
-
       "$chatRoomId": {
         ".read": "auth != null && (root.child('chats/' + $chatRoomId + '/metadata/participants/clientId').val() == auth.uid || root.child('chats/' + $chatRoomId + '/metadata/participants/agentId').val() == auth.uid)",
         ".write": "auth != null && (root.child('chats/' + $chatRoomId + '/metadata/participants/clientId').val() == auth.uid || root.child('chats/' + $chatRoomId + '/metadata/participants/agentId').val() == auth.uid)",
-
         "messages": {
           ".indexOn": [
             "sentAt"
@@ -21,7 +18,6 @@
             ".validate": "newData.hasChildren(['senderId', 'senderName', 'content', 'sentAt']) && newData.child('content').isString()"
           }
         },
-
         "metadata": {
           ".read": "auth != null && (!data.exists() || data.child('participants/clientId').val() == auth.uid || data.child('participants/agentId').val() == auth.uid)",
           ".write": "auth != null && (!data.exists() || data.child('participants/clientId').val() == auth.uid || data.child('participants/agentId').val() == auth.uid)",
@@ -29,7 +25,6 @@
         }
       }
     },
-
     "userChats": {
       "$userId": {
         ".read": "auth != null && auth.uid == $userId",
@@ -40,7 +35,6 @@
         }
       }
     },
-
     "presence": {
       "$userId": {
         ".read": true,
@@ -48,7 +42,6 @@
         ".validate": "newData.hasChildren(['userId', 'status', 'lastSeen'])"
       }
     },
-
     "typing": {
       "$chatRoomId": {
         ".read": "auth != null && (root.child('chats/' + $chatRoomId + '/metadata/participants/clientId').val() == auth.uid || root.child('chats/' + $chatRoomId + '/metadata/participants/agentId').val() == auth.uid)",
@@ -58,12 +51,23 @@
         }
       }
     },
-
     "notifications": {
       "$userId": {
         ".read": "auth != null && auth.uid == $userId",
         ".write": false,
-        ".indexOn": ["timestamp", "isRead"]
+        ".indexOn": [
+          "timestamp",
+          "isRead"
+        ]
+      }
+    },
+    "callInvitations": {
+      ".read": "auth != null",
+      ".write": "auth != null",
+      "$invitationId": {
+        ".read": "auth != null",
+        ".write": "auth != null && (data.child('fromUserId').val() == auth.uid || data.child('toUserId').val() == auth.uid)",
+        ".validate": "newData.hasChildren(['id', 'fromUserId', 'fromUserName', 'toUserId', 'toUserName', 'roomId', 'callMode', 'status', 'createdAt']) && (newData.child('fromUserId').val() == auth.uid || newData.child('toUserId').val() == auth.uid)"
       }
     }
   }

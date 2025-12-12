@@ -12,6 +12,11 @@ export interface RealtimeNotification {
   title: string;
   message: string;
   actionUrl?: string;
+  // Optional metadata (e.g. call invitations)
+  invitationId?: string;
+  roomId?: string;
+  callMode?: 'video' | 'audio';
+  fromUserName?: string;
   createdAt: string;
   isRead: boolean;
 }

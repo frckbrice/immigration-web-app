@@ -38,6 +38,7 @@ export async function sendPushNotificationToUser(
     data?: Record<string, any>;
     badge?: number;
     channelId?: string; // Android notification channel ID
+    priority?: 'default' | 'normal' | 'high';
   }
 ): Promise<void> {
   try {
@@ -60,26 +61,32 @@ export async function sendPushNotificationToUser(
     logger.info('Found push tokens for user', {
       userId,
       tokenCount: pushTokenSettings.length,
-      platforms: pushTokenSettings.map((s) => {
+      platforms: pushTokenSettings.map((s: (typeof pushTokenSettings)[number]) => {
         const match = s.key.match(/pushToken:([^:]+)/);
         return match ? match[1] : 'unknown';
       }),
     });
 
     // Flatten tokens but remove duplicates per token value
+    type SettingType = (typeof pushTokenSettings)[number];
     const uniqueTokenEntries = Array.from(
       pushTokenSettings
-        .reduce((map, setting) => {
+        .reduce((map: Map<string, SettingType>, setting: SettingType) => {
           if (!map.has(setting.value)) {
             map.set(setting.value, setting);
           }
           return map;
-        }, new Map<string, (typeof pushTokenSettings)[number]>())
+        }, new Map<string, SettingType>())
         .values()
     );
 
-    const tokens = uniqueTokenEntries.map((setting) => setting.value);
-    const tokenSettingsMap = new Map(uniqueTokenEntries.map((setting) => [setting.value, setting]));
+    const tokens = uniqueTokenEntries.map((setting: SettingType) => setting.value);
+    const tokenSettingsMap = new Map<string, { id: string; key: string }>(
+      uniqueTokenEntries.map((setting: SettingType) => [
+        setting.value,
+        { id: setting.id, key: setting.key },
+      ])
+    );
 
     // Send notifications and get receipts for cleanup
     const results = await sendPushNotificationsWithCleanup(
@@ -132,24 +139,30 @@ export async function sendPushNotificationToUsers(
       return;
     }
 
+    type SettingType = (typeof pushTokenSettings)[number];
     const uniqueTokenEntries = Array.from(
       pushTokenSettings
-        .reduce((map, setting) => {
+        .reduce((map: Map<string, SettingType>, setting: SettingType) => {
           if (!map.has(setting.value)) {
             map.set(setting.value, setting);
           }
           return map;
-        }, new Map<string, (typeof pushTokenSettings)[number]>())
+        }, new Map<string, SettingType>())
         .values()
     );
 
-    const tokens = uniqueTokenEntries.map((setting) => setting.value);
-    const tokenSettingsMap = new Map(uniqueTokenEntries.map((setting) => [setting.value, setting]));
+    const tokens = uniqueTokenEntries.map((setting: SettingType) => setting.value);
+    const tokenSettingsMap = new Map<string, { id: string; key: string }>(
+      uniqueTokenEntries.map((setting: SettingType) => [
+        setting.value,
+        { id: setting.id, key: setting.key },
+      ])
+    );
 
     // Group tokens by userId for better tracking
     // Extract userId from key: user:{userId}:pushToken:...
     const tokensByUser = new Map<string, string[]>();
-    pushTokenSettings.forEach((setting) => {
+    pushTokenSettings.forEach((setting: SettingType) => {
       const match = setting.key.match(/^user:([^:]+):pushToken:/);
       if (match) {
         const userId = match[1];
@@ -194,6 +207,7 @@ async function sendPushNotificationsWithCleanup(
     sound?: 'default' | null;
     badge?: number;
     channelId?: string; // Android notification channel ID
+    priority?: 'default' | 'normal' | 'high';
   },
   tokenSettingsMap: Map<string, { id: string; key: string }>,
   userId: string
@@ -228,7 +242,7 @@ async function sendPushNotificationsWithCleanup(
       data: notification.data || {},
       sound: notification.sound !== null ? 'default' : null,
       badge: notification.badge !== undefined ? notification.badge : undefined,
-      priority: 'high',
+      priority: notification.priority || 'high',
     };
 
     // Always include channelId if provided (required for Android notification channel routing)

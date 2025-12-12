@@ -777,9 +777,22 @@
     "casesLoadError": "Veuillez vérifier votre connexion et réessayer."
   },
   "video": {
+    "refreshToken": "identifiants",
     "connecting": "Connexion à la session vidéo sécurisée…",
     "unableToStart": "Impossible de démarrer l'appel vidéo.",
-    "notConfigured": "L'appel vidéo n'est pas configuré. Veuillez vérifier vos identifiants ZegoCloud."
+    "notConfigured": "L'appel vidéo n'est pas configuré. Veuillez vérifier vos identifiants ZegoCloud.",
+    "videoCall": "Appel vidéo",
+    "audioCall": "Appel audio",
+    "calling": "Appel de {{name}}...",
+    "callingYou": "vous appelle ({{callType}})",
+    "endCall": "Terminer l'appel",
+    "connectionFailed": "Échec de la connexion à l'appel. Veuillez vérifier votre connexion Internet et réessayer.",
+    "startVideoCall": "Démarrer l'appel vidéo",
+    "startAudioCall": "Démarrer l'appel audio",
+    "incomingCall": "Appel entrant",
+    "accept": "Accepter",
+    "reject": "Rejeter",
+    "processing": "Traitement..."
   },
   "profile": {
     "title": "Profile",

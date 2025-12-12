@@ -18,11 +18,36 @@ export async function showNotification(
 
   if (permission === 'granted') {
     try {
-      new Notification(title, {
+      const notification = new Notification(title, {
         icon: '/images/app-logo.png',
         badge: '/images/app-logo.png',
         ...options,
       });
+
+      // Handle click/tap to navigate to action URL (web only)
+      // We expect callers to pass options.data = { url: "/some/path" } (or absolute URL).
+      const url = (options as any)?.data?.url;
+      if (typeof url === 'string' && url.trim().length > 0) {
+        notification.onclick = (event) => {
+          // Prevent default and focus existing tab
+          event.preventDefault?.();
+          try {
+            window.focus();
+          } catch {
+            // ignore
+          }
+          // Prefer SPA navigation (no reload). DashboardLayout listens for this event.
+          (window as any).__appNotificationNavHandled = false;
+          window.dispatchEvent(new CustomEvent('app:navigate', { detail: { url } }));
+
+          // Fallback: if no listener handled it, do a hard navigation after a short delay.
+          window.setTimeout(() => {
+            if (!(window as any).__appNotificationNavHandled) {
+              window.location.href = url;
+            }
+          }, 250);
+        };
+      }
       return true;
     } catch (error) {
       logger.error('Failed to create browser notification', error, {

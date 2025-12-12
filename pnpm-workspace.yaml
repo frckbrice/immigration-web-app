@@ -1,2 +1,14 @@
 packages:
-  - '.'
+  - .
+
+onlyBuiltDependencies:
+  - '@firebase/util'
+  - '@prisma/client'
+  - '@prisma/engines'
+  - core-js
+  - esbuild
+  - msgpackr-extract
+  - prisma
+  - protobufjs
+  - sharp
+  - unrs-resolver

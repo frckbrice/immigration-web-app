@@ -11,16 +11,27 @@ export interface RealtimeNotification {
   title: string;
   message: string;
   actionUrl?: string;
+  // Optional metadata (e.g. call invitations)
+  invitationId?: string;
+  roomId?: string;
+  callMode?: 'video' | 'audio';
+  fromUserName?: string;
   createdAt: string;
   isRead: boolean;
 }
+
+type RealtimeNotificationInput =
+  // Required fields
+  Omit<RealtimeNotification, 'id' | 'userId' | 'createdAt' | 'isRead'> &
+    // Allow adding future metadata without changing this signature again
+    Record<string, unknown>;
 
 // Create notification in Firebase Realtime Database
 // Uses Admin SDK for server-side writes (bypasses security rules)
 // This function should ONLY be called from server-side API routes
 export async function createRealtimeNotification(
   userId: string,
-  notification: Omit<RealtimeNotification, 'id' | 'userId' | 'createdAt' | 'isRead'>
+  notification: RealtimeNotificationInput
 ): Promise<string> {
   try {
     // Use Admin SDK for server-side writes (bypasses security rules)

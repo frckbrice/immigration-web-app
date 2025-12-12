@@ -1,6 +1,8 @@
 import { Suspense } from 'react';
-import { MessagesPageWithTabs } from '@/features/messages/components';
+import { MessagesPageWithTabs } from '@/features/messages/components/MessagesPageWithTabs';
 import { SimpleSkeleton } from '@/components/ui/simple-skeleton';
+
+export const dynamic = 'force-dynamic';
 
 interface MessagesPageProps {
   searchParams: Promise<{

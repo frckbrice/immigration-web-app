@@ -132,7 +132,11 @@ const nextConfig: NextConfig = {
           },
           {
             key: 'Permissions-Policy',
-            value: 'camera=(), microphone=(), geolocation=()',
+            // Video calling requires camera/microphone access in the browser.
+            // Keep geolocation disabled.
+            // NOTE: Some deployments (e.g. tunnels/proxies) can behave inconsistently with `self`.
+            // Allow all origins for camera/microphone at the browser policy level; runtime permission prompts still apply.
+            value: 'camera=*, microphone=*, geolocation=()',
           },
           {
             key: 'Cross-Origin-Opener-Policy',

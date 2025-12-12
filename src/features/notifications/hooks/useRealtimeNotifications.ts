@@ -24,15 +24,33 @@ export function useRealtimeNotifications() {
     const unsubscribe = subscribeToUserNotifications(
       user.id,
       (notification: RealtimeNotification) => {
+        const isIncomingCall = notification.type === 'INCOMING_CALL' && !!notification.invitationId;
+
         // Show in-app toast
         toast(notification.title, {
           description: notification.message,
-          action: notification.actionUrl
+          action: isIncomingCall
             ? {
-                label: 'View',
-                onClick: () => router.push(notification.actionUrl || '/'),
+                label: 'Answer',
+                onClick: () => {
+                  window.dispatchEvent(
+                    new CustomEvent('app:call:open', {
+                      detail: {
+                        invitationId: notification.invitationId,
+                        roomId: notification.roomId,
+                        callMode: notification.callMode,
+                        fromUserName: notification.fromUserName,
+                      },
+                    })
+                  );
+                },
               }
-            : undefined,
+            : notification.actionUrl
+              ? {
+                  label: 'View',
+                  onClick: () => router.push(notification.actionUrl || '/'),
+                }
+              : undefined,
           duration: 5000,
         });
 
