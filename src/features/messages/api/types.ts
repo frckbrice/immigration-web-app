@@ -16,6 +16,9 @@ export interface Message {
 export interface Conversation {
   id: string;
   participantId: string;
+  // Firebase UID for presence/typing (when known). For Firebase chats this equals participantId,
+  // but for virtual/preselected conversations participantId may be a PostgreSQL ID.
+  participantFirebaseId?: string;
   participantName: string;
   participantEmail?: string; // Email for message sending
   participantRole: string;

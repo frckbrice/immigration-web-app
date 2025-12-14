@@ -124,7 +124,7 @@ export function Contact() {
                       </h3>
                       <a
                         href={info.href}
-                        className="text-muted-foreground hover:text-primary transition-colors text-sm"
+                        className="text-muted-foreground hover:text-primary dark:hover:text-[#ff4538] transition-colors text-sm"
                       >
                         {info.value}
                       </a>
@@ -138,7 +138,7 @@ export function Contact() {
             <Card className="border-2 bg-gradient-to-br from-primary/5 to-background">
               <CardHeader>
                 <div className="flex items-center space-x-2">
-                  <Clock className="h-5 w-5 text-primary" />
+                  <Clock className="h-5 w-5 text-primary dark:text-[#ff4538]" />
                   <CardTitle className="text-lg">
                     <span suppressHydrationWarning>{t('landing.contact.hours')}</span>
                   </CardTitle>

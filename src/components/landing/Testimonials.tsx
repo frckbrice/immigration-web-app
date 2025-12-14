@@ -108,7 +108,7 @@ export function Testimonials() {
   ];
 
   return (
-    <section className="relative py-8 md:py-12 lg:py-16 overflow-hidden bg-background dark:bg-[#091a24]">
+    <section className="relative py-8 md:py-12 lg:py-16 overflow-hidden bg-background dark:bg-[#14303d]">
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute top-10 left-[-60px] w-72 h-72 bg-linear-to-trr from-purple-500/20 via-pink-500/20 to-transparent blur-3xl animate-pulse opacity-30"></div>
         <div className="absolute bottom-0 right-[-40px] w-80 h-80 bg-linear-to-trl from-cyan-500/20 via-blue-500/20 to-transparent blur-3xl animate-pulse opacity-30"></div>
@@ -172,11 +172,13 @@ export function Testimonials() {
           {stats.map((stat) => (
             <div
               key={stat.label}
-              className="relative overflow-hidden rounded-xl border p-4 md:p-5 text-center bg-card dark:bg-[#091a24] border-primary/30"
+              className="relative overflow-hidden rounded-xl border p-4 md:p-5 text-center bg-card dark:bg-[#1a3d4d] border-primary/30 dark:border-[#ff4538]/30"
             >
               <div className="absolute inset-0 bg-linear-to-tr from-primary/5 via-transparent to-primary/5"></div>
               <div className="relative space-y-1.5 md:space-y-2">
-                <p className="text-2xl md:text-3xl font-black text-primary">{stat.value}</p>
+                <p className="text-2xl md:text-3xl font-black text-primary dark:text-[#ff4538]">
+                  {stat.value}
+                </p>
                 <p className="text-xs md:text-sm font-semibold uppercase tracking-wide text-foreground/90">
                   <span suppressHydrationWarning>{stat.label}</span>
                 </p>
@@ -194,25 +196,21 @@ export function Testimonials() {
 
 function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
   return (
-    <Card className="relative overflow-hidden shadow-lg transition-transform duration-300 hover:-translate-y-1 bg-card dark:bg-[#091a24] border-primary/30">
+    <Card className="relative overflow-hidden shadow-lg transition-transform duration-300 hover:-translate-y-1 bg-card dark:bg-[#1a3d4d] border-primary/30 dark:border-[#ff4538]/30">
       <div
         className={`absolute inset-0 opacity-20 bg-linear-to-br ${testimonial.gradient} pointer-events-none`}
         aria-hidden
       />
       <CardContent className="relative space-y-4 p-5 md:p-6">
         <Quote
-          className="h-8 w-8 md:h-10 md:w-10"
-          style={{ color: '#ff4538' }}
+          className="h-8 w-8 md:h-10 md:w-10 text-primary dark:text-[#ff4538]"
           aria-hidden="true"
         />
         <p className="text-sm md:text-base leading-relaxed text-foreground/70">
           <span suppressHydrationWarning>&ldquo;{testimonial.content}&rdquo;</span>
         </p>
-        <div
-          className="flex items-center gap-3 md:gap-4 pt-3 md:pt-4 border-t"
-          style={{ borderColor: 'rgba(255, 69, 56, 0.2)' }}
-        >
-          <Avatar className="h-12 w-12 md:h-16 md:w-16 ring-2 ring-[rgba(255,69,56,0.3)]">
+        <div className="flex items-center gap-3 md:gap-4 pt-3 md:pt-4 border-t border-primary/20 dark:border-[#ff4538]/20">
+          <Avatar className="h-12 w-12 md:h-16 md:w-16 ring-2 ring-primary/30 dark:ring-[#ff4538]/30">
             <AvatarImage
               src={testimonial.avatarSrc}
               alt={testimonial.name}
@@ -246,7 +244,7 @@ function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
 function SpotlightCard({ testimonial }: { testimonial: Testimonial }) {
   const { t } = useTranslation();
   return (
-    <Card className="relative isolate overflow-hidden text-foreground shadow-[0_20px_80px_rgba(15,23,42,0.55)] bg-card dark:bg-[#091a24] border-primary">
+    <Card className="relative isolate overflow-hidden text-foreground shadow-[0_20px_80px_rgba(15,23,42,0.55)] bg-card dark:bg-[#1a3d4d] border-primary dark:border-[#ff4538]">
       <div className="absolute inset-[-40%] bg-linear-to-br from-blue-500/20 via-cyan-500/15 to-purple-500/15 blur-3xl opacity-40" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,69,56,0.1),transparent_70%)]" />
       <CardContent className="relative flex h-full flex-col gap-4 md:gap-6 p-6 md:p-8 lg:p-10">
@@ -261,15 +259,14 @@ function SpotlightCard({ testimonial }: { testimonial: Testimonial }) {
           </span>
         </div>
         <Quote
-          className="h-12 w-12 md:h-16 md:w-16"
-          style={{ color: 'rgba(255, 69, 56, 0.3)' }}
+          className="h-12 w-12 md:h-16 md:w-16 text-primary/30 dark:text-[#ff4538]/30"
           aria-hidden="true"
         />
         <p className="text-base md:text-lg lg:text-xl leading-relaxed font-medium text-foreground/90">
           <span suppressHydrationWarning>&ldquo;{testimonial.content}&rdquo;</span>
         </p>
-        <div className="flex items-center gap-3 md:gap-4 pt-4 md:pt-6 border-t border-primary/20">
-          <Avatar className="h-16 w-16 md:h-20 md:w-20 ring-2 md:ring-4 ring-primary/30">
+        <div className="flex items-center gap-3 md:gap-4 pt-4 md:pt-6 border-t border-primary/20 dark:border-[#ff4538]/20">
+          <Avatar className="h-16 w-16 md:h-20 md:w-20 ring-2 md:ring-4 ring-primary/30 dark:ring-[#ff4538]/30">
             <AvatarImage
               src={testimonial.avatarSrc}
               alt={testimonial.name}

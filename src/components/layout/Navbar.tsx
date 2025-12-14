@@ -41,7 +41,7 @@ export const Navbar = memo(function Navbar() {
                 priority
               />
             </div>
-            <span className="font-bold text-lg sm:text-xl hidden md:inline-block text-primary">
+            <span className="font-bold text-lg sm:text-xl hidden md:inline-block text-primary dark:text-[#ff4538]">
               Patrick Travel Service
             </span>
           </Link>

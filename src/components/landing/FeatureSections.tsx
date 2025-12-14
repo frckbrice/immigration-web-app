@@ -23,7 +23,7 @@ function FeatureSection({
   highlight,
 }: FeatureSectionProps) {
   return (
-    <section className="relative py-8 md:py-12 lg:py-16 bg-background dark:bg-[#091a24]">
+    <section className="relative py-8 md:py-12 lg:py-16 bg-background dark:bg-[#14303d]">
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto text-center space-y-5 md:space-y-6">
           <div className="flex justify-center mb-5">
@@ -43,7 +43,7 @@ function FeatureSection({
               <Button
                 variant="outline"
                 size="lg"
-                className="transition-all duration-200 text-primary border-primary hover:bg-primary/10"
+                className="transition-all duration-200 text-primary border-primary hover:bg-primary/10 dark:text-[#ff4538] dark:border-[#ff4538] dark:hover:bg-[#ff4538]/10"
                 asChild
               >
                 <Link href={ctaLink}>
@@ -66,7 +66,7 @@ export function FeatureSections() {
     <>
       {/* Start your journey in minutes */}
       <FeatureSection
-        icon={<Rocket className="h-12 w-12 text-primary" />}
+        icon={<Rocket className="h-12 w-12 text-primary dark:text-[#ff4538]" />}
         title={t('landing.features.startJourney.title') || 'Start your journey in minutes'}
         description={
           t('landing.features.startJourney.description') ||
@@ -94,7 +94,7 @@ export function FeatureSections() {
 
       {/* Comprehensive immigration services */}
       <FeatureSection
-        icon={<Sparkles className="h-12 w-12 text-primary" />}
+        icon={<Sparkles className="h-12 w-12 text-primary dark:text-[#ff4538]" />}
         title={t('landing.features.comprehensive.title') || 'Comprehensive immigration services'}
         description={
           t('landing.features.comprehensive.description') ||
@@ -118,7 +118,7 @@ export function FeatureSections() {
 
       {/* Secure and confidential */}
       <FeatureSection
-        icon={<Shield className="h-12 w-12 text-primary" />}
+        icon={<Shield className="h-12 w-12 text-primary dark:text-[#ff4538]" />}
         title={t('landing.features.secure.title') || 'Secure and confidential processing'}
         description={
           t('landing.features.secure.description') ||

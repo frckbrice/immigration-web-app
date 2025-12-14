@@ -69,6 +69,7 @@ function subscribeToRoomMessages(
     logger.error('Firebase Database is not initialized');
     return () => {}; // Return no-op cleanup function
   }
+  const db = database;
 
   // Verify user is authenticated before subscribing
   const currentUser = auth?.currentUser;
@@ -272,21 +273,48 @@ function subscribeToMultipleUserPresence(
     logger.error('Firebase Database is not initialized');
     return () => {}; // Return no-op cleanup function
   }
-  const presenceRef = ref(database, 'presence');
-  const userIdSet = new Set(userIds);
+  const db = database;
+  // IMPORTANT: Do NOT subscribe to /presence root.
+  // With our RTDB rules, reads are granted at /presence/$userId, not at /presence,
+  // so reading the whole node can be PERMISSION_DENIED and appear as "always offline".
+  const uniqueUserIds = Array.from(new Set(userIds)).filter(Boolean);
+  if (uniqueUserIds.length === 0) {
+    callback({});
+    return () => {};
+  }
 
-  onValue(presenceRef, (snapshot) => {
-    const presences: Record<string, UserPresence> = {};
-    snapshot.forEach((childSnapshot) => {
-      const userId = childSnapshot.key;
-      if (userId && userIdSet.has(userId)) {
-        presences[userId] = childSnapshot.val();
+  const currentPresences: Record<string, UserPresence> = {};
+  const unsubscribes = uniqueUserIds.map((uid) => {
+    const userPresenceRef = ref(db, `presence/${uid}`);
+    return onValue(
+      userPresenceRef,
+      (snapshot) => {
+        if (snapshot.exists()) {
+          currentPresences[uid] = snapshot.val();
+        } else {
+          delete currentPresences[uid];
+        }
+
+        callback({ ...currentPresences });
+      },
+      (error) => {
+        const errorCode = (error as any)?.code || '';
+        const errorMessage = (error as any)?.message || '';
+        logger.warn('[Presence] User presence listener error', {
+          uid,
+          errorCode,
+          errorMessage,
+        });
+        // Best-effort: treat as missing presence
+        delete currentPresences[uid];
+        callback({ ...currentPresences });
       }
-    });
-    callback(presences);
+    );
   });
 
-  return () => off(presenceRef);
+  return () => {
+    unsubscribes.forEach((u) => u());
+  };
 }
 
 function subscribeToTyping(
@@ -623,11 +651,18 @@ export function useMultipleUserPresence(userIds: string[]) {
   const [isLoading, setIsLoading] = useState(true);
   const [useMockData, setUseMockData] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const firebaseUserId = auth?.currentUser?.uid ?? null;
 
   useEffect(() => {
     if (!userIds || userIds.length === 0) {
       setPresences({});
       setIsLoading(false);
+      return;
+    }
+
+    // Wait for Firebase auth; otherwise presence read can fail and appear "stuck" as offline.
+    if (!firebaseUserId) {
+      setIsLoading(true);
       return;
     }
 
@@ -656,7 +691,7 @@ export function useMultipleUserPresence(userIds: string[]) {
       }
       unsubscribe();
     };
-  }, [userIds.join(',')]); // PERFORMANCE: Use join instead of JSON.stringify
+  }, [userIds.join(','), firebaseUserId]); // PERFORMANCE: Use join instead of JSON.stringify
 
   return { presences, isLoading };
 }

@@ -13,7 +13,7 @@ export function Hero() {
     <section className="relative w-full min-h-[60vh] md:min-h-[70vh] flex items-center justify-center overflow-hidden pt-4 md:pt-6">
       {/* Background Gradient - Redis style for dark mode */}
       <div className="absolute inset-0 -z-10">
-        <div className="absolute inset-0 bg-background dark:bg-[#091a24]" />
+        <div className="absolute inset-0 bg-background dark:bg-[#14303d]" />
         <div
           className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full blur-3xl opacity-20 dark:opacity-20"
           style={{
@@ -49,7 +49,7 @@ export function Hero() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-4 md:pt-6 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-150">
               <Button
                 size="lg"
-                className="text-lg px-12 h-14 shadow-lg hover:shadow-xl transition-all duration-200 group text-primary-foreground bg-primary hover:bg-primary/90 border border-primary"
+                className="text-lg px-12 h-14 shadow-lg hover:shadow-xl transition-all duration-200 group text-primary-foreground bg-primary hover:bg-primary/90 border border-primary dark:bg-[#361d22] dark:text-white dark:border-[#ff4538] dark:hover:bg-[#4a252c]"
                 asChild
               >
                 <Link href="/register">
@@ -108,7 +108,7 @@ export function Hero() {
 
               {/* Subtle Accent Border - Theme-aware */}
               <div
-                className="absolute inset-0 rounded-xl md:rounded-2xl z-20 pointer-events-none border border-primary/15"
+                className="absolute inset-0 rounded-xl md:rounded-2xl z-20 pointer-events-none border border-primary/15 dark:border-[#ff4538]/15"
                 style={{
                   boxShadow:
                     'inset 0 0 0 1px color-mix(in srgb, var(--foreground) 5%, transparent)',
@@ -130,7 +130,7 @@ export function Hero() {
 
               {/* Modern Corner Glow Effect - Theme-aware */}
               <div
-                className="absolute top-0 right-0 w-32 h-32 z-20 pointer-events-none opacity-40"
+                className="absolute top-0 right-0 w-32 h-32 z-20 pointer-events-none opacity-40 dark:opacity-30"
                 style={{
                   background:
                     'radial-gradient(circle, color-mix(in srgb, var(--primary) 15%, transparent) 0%, transparent 70%)',

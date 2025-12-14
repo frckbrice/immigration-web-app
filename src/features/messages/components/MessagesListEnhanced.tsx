@@ -420,19 +420,37 @@ export function MessagesList({
   // User lookup for participant names (performance-optimized with caching)
   const { getUserInfo, isLoading: isLoadingUsers } = useUserLookup(apiMessages);
 
-  // Get participant IDs for presence tracking (memoized)
+  const getOtherUidFromRoomId = useCallback(
+    (roomId: string | undefined | null) => {
+      if (!roomId || !firebaseUserId) return null;
+      // chatRoomId format: "{uidA}-{uidB}" (sorted)
+      const parts = roomId.split('-');
+      if (parts.length !== 2) return null;
+      const [a, b] = parts;
+      if (!a || !b) return null;
+      if (a === firebaseUserId) return b;
+      if (b === firebaseUserId) return a;
+      return null;
+    },
+    [firebaseUserId]
+  );
+
+  // REAL-TIME: Track online status of all participants.
+  // Assumption (per your note): Firebase has been cleaned up, so chat participants are Firebase UIDs.
   const participantIds = useMemo(() => {
     if (!apiConversations || !firebaseUserId) return [];
-    return apiConversations
-      .flatMap((room) => Object.keys(room.participants || {}))
-      .filter((id) => id !== firebaseUserId);
-  }, [apiConversations, firebaseUserId]);
+    const ids = apiConversations
+      .map((room) => getOtherUidFromRoomId(room.id))
+      .filter((id): id is string => Boolean(id));
+    return Array.from(new Set(ids));
+  }, [apiConversations, firebaseUserId, getOtherUidFromRoomId]);
 
-  // REAL-TIME: Track online status of all participants
   const { presences } = useMultipleUserPresence(participantIds);
 
   // REAL-TIME: Track typing indicators for selected chat
   const { typingUsers } = useTypingIndicators(realChatRoomId);
+
+  // No Postgres→Firebase mapping needed (rooms are Firebase UIDs).
 
   const formatRelativeTime = useCallback(
     (timestamp?: number | null) => {
@@ -549,9 +567,13 @@ export function MessagesList({
       const firebaseConvos = apiConversations
         .filter((room: FirebaseChatRoom): room is FirebaseChatRoom & { id: string } => !!room.id)
         .map((room) => {
-          // Get the other participant (not current user)
+          // Get the other participant (not current user). Some older rooms may store DB IDs
+          // while the current session uses Firebase UID, so compare against both.
+          const currentIds = new Set<string>();
+          if (firebaseUserId) currentIds.add(firebaseUserId);
+          if (user?.id) currentIds.add(user.id);
           const otherParticipantId = Object.keys(room.participants || {}).find(
-            (id) => id !== firebaseUserId
+            (id) => id && !currentIds.has(id)
           );
           const unreadCount = user?.id && room.unreadCount ? room.unreadCount[user.id] || 0 : 0;
 
@@ -583,7 +605,7 @@ export function MessagesList({
               : new Date().toISOString(),
             unreadCount,
             caseId: room.caseId || room.id,
-            participantFirebaseId: otherParticipantId, // Store Firebase ID for matching
+            participantFirebaseId: otherParticipantId || undefined,
           } as Conversation;
         });
 
@@ -696,10 +718,41 @@ export function MessagesList({
     return found;
   }, [conversations, selected]);
 
+  const selectedOtherFirebaseUid = useMemo(() => {
+    if (!selectedConversation) return null;
+    // Prefer deriving from chatRoomId when possible (most reliable for presence)
+    const fromRoomId = getOtherUidFromRoomId(selectedConversation.id);
+    return (
+      fromRoomId ||
+      selectedConversation.participantFirebaseId ||
+      selectedConversation.participantId ||
+      null
+    );
+  }, [selectedConversation, getOtherUidFromRoomId]);
+
   const selectedPresence = useMemo(
-    () => (selectedConversation ? getPresenceDetails(selectedConversation.participantId) : null),
-    [selectedConversation, getPresenceDetails]
+    () => (selectedConversation ? getPresenceDetails(selectedOtherFirebaseUid || '') : null),
+    [selectedConversation, getPresenceDetails, selectedOtherFirebaseUid]
   );
+
+  useEffect(() => {
+    if (process.env.NODE_ENV !== 'development') return;
+    if (!selectedConversation) return;
+    const rawPresence = selectedOtherFirebaseUid ? presences[selectedOtherFirebaseUid] : null;
+    logger.debug('[Presence UI] Selected presence debug', {
+      selectedConversationId: selectedConversation.id,
+      firebaseUserId,
+      otherUid: selectedOtherFirebaseUid,
+      presenceForOtherUid: rawPresence
+        ? {
+            userId: rawPresence.userId,
+            status: rawPresence.status,
+            lastSeen: rawPresence.lastSeen ?? null,
+            platform: rawPresence.platform ?? null,
+          }
+        : null,
+    });
+  }, [selectedConversation, selectedOtherFirebaseUid, firebaseUserId, presences]);
 
   const headerStatusLabel = isParticipantTyping
     ? typingLabel
@@ -1197,7 +1250,11 @@ export function MessagesList({
               </div>
             ) : (
               filteredConversations.map((conv) => {
-                const presenceDetails = getPresenceDetails(conv.participantId);
+                const otherUid =
+                  getOtherUidFromRoomId(conv.id) ||
+                  conv.participantFirebaseId ||
+                  conv.participantId;
+                const presenceDetails = getPresenceDetails(otherUid);
                 const presenceLabel =
                   presenceDetails.status === 'online'
                     ? t('messages.onlineNow')
@@ -1319,7 +1376,7 @@ export function MessagesList({
                       <div
                         className={cn(
                           'absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-white dark:border-slate-900',
-                          selectedPresence?.status === 'online'
+                          selectedPresence?.status === 'online' || isParticipantTyping
                             ? 'bg-emerald-500'
                             : 'bg-muted-foreground/40'
                         )}
@@ -1330,32 +1387,18 @@ export function MessagesList({
                         <h3 className="text-base sm:text-lg font-semibold leading-tight truncate">
                           {selectedConversation.participantName}
                         </h3>
-                        {isParticipantTyping ? (
+                        {selectedPresence?.status === 'online' && !isParticipantTyping && (
                           <Badge
                             variant="outline"
                             className="text-[10px] sm:text-xs h-4 sm:h-5 px-1 sm:px-1.5"
                             style={{
-                              borderColor: '#ff4538',
-                              backgroundColor: 'rgba(255, 69, 56, 0.1)',
-                              color: '#ff4538',
+                              borderColor: 'rgba(16, 185, 129, 0.3)',
+                              backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                              color: '#10b981',
                             }}
                           >
-                            Typing…
+                            Online
                           </Badge>
-                        ) : (
-                          selectedPresence?.status === 'online' && (
-                            <Badge
-                              variant="outline"
-                              className="text-[10px] sm:text-xs h-4 sm:h-5 px-1 sm:px-1.5"
-                              style={{
-                                borderColor: 'rgba(16, 185, 129, 0.3)',
-                                backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                                color: '#10b981',
-                              }}
-                            >
-                              Online
-                            </Badge>
-                          )
                         )}
                         {/* Outgoing call status indicator */}
                         {outgoingCallStatus === 'ringing' && (
@@ -1829,40 +1872,7 @@ export function MessagesList({
                     })}
                     <div ref={endRef} />
 
-                    {/* Typing indicator */}
-                    {typingUsers.length > 0 && (
-                      <div className="flex gap-2 items-start">
-                        <Avatar className="h-8 w-8">
-                          <AvatarFallback className="text-xs">
-                            {getInitials(
-                              typingUsers[0]?.userName || t('messages.typing') || 'Typing'
-                            )}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div className="bg-muted rounded-lg px-3 py-2">
-                          <p
-                            className="text-xs text-muted-foreground mb-1"
-                            suppressHydrationWarning
-                          >
-                            {typingLabel || t('messages.typing') || 'Typing…'}
-                          </p>
-                          <div className="flex gap-1 text-muted-foreground">
-                            <Circle
-                              className="h-2 w-2 fill-current animate-bounce"
-                              style={{ animationDelay: '0ms' }}
-                            />
-                            <Circle
-                              className="h-2 w-2 fill-current animate-bounce"
-                              style={{ animationDelay: '150ms' }}
-                            />
-                            <Circle
-                              className="h-2 w-2 fill-current animate-bounce"
-                              style={{ animationDelay: '300ms' }}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    )}
+                    {/* Typing is shown in the header status to avoid duplication */}
                   </>
                 )}
               </CardContent>
