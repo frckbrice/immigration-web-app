@@ -51,7 +51,7 @@ export function TrustLogos() {
   const duplicatedAuthorities = [...authorities, ...authorities];
 
   return (
-    <section className="relative py-8 md:py-12 overflow-hidden bg-background dark:bg-[#091a24]">
+    <section className="relative py-8 md:py-12 overflow-hidden bg-background dark:bg-[#14303d]">
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-8 md:mb-10">
           <h2 className="text-3xl md:text-4xl font-bold mb-3 tracking-tight text-foreground/90">
@@ -93,11 +93,11 @@ export function TrustLogos() {
                   className="flex-shrink-0 mx-4"
                   style={{ width: '280px' }}
                 >
-                  <Card className="h-full transition-all duration-300 hover:scale-105 hover:shadow-xl bg-card border-border hover:border-primary">
+                  <Card className="h-full transition-all duration-300 hover:scale-105 hover:shadow-xl bg-card dark:bg-[#1a3d4d] border-border hover:border-primary dark:hover:border-[#ff4538]">
                     <div className="p-6 flex flex-col items-center text-center space-y-4">
                       {/* Icon */}
-                      <div className="w-16 h-16 rounded-2xl flex items-center justify-center transition-transform duration-300 bg-primary/10">
-                        <Icon className="h-8 w-8 text-primary" />
+                      <div className="w-16 h-16 rounded-2xl flex items-center justify-center transition-transform duration-300 bg-primary/10 dark:bg-[#ff4538]/10">
+                        <Icon className="h-8 w-8 text-primary dark:text-[#ff4538]" />
                       </div>
 
                       {/* Authority Name */}
@@ -106,12 +106,14 @@ export function TrustLogos() {
                           {authority.name}
                         </h3>
                         <p className="text-xs mb-2 text-foreground/60">{authority.fullName}</p>
-                        <p className="text-xs font-medium text-primary">{authority.country}</p>
+                        <p className="text-xs font-medium text-primary dark:text-[#ff4538]">
+                          {authority.country}
+                        </p>
                       </div>
 
                       {/* Verified Badge */}
                       <div className="flex items-center gap-1 text-xs text-foreground/60">
-                        <CheckCircle2 className="h-3 w-3 text-primary" />
+                        <CheckCircle2 className="h-3 w-3 text-primary dark:text-[#ff4538]" />
                         <span suppressHydrationWarning>
                           {t('landing.trust.verifiedPartner') || 'Verified Partner'}
                         </span>

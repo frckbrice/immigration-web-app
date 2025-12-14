@@ -139,7 +139,7 @@ export function FAQSection({
   };
 
   return (
-    <section className="py-8 md:py-12 lg:py-16" style={{ backgroundColor: '#091a24' }} id="faq">
+    <section className="py-8 md:py-12 lg:py-16 bg-background dark:bg-[#14303d]" id="faq">
       {/* Schema.org markup for Google FAQ rich snippets */}
       <script
         type="application/ld+json"
@@ -149,16 +149,10 @@ export function FAQSection({
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className="text-center mb-8 md:mb-10">
-          <h2
-            className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-4"
-            style={{ color: '#ffffff' }}
-          >
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-4 text-foreground/90">
             {sectionTitle}
           </h2>
-          <p
-            className="text-base md:text-lg max-w-2xl mx-auto leading-[1.7] font-normal"
-            style={{ color: 'rgba(255, 255, 255, 0.75)' }}
-          >
+          <p className="text-base md:text-lg max-w-2xl mx-auto leading-[1.7] font-normal text-foreground/70">
             {sectionDescription}
           </p>
         </div>
@@ -216,12 +210,7 @@ export function FAQSection({
               <Badge
                 key={category}
                 variant="secondary"
-                className="px-3 py-1 text-sm"
-                style={{
-                  backgroundColor: 'rgba(255, 69, 56, 0.2)',
-                  color: '#ff4538',
-                  borderColor: 'rgba(255, 69, 56, 0.3)',
-                }}
+                className="px-3 py-1 text-sm bg-primary/10 dark:bg-[#ff4538]/20 text-primary dark:text-[#ff4538] border-primary/30 dark:border-[#ff4538]/30"
               >
                 {getCategoryLabel(category)}
               </Badge>
@@ -238,14 +227,10 @@ export function FAQSection({
           >
             {/* Mobile: Scrollable horizontal tabs | Desktop: Compact grid */}
             <div className="mb-8 overflow-x-auto scrollbar-hide">
-              <TabsList
-                className="w-full inline-flex md:flex md:flex-wrap md:justify-center gap-1 h-auto p-1.5 rounded-lg"
-                style={{ backgroundColor: 'rgba(255, 255, 255, 0.05)' }}
-              >
+              <TabsList className="w-full inline-flex md:flex md:flex-wrap md:justify-center gap-1 h-auto p-1.5 rounded-lg bg-background/50 dark:bg-[#1a3d4d]/50">
                 <TabsTrigger
                   value="all"
-                  className="whitespace-nowrap px-3 py-2 text-xs md:text-sm rounded-md data-[state=active]:bg-[#ff4538] data-[state=active]:text-white"
-                  style={{ color: 'rgba(255, 255, 255, 0.7)' }}
+                  className="whitespace-nowrap px-3 py-2 text-xs md:text-sm rounded-md data-[state=active]:bg-primary dark:data-[state=active]:bg-[#ff4538] data-[state=active]:text-primary-foreground dark:data-[state=active]:text-white text-foreground/70"
                 >
                   {t('faq.section.allQuestions')}
                 </TabsTrigger>
@@ -253,17 +238,12 @@ export function FAQSection({
                   <TabsTrigger
                     key={category}
                     value={category}
-                    className="whitespace-nowrap px-2.5 py-2 text-xs md:text-sm flex items-center gap-1.5 rounded-md data-[state=active]:bg-[#ff4538] data-[state=active]:text-white"
-                    style={{ color: 'rgba(255, 255, 255, 0.7)' }}
+                    className="whitespace-nowrap px-2.5 py-2 text-xs md:text-sm flex items-center gap-1.5 rounded-md data-[state=active]:bg-primary dark:data-[state=active]:bg-[#ff4538] data-[state=active]:text-primary-foreground dark:data-[state=active]:text-white text-foreground/70"
                   >
                     <span className="truncate">{getCategoryLabel(category)}</span>
                     <Badge
                       variant="secondary"
-                      className="text-[10px] px-1.5 py-0.5 leading-none"
-                      style={{
-                        backgroundColor: 'rgba(255, 69, 56, 0.2)',
-                        color: '#ff4538',
-                      }}
+                      className="text-[10px] px-1.5 py-0.5 leading-none bg-primary/10 dark:bg-[#ff4538]/20 text-primary dark:text-[#ff4538]"
                     >
                       {faqsByCategory[category]?.length || 0}
                     </Badge>
@@ -284,19 +264,13 @@ export function FAQSection({
 
         {/* No Results */}
         {filteredFAQs.length === 0 && searchQuery && (
-          <Card
-            className="max-w-2xl mx-auto"
-            style={{ backgroundColor: '#091a24', borderColor: 'rgba(255, 255, 255, 0.1)' }}
-          >
+          <Card className="max-w-2xl mx-auto bg-card dark:bg-[#1a3d4d] border-border dark:border-[#ff4538]/20">
             <CardContent className="py-12 text-center">
-              <Search
-                className="mx-auto h-12 w-12 mb-4 opacity-50"
-                style={{ color: 'rgba(255, 255, 255, 0.5)' }}
-              />
-              <h3 className="text-lg font-semibold mb-2" style={{ color: '#ffffff' }}>
+              <Search className="mx-auto h-12 w-12 mb-4 opacity-50 text-foreground/50" />
+              <h3 className="text-lg font-semibold mb-2 text-foreground/90">
                 {t('faq.section.noResults')}
               </h3>
-              <p style={{ color: 'rgba(255, 255, 255, 0.7)' }}>{t('faq.section.noResultsDesc')}</p>
+              <p className="text-foreground/70">{t('faq.section.noResultsDesc')}</p>
             </CardContent>
           </Card>
         )}
@@ -348,8 +322,7 @@ function FAQAccordion({ faqs, searchQuery }: { faqs: any[]; searchQuery: string 
             e.preventDefault();
             setExpandedAnswers({ ...expandedAnswers, [faqId]: true });
           }}
-          className="ml-2 hover:underline font-medium"
-          style={{ color: '#ff4538' }}
+          className="ml-2 hover:underline font-medium text-primary dark:text-[#ff4538]"
         >
           {t('faq.section.readMore')}
         </button>
@@ -363,40 +336,19 @@ function FAQAccordion({ faqs, searchQuery }: { faqs: any[]; searchQuery: string 
         <Accordion type="single" collapsible key={faq.id} className="w-full">
           <AccordionItem
             value={faq.id}
-            className="border rounded-lg px-4 md:px-5 transition-colors shadow-sm"
-            style={{
-              borderColor: 'rgba(255, 255, 255, 0.1)',
-              backgroundColor: 'rgba(255, 255, 255, 0.03)',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.05)';
-              e.currentTarget.style.borderColor = 'rgba(255, 69, 56, 0.3)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.03)';
-              e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
-            }}
+            className="border rounded-lg px-4 md:px-5 transition-colors shadow-sm border-border dark:border-[#ff4538]/20 bg-background/50 dark:bg-[#1a3d4d]/50 hover:bg-background/70 dark:hover:bg-[#1a3d4d]/70 hover:border-primary dark:hover:border-[#ff4538]/40"
           >
             <AccordionTrigger className="text-left hover:no-underline py-4 gap-3">
               <div className="flex items-start gap-3">
-                <div
-                  className="shrink-0 w-6 h-6 rounded-full flex items-center justify-center mt-0.5"
-                  style={{ backgroundColor: 'rgba(255, 69, 56, 0.2)' }}
-                >
-                  <HelpCircle className="h-3.5 w-3.5" style={{ color: '#ff4538' }} />
+                <div className="shrink-0 w-6 h-6 rounded-full flex items-center justify-center mt-0.5 bg-primary/10 dark:bg-[#ff4538]/20">
+                  <HelpCircle className="h-3.5 w-3.5 text-primary dark:text-[#ff4538]" />
                 </div>
-                <span
-                  className="font-semibold text-sm md:text-base pr-2 leading-snug"
-                  style={{ color: '#ffffff' }}
-                >
+                <span className="font-semibold text-sm md:text-base pr-2 leading-snug text-foreground/90">
                   {highlightText(faq.question)}
                 </span>
               </div>
             </AccordionTrigger>
-            <AccordionContent
-              className="pb-4 pl-9 text-sm leading-relaxed"
-              style={{ color: 'rgba(255, 255, 255, 0.7)' }}
-            >
+            <AccordionContent className="pb-4 pl-9 text-sm leading-relaxed text-foreground/70">
               {getTruncatedAnswer(faq.answer, faq.id)}
             </AccordionContent>
           </AccordionItem>

@@ -19,11 +19,15 @@ function PricingTier({ name, tagline, features, price, tier, highlight }: Pricin
   const { t } = useTranslation();
   return (
     <Card
-      className={`relative overflow-hidden border-2 transition-all duration-200 hover:shadow-lg bg-card dark:bg-[#091a24] ${
-        highlight ? 'shadow-lg scale-105 border-primary' : 'border-border'
+      className={`relative overflow-hidden border-2 transition-all duration-200 hover:shadow-lg bg-card dark:bg-[#1a3d4d] ${
+        highlight
+          ? 'shadow-lg scale-105 border-primary dark:border-[#ff4538]'
+          : 'border-border dark:hover:border-[#ff4538]/50'
       }`}
     >
-      {highlight && <div className="absolute top-0 left-0 right-0 h-1 bg-primary" />}
+      {highlight && (
+        <div className="absolute top-0 left-0 right-0 h-1 bg-primary dark:bg-[#ff4538]" />
+      )}
       <CardHeader>
         <CardTitle className="text-xl md:text-2xl mb-2 font-bold text-foreground/90">
           {name}
@@ -42,7 +46,7 @@ function PricingTier({ name, tagline, features, price, tier, highlight }: Pricin
         <ul className="space-y-3">
           {features.map((feature, index) => (
             <li key={index} className="flex items-start gap-2">
-              <Check className="h-5 w-5 mt-0.5 flex-shrink-0 text-primary" />
+              <Check className="h-5 w-5 mt-0.5 flex-shrink-0 text-primary dark:text-[#ff4538]" />
               <span className="text-sm text-foreground/70">{feature}</span>
             </li>
           ))}
@@ -50,8 +54,8 @@ function PricingTier({ name, tagline, features, price, tier, highlight }: Pricin
         <Button
           className={`w-full mt-6 ${
             highlight
-              ? 'text-primary-foreground bg-primary hover:bg-primary/90'
-              : 'text-primary border-primary hover:bg-primary/10'
+              ? 'text-primary-foreground bg-primary hover:bg-primary/90 dark:bg-[#361d22] dark:text-white dark:border-[#ff4538] dark:hover:bg-[#4a252c] dark:border'
+              : 'text-primary border-primary hover:bg-primary/10 dark:text-[#ff4538] dark:border-[#ff4538] dark:hover:bg-[#ff4538]/10'
           }`}
           variant={highlight ? 'default' : 'outline'}
           asChild
@@ -108,7 +112,7 @@ export function PricingTiers() {
   ];
 
   return (
-    <section className="relative py-8 md:py-12 lg:py-16 bg-background dark:bg-[#091a24]">
+    <section className="relative py-8 md:py-12 lg:py-16 bg-background dark:bg-[#14303d]">
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-8 md:mb-10">
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight tracking-tight mb-4 text-foreground/90">

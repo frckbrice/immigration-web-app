@@ -9,11 +9,11 @@ export const dynamic = 'force-dynamic';
 
 export default function HomePage() {
   return (
-    <div className="flex flex-col min-h-screen relative overflow-hidden bg-background dark:bg-[#091a24]">
+    <div className="flex flex-col min-h-screen relative overflow-hidden bg-background dark:bg-[#14303d]">
       {/* PERFORMANCE: Optimized gradient background */}
       <div className="fixed inset-0 -z-10" style={{ willChange: 'transform' }}>
         {/* Base gradient layer - Redis style for dark mode, theme-aware for light */}
-        <div className="absolute inset-0 bg-background dark:bg-[#091a24]" />
+        <div className="absolute inset-0 bg-background dark:bg-[#14303d]" />
 
         {/* PERFORMANCE: Reduced blur and opacity for better rendering - Theme-aware gradients */}
         <div
